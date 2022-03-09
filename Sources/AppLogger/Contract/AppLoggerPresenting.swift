@@ -21,7 +21,8 @@
 import Foundation
 import UIKit
 
-public protocol AppLoggerPresenting {
+public protocol AppLoggerPresenting: AnyObject {
+    var window: UIWindow? { get set }
     /// UIKit presentation API.
     func present(animated: Bool, configuration: AppLoggerConfiguration?, completion: (() -> Void)?)
 }

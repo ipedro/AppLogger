@@ -113,7 +113,12 @@ struct DataSource: Hashable {
         }
     }
 
-    private var allEntries: [LogEntry] = []
+    private var allEntries: [LogEntry] = [] {
+        didSet {
+            reloadSources()
+            reloadRows()
+        }
+    }
 
     mutating func addLogEntry(_ loggerEntry: LogEntry) {
         allEntries.insert(loggerEntry, at: .zero)

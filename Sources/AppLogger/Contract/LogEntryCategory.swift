@@ -46,10 +46,13 @@ public struct LogEntryCategory: Hashable {
 }
 
 public extension LogEntryCategory {
-    static let verbose: LogEntryCategory = .init("💬", "Verbose")
-    static let debug: LogEntryCategory   = .init("🐞", "Debug")
-    static let info: LogEntryCategory    = .init("ℹ️", "Info")
+    static let verbose: LogEntryCategory = .init("🗯", "Verbose")
+    static let debug: LogEntryCategory = .init("🔹", "Debug")
+    static let info: LogEntryCategory = .init("ℹ️", "Info")
+    static let notice: LogEntryCategory = .init("✳️", "Notice")
     static let warning: LogEntryCategory = .init("⚠️", "Warning")
-    static let error: LogEntryCategory   = .init("🚨", "Error")
-    static let critical: LogEntryCategory = .init("☢️", "Critical")
+    static let error: LogEntryCategory = .init("‼️", "Error")
+    static let severe: LogEntryCategory = .init("💣", "Severe")
+    static let alert: LogEntryCategory = .init("🛑", "Alert")
+    static let emergency: LogEntryCategory = .init("🚨", "Emergency")
 }

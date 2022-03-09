@@ -44,6 +44,11 @@ final class AppLoggerCoordinator: NSObject {
         startViewController = .none
         return true
     }
+
+    func navigationView(onDismiss: @escaping () -> Void) -> some View {
+        AppLoggerView(dismissHandler: onDismiss)
+            .environmentObject(viewModel)
+    }
 }
 
 // MARK: - Private Helpers
@@ -51,7 +56,7 @@ final class AppLoggerCoordinator: NSObject {
 private extension AppLoggerCoordinator {
     func makeStartViewController() -> UIViewController {
         let hostingController = UIHostingController(
-            rootView: AppLoggerView() { [weak self] in
+            rootView: navigationView { [weak self] in
                 self?.stop()
             }
         )

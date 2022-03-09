@@ -22,7 +22,7 @@ import Foundation
 import SwiftUI
 
 public final class AppLogger: NSObject, AppLoggerPresenting, AppLogging {
-    public var window: UIWindow!
+    public var window: UIWindow?
 
     public static var current: AppLogging & AppLoggerPresenting { sharedInstance }
 
@@ -48,8 +48,7 @@ public final class AppLogger: NSObject, AppLoggerPresenting, AppLogging {
     }
 
     func navigationView(onDismiss: @escaping () -> Void) -> some View {
-        AppLoggerView(dismissHandler: onDismiss)
-            .environmentObject(viewModel)
+        coordinator.navigationView(onDismiss: onDismiss)
     }
 
     public func present(animated: Bool, configuration: AppLoggerConfiguration?, completion: (() -> Void)?) {
@@ -89,6 +88,7 @@ public final class AppLogger: NSObject, AppLoggerPresenting, AppLogging {
 @available(iOS 15.0, *)
 extension AppLogger: UISheetPresentationControllerDelegate {
     public func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        guard let window = window else { return }
         viewModel.setCompactPresentation(
             sheetPresentationController.selectedDetentIdentifier == .medium,
             in: window
