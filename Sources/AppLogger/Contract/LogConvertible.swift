@@ -32,6 +32,13 @@ public protocol LogConvertible {
 }
 
 public extension LogConvertible {
+
+    func convert(_ object: Any?) -> LogConversionResult { Self.convert(object) }
+
+    func convert(toString object: Any?) -> String { Self.convert(toString: object) }
+
+    func convert(toDictionary object: Any?) -> [String: String] { Self.convert(toDictionary: object) }
+
     static func convert(_ object: Any?) -> LogConversionResult {
         guard let object = object else { return .message("") }
         if Mirror(reflecting: object).children.isEmpty {

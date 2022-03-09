@@ -29,12 +29,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     override init() {
         super.init()
+        log.setup(
+            level: .verbose,
+            showLogIdentifier: false,
+            showFunctionName: true,
+            showThreadName: false,
+            showLevel: true,
+            showFileNames: true,
+            showLineNumbers: true,
+            showDate: true,
+            writeToFile: .none,
+            fileLevel: nil
+        )
         log.formatters = [AppLoggerFormatter(appLogger: AppLogger.current)]
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        log.verbose()
+        log.verbose(
+            userInfo: [
+                "state": application.applicationState.debugDescription,
+                "badge number": String(application.applicationIconBadgeNumber)
+            ]
+        )
         return true
     }
 
@@ -57,3 +74,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+
+extension UIApplication.State: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .active:
+            return "Active"
+        case .inactive:
+            return "Inactive"
+        case .background:
+            return "Background"
+        default:
+            return "Default"
+        }
+    }
+}

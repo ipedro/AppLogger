@@ -21,6 +21,7 @@
 import AppLogger
 import Foundation
 import XCGLogger
+import UIKit
 
 struct AppLoggerFormatter: LogFormatterProtocol {
     let appLogger: AppLogging
@@ -28,9 +29,10 @@ struct AppLoggerFormatter: LogFormatterProtocol {
     func format(logDetails: inout LogDetails, message: inout String) -> String {
         appLogger.addLogEntry(
             .init(
-                category: .init(logDetails.level),
+                category: logDetails.level.category,
                 source: .init(
                     name: String(logDetails.fileName.split(separator: ".").first!.split(separator: "/").last!),
+                    color: logDetails.level.color,
                     info: .swift(lineNumber: logDetails.lineNumber)
                 ),
                 content: .init(
@@ -48,19 +50,28 @@ struct AppLoggerFormatter: LogFormatterProtocol {
     }
 }
 
-private extension LogEntryCategory {
-    init(_ level: XCGLogger.Level) {
-        switch level {
-        case .verbose: self = .verbose
-        case .debug: self = .debug
-        case .info: self = .info
-        case .notice: self = .notice
-        case .warning: self = .warning
-        case .error: self = .error
-        case .severe: self = .severe
-        case .alert: self = .alert
-        case .emergency: self = .emergency
-        case .none: self = .init("None")
+private extension XCGLogger.Level {
+    var color: UIColor? {
+        switch self {
+        case .verbose: return .secondaryLabel
+        case .warning: return .systemOrange
+        case .error, .severe, .alert, .emergency: return .systemRed
+        default: return .none
+        }
+    }
+
+    var category: LogEntryCategory {
+        switch self {
+        case .verbose: return .verbose
+        case .debug: return .debug
+        case .info: return .info
+        case .notice: return .notice
+        case .warning: return .warning
+        case .error: return .error
+        case .severe: return .severe
+        case .alert: return .alert
+        case .emergency: return .emergency
+        case .none: return .init("None")
         }
     }
 }

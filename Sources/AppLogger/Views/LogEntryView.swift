@@ -105,7 +105,7 @@ struct LogEntryView: View {
                 .lineLimit(3)
                 .padding(.horizontal, viewModel.spacing * 2)
 
-            if let message = viewModel.message {
+            if let message = viewModel.message, !message.isEmpty {
                 HStack(alignment: .top) {
                     if let icon = viewModel.icon {
                         Text(icon)

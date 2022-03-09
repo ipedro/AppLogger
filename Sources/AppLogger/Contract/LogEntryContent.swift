@@ -55,10 +55,10 @@ public struct LogEntryContent: Hashable, LogConvertible {
     }
 
     func contains(_ searchQuery: String) -> Bool {
-        if description.contains(searchQuery) { return true }
-        if output?.contains(searchQuery) == true { return true }
-        if userInfo.keys.joined().contains(searchQuery) { return true }
-        if userInfo.values.joined().contains(searchQuery) { return true }
+        if description.localizedCaseInsensitiveContains(searchQuery) { return true }
+        if output?.localizedCaseInsensitiveContains(searchQuery) == true { return true }
+        if userInfo.keys.joined().localizedCaseInsensitiveContains(searchQuery) { return true }
+        if userInfo.values.joined().localizedCaseInsensitiveContains(searchQuery) { return true }
         return false
     }
 }

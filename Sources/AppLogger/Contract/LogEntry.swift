@@ -41,8 +41,8 @@ public struct LogEntry: Hashable {
     }
 
     func contains(_ searchQuery: String) -> Bool {
-        if category.debugName.contains(searchQuery) { return true }
-        if source.debugName.contains(searchQuery) { return true }
+        if category.debugName.localizedCaseInsensitiveContains(searchQuery) { return true }
+        if source.debugName.localizedCaseInsensitiveContains(searchQuery) { return true }
         return content.contains(searchQuery)
     }
 }
@@ -61,13 +61,7 @@ private extension Optional where Wrapped == String {
     func contains(_ string: String) -> Bool {
         switch self {
         case .none: return false
-        case let .some(wrapped): return wrapped.contains(string)
+        case let .some(wrapped): return wrapped.localizedCaseInsensitiveContains(string)
         }
-    }
-}
-
-private extension String {
-    func contains(_ string: String) -> Bool {
-        range(of: string, options: .caseInsensitive) != nil
     }
 }

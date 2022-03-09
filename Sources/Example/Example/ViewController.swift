@@ -23,42 +23,77 @@ import AppLogger
 
 class ViewController: UIViewController {
 
-    private lazy var button = UIButton (primaryAction: .init(title: "Present Logger", handler: { action in
-        log.debug(action)
-        AppLogger.current.presentAppLogger()
+    private lazy var presentLightButton = UIButton(primaryAction: .init(title: "Present Light Logger", handler: { action in
+        AppLogger.current.present(animated: true, configuration: .init(colorScheme: .light), completion: .none)
+        log.notice(action.title)
     }))
+
+    private lazy var presentDarkButton = UIButton(primaryAction: .init(title: "Present Dark Logger", handler: { action in
+        AppLogger.current.present(animated: true, configuration: .init(colorScheme: .dark), completion: .none)
+        log.notice(action.title)
+    }))
+
+    private lazy var logErrorButton = UIButton(primaryAction: .init(title: "Log Error", handler: { action in
+        log.error("I'm an error log")
+    }))
+
+    private lazy var stackView = UIStackView(
+        arrangedSubviews: [
+            UIView(),
+            presentLightButton,
+            presentDarkButton,
+            logErrorButton,
+            UIView()
+        ]
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         log.info(self)
-        self.view.backgroundColor = .systemBackground
-        self.button.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
-        self.view.addSubview(self.button)
-        self.button.sizeToFit()
-        self.button.center = self.view.center
-        self.view.layoutIfNeeded()
+        view.backgroundColor = .systemBackground
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        view.addSubview(stackView)
+        view.layoutIfNeeded()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        stackView.frame = view.bounds
+        log.verbose(
+            self,
+            userInfo: [
+                "frame": view.frame,
+                "subviews": view.allSuviews.count
+            ]
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        log.debug(["animated": animated])
+        log.verbose(self, userInfo: ["animated": animated])
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        log.debug(["animated": animated])
+        log.verbose(self, userInfo: ["animated": animated])
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        log.debug(["animated": animated])
+        log.verbose(self, userInfo: ["animated": animated])
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        log.debug(["animated": animated])
+        log.verbose(self, userInfo: ["animated": animated])
     }
 
 }
 
+private extension UIView {
+    var allSuviews: [UIView] {
+        subviews.flatMap { [$0] + $0.allSuviews }
+    }
+}
