@@ -62,10 +62,7 @@ public final class AppLogger: NSObject, AppLoggerPresenting, AppLogging {
         
         let startViewController = coordinator.start()
 
-        if
-            #available(iOS 15.0, *),
-            let sheetPresentation = startViewController.sheetPresentationController
-        {
+        if let sheetPresentation = startViewController.sheetPresentationController {
             sheetPresentation.detents = [.large(), .medium()]
             sheetPresentation.selectedDetentIdentifier = .medium
             sheetPresentation.prefersGrabberVisible = true
@@ -84,7 +81,6 @@ public final class AppLogger: NSObject, AppLoggerPresenting, AppLogging {
 
 // MARK: - UISheetPresentationControllerDelegate
 
-@available(iOS 15.0, *)
 extension AppLogger: UISheetPresentationControllerDelegate {
     public func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
         guard let window = window else { return }
