@@ -46,7 +46,7 @@ final class AppLoggerCoordinator: NSObject {
     }
 
     func navigationView(onDismiss: @escaping () -> Void) -> some View {
-        AppLoggerView(dismissHandler: onDismiss)
+        AppLoggerView(dismiss: onDismiss)
             .environmentObject(viewModel)
     }
 }

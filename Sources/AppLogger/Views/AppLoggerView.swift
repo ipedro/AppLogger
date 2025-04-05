@@ -23,7 +23,7 @@ import SwiftUI
 
 struct AppLoggerView: View {
     @EnvironmentObject var viewModel: ViewModel
-    let dismissHandler: () -> Void
+    let dismiss: () -> Void
 
     @Environment(\.colorScheme) private var colorScheme
     @State private var activityItem: ActivityItem?
@@ -78,7 +78,7 @@ struct AppLoggerView: View {
     }
 
     private var dismissButton: some View {
-        Button(action: dismissHandler) {
+        Button(action: dismiss) {
             Image(systemName: icons.dismiss)
                 .foregroundColor(.secondary)
                 .font(.caption2.weight(.heavy))
@@ -111,22 +111,22 @@ struct AppLoggerView: View {
                     searchQuery: $viewModel.dataSource.searchQuery
                 )
                 .padding(.vertical, 10)
-
+                
                 Divider()
-
+                
                 if showFilters {
                     filtersStack
                         .padding(.vertical, 10)
-
+                    
                     Divider()
                 }
-
+                
                 ScrollView {
                     EntriesView(
                         entries: viewModel.dataSource.rows,
                         emptyReason: viewModel.emptyReason
                     )
-                        .padding(.bottom, viewModel.bottomPadding)
+                    .padding(.bottom, viewModel.bottomPadding)
                 }
                 .onDrag { info in
                     self.showFilters = info.predictedEndTranslation.height > 0
@@ -148,7 +148,7 @@ struct AppLoggerView: View {
             .animation(.easeInOut(duration: 0.35), value: showFilters)
             .endEditingOnDrag()
         }
-        .colorScheme(viewModel.configuration.colorScheme ?? colorScheme)
+        .preferredColorScheme(viewModel.configuration.colorScheme)
         .onAppear {
             self.animate = true
         }
@@ -181,24 +181,21 @@ final class AppLoggerView_Previews: PreviewProvider, ObservableObject {
         let colorScheme: ColorScheme = .allCases.randomElement() ?? .light
 
         return Group {
-
-            ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
-                AppLoggerView(
-                    dismissHandler: {}
-                )
-                .environmentObject({ () -> ViewModel in
-                    let viewModel = ViewModel(
-                        configuration: .init(
-                            navigationTitle: String(describing: colorScheme),
-                            colorScheme: colorScheme
-                        )
+            AppLoggerView(
+                dismiss: {}
+            )
+            .environmentObject({ () -> ViewModel in
+                let viewModel = ViewModel(
+                    configuration: .init(
+                        navigationTitle: String(describing: colorScheme),
+                        colorScheme: colorScheme
                     )
-                    AppLoggerEntryMock.allCases.forEach {
-                        viewModel.addLogEntry($0)
-                    }
-                    return viewModel
-                }())
-            }
+                )
+                AppLoggerEntryMock.allCases.forEach {
+                    viewModel.addLogEntry($0)
+                }
+                return viewModel
+            }())
 
             PresentingView(
                 configuration: .init(
