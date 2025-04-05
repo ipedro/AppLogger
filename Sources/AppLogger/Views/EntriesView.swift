@@ -26,18 +26,19 @@ struct EntriesView: View {
     var emptyReason: String
 
     var body: some View {
-        if entries.isEmpty {
-            Text(emptyReason)
-                .foregroundColor(.secondary)
-                .font(.callout)
-                .padding(.top, 50)
-        } else {
-            LazyVStack {
-                ForEach(entries, id: \.self) {
-                    Divider()
-                        .opacity(0.5)
-                    LogEntryView(viewModel: .init(logEntry: $0))
-                }
+        LazyVStack {
+            ForEach(entries, id: \.self) {
+                Divider()
+                    .opacity(0.5)
+                LogEntryView(viewModel: .init(logEntry: $0))
+            }
+        }
+        .background {
+            if entries.isEmpty {
+                Text(emptyReason)
+                    .foregroundColor(.secondary)
+                    .font(.callout)
+                    .padding(.top, 50)
             }
         }
     }

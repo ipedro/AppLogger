@@ -20,7 +20,6 @@
 
 import Foundation
 import SwiftUI
-@_implementationOnly import ActivityView
 
 struct AppLoggerView: View {
     @EnvironmentObject var viewModel: ViewModel

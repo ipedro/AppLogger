@@ -1,11 +1,11 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.10
 
 import PackageDescription
 
 let package = Package(
     name: "AppLogger",
     platforms: [
-        .iOS(.v14)
+        .iOS(.v15)
     ],
     products: [
         .library(
@@ -15,16 +15,8 @@ let package = Package(
             ]
         )
     ],
-    dependencies: [
-        .package(url: "https://github.com/SwiftUI-Plus/ActivityView.git", from: "1.0.0")
-    ],
     targets: [
-        .target(
-            name: "AppLogger",
-            dependencies: [
-                "ActivityView"
-            ]
-        ),
+        .target(name: "AppLogger"),
         .testTarget(
             name: "AppLoggerTests",
             dependencies: [

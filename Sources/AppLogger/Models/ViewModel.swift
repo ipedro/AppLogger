@@ -21,7 +21,6 @@
 import Foundation
 import Combine
 import UIKit
-@_implementationOnly import ActivityView
 import SwiftUI
 
 final class ViewModel: ObservableObject {
