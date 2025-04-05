@@ -49,9 +49,7 @@ struct AppLoggerView: View {
         } label: {
             Image(systemName: showFilters ? icons.filtersOn : icons.filtersOff)
                 .font(.callout)
-                .badge(
-                    count: viewModel.dataSource.activeFilters
-                )
+                .badge(count: viewModel.dataSource.activeFilters)
         }
     }
 

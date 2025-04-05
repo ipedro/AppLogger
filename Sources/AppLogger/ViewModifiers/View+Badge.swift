@@ -26,22 +26,21 @@ extension View {
         count: Int = 0,
         foregroundColor: Color = .white,
         backgroundColor: Color = .red,
-        size: CGSize = .init(width: 18, height: 18)
+        size: CGSize = .init(width: 16, height: 16)
     ) -> some View {
         ZStack(alignment: .topTrailing) {
             self
             ZStack {
                 if count != 0 {
                     Text("\(count)")
-                        .font(.caption)
+                        .font(.caption2)
                         .foregroundColor(foregroundColor)
                         .frame(width: size.width, height: size.height)
                         .background(Circle().fill(backgroundColor))
-                        .animation(nil)
                         .transition(.scale)
                 }
             }
-            .offset(x: size.width/2, y: -size.height/2)
+            .frame(width: 0, height: 0)
         }
     }
 }
