@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct LinkText: View {
@@ -44,4 +43,8 @@ struct LinkText: View {
                 .safeTextSelection()
         }
     }
+}
+
+#Preview {
+    LinkText("Some Link", alignment: .leading)
 }

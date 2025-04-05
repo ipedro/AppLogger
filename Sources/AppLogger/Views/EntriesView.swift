@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct EntriesView: View {
@@ -44,23 +43,12 @@ struct EntriesView: View {
     }
 }
 
-// MARK: - Previews
-
-struct VisualDebuggerListPreviews: PreviewProvider {
-    static var previews: some View {
-        EntriesView(
-            entries: [
-                AppLoggerEntryMock.socialLogin,
-                AppLoggerEntryMock.analytics
-            ],
-            emptyReason: ""
-        )
-
-        ScrollView {
-            EntriesView(
-                entries: [],
-                emptyReason: "No data"
-            )
-        }
-    }
+#Preview {
+    EntriesView(
+        entries: [
+            AppLoggerEntryMock.socialLogin,
+            AppLoggerEntryMock.analytics
+        ],
+        emptyReason: "No data"
+    )
 }

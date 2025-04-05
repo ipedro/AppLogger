@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct SourceView: View {
@@ -39,36 +38,6 @@ struct SourceView: View {
     }
 }
 
-// MARK: - Previews
-
-struct SourceTextPreviews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            SourceView(
-                name: "File",
-                info: .swift(lineNumber: 12)
-            )
-
-            SourceView(
-                name: "MySDK",
-                info: .sdk(version: "1.2.3")
-            )
-
-            SourceView(
-                name: "Something else",
-                info: .none
-            )
-
-            SourceView(
-                name: "Error",
-                info: .error(code: 15)
-            )
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
-}
-
 private extension String {
     func titleCase() -> String {
         return self
@@ -81,4 +50,31 @@ private extension String {
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .capitalized // If input is in llamaCase
     }
+}
+
+#Preview {
+    SourceView(
+        name: "File",
+        info: .swift(lineNumber: 12)
+    )
+}
+
+#Preview {
+    SourceView(
+        name: "MySDK",
+        info: .sdk(version: "1.2.3")
+    )
+}
+
+#Preview {
+    SourceView(
+        name: "Something else",
+        info: .none
+    )
+}
+#Preview {
+    SourceView(
+        name: "Error",
+        info: .error(code: 15)
+    )
 }

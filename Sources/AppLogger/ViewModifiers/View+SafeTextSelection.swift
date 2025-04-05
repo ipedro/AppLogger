@@ -18,12 +18,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 extension View {
     func safeTextSelection(_ enabled: Bool = true) -> some View {
-        return modifier(SelectableTextModifier())
+        modifier(SelectableTextModifier())
     }
 }
 

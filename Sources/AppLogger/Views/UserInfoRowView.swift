@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct UserInfoRowView: View {
@@ -56,17 +55,11 @@ struct UserInfoRowView: View {
     }
 }
 
-// MARK: - Previews
-
-struct UserInfoRowViewPreviews: PreviewProvider {
-    static var previews: some View {
-        UserInfoRowView(
-            key: "Key",
-            value: "Value",
-            valueColor: .blue,
-            formattedValue: "I'm a value"
-        )
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    UserInfoRowView(
+        key: "Key",
+        value: "Value",
+        valueColor: .blue,
+        formattedValue: "I'm a value"
+    )
 }

@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct TitleView: View {
@@ -44,17 +43,11 @@ struct TitleView: View {
     }
 }
 
-// MARK: - Previews
-
-struct EntryHeaderViewPreviews: PreviewProvider {
-    static var previews: some View {
-        TitleView(
-            badgeColor: .pink,
-            title: "Category",
-            createdAt: Date(),
-            spacing: 8
-        )
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    TitleView(
+        badgeColor: .pink,
+        title: "Category",
+        createdAt: Date(),
+        spacing: 8
+    )
 }

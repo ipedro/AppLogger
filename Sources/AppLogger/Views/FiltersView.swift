@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct FiltersView: View {
@@ -47,19 +46,13 @@ struct FiltersView: View {
     }
 }
 
-// MARK: - Previews
-
-struct FiltersViewPreviews: PreviewProvider {
-    static var previews: some View {
-        FiltersView(
-            title: "Filters",
-            filters: .constant([
-                .init(query: "0", displayName: "Inactive Filter", isActive: false),
-                .init(query: "1", displayName: "Active Filter", isActive: true),
-                .init(query: "2", displayName: "Another Active Filter", isActive: true)
-            ])
-        )
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    FiltersView(
+        title: "Filters",
+        filters: .constant([
+            .init(query: "0", displayName: "Inactive Filter", isActive: false),
+            .init(query: "1", displayName: "Active Filter", isActive: true),
+            .init(query: "2", displayName: "Another Active Filter", isActive: true)
+        ])
+    )
 }

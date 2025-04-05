@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
 
 struct SearchBarView: View {
@@ -65,16 +64,10 @@ struct SearchBarView: View {
     }
 }
 
-// MARK: - Previews
+#Preview {
+    SearchBarView(searchQuery: .constant("Query"))
+}
 
-struct SearchBarPreviews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            SearchBarView(searchQuery: .constant("test"))
-
-            SearchBarView(searchQuery: .constant(""))
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    SearchBarView(searchQuery: .constant(""))
 }

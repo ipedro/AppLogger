@@ -18,60 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import SwiftUI
-
-struct LogEntryViewModel: Hashable {
-    private var logEntry: LogEntry
-
-    var spacing: CGFloat
-
-    var title: String { logEntry.category.displayName }
-
-    var content: String { logEntry.content.description }
-
-    var icon: String? { logEntry.category.emojiString }
-
-    var createdAt: Date { logEntry.createdAt }
-
-    var sourceName: String { logEntry.source.displayName }
-
-    var sourceInfo: AppLoggerSourceInfo? { logEntry.source.debugInfo }
-
-    var message: String? { logEntry.content.output }
-
-    var userInfo: [String: String] { logEntry.content.userInfo }
-
-    func badgeColor(_ colorScheme: ColorScheme) -> Color { Color(debugColor(colorScheme)) }
-
-    func messageBackgroundColor(_ colorScheme: ColorScheme) -> Color { Color(debugColor(colorScheme).withAlphaComponent(0.16)) }
-
-
-    init(spacing: CGFloat = 8, logEntry: LogEntry) {
-        self.spacing = spacing
-        self.logEntry = logEntry
-    }
-
-    private func debugColor(_ colorScheme: ColorScheme) -> UIColor {
-        if let sourceColor = logEntry.source.debugColor { return sourceColor }
-        if let randomColor = randomColor()?.with(colorScheme) { return randomColor }
-        return .secondaryLabel
-    }
-
-    private static var sourceColors = [String: ColorPalette.DynamicColor]()
-
-    private static var availableColors: [ColorPalette.DynamicColor] = []
-
-    private func randomColor() -> ColorPalette.DynamicColor? {
-        if Self.availableColors.isEmpty {
-            Self.availableColors = ColorPalette.allColors.shuffled()
-        }
-        let color = Self.sourceColors[logEntry.source.debugName] ?? Self.availableColors.removeFirst()
-        Self.sourceColors[logEntry.source.debugName] = color
-        return color
-    }
-
-}
 
 struct LogEntryView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -133,31 +80,26 @@ struct LogEntryView: View {
     }
 }
 
-// MARK: - Previews
+#Preview {
+    LogEntryView(
+        viewModel: .init(logEntry: AppLoggerEntryMock.logger)
+    )
+}
 
-struct LogEntryViewPreviews: PreviewProvider {
-    static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
-            Group {
-                LogEntryView(
-                    viewModel: .init(logEntry: AppLoggerEntryMock.logger)
-                )
+#Preview {
+    LogEntryView(
+        viewModel: .init(logEntry: AppLoggerEntryMock.socialLogin)
+    )
+}
 
-                LogEntryView(
-                    viewModel: .init(logEntry: AppLoggerEntryMock.socialLogin)
-                )
+#Preview {
+    LogEntryView(
+        viewModel: .init(logEntry: AppLoggerEntryMock.error)
+    )
+}
 
-                LogEntryView(
-                    viewModel: .init(logEntry: AppLoggerEntryMock.error)
-                )
-
-                LogEntryView(
-                    viewModel: .init(logEntry: AppLoggerEntryMock.analytics)
-                )
-            }
-            .background(Color(.systemBackground))
-            .colorScheme(colorScheme)
-        }
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    LogEntryView(
+        viewModel: .init(logEntry: AppLoggerEntryMock.analytics)
+    )
 }
