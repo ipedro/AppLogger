@@ -24,11 +24,11 @@ import UIKit
 public struct LogEntry: Hashable {
     public let createdAt = Date()
 
-    public var source: LogEntrySource
+    public let source: LogEntrySource
 
-    public var content: LogEntryContent
+    public let content: LogEntryContent
 
-    public var category: LogEntryCategory
+    public let category: LogEntryCategory
 
     public init(
         category: LogEntryCategory,
