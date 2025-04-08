@@ -1,9 +1,7 @@
 import SwiftUI
-import LinkPresentation
-import CoreServices
+import struct Models.ActivityItem
 
 extension View {
-
     /// Presents an activity sheet when the associated `ActivityItem` is present
     ///
     /// The system provides several standard services, such as copying items to the pasteboard, posting content to social media sites, sending items via email or SMS, and more. Apps can also define custom services.
@@ -22,7 +20,6 @@ extension View {
 }
 
 private struct ActivityView: UIViewControllerRepresentable {
-
     @Binding var item: ActivityItem?
     private var permittedArrowDirections: UIPopoverArrowDirection
     private var completion: UIActivityViewController.CompletionWithItemsHandler?
@@ -50,7 +47,6 @@ private struct ActivityView: UIViewControllerRepresentable {
 }
 
 private final class ActivityViewControllerWrapper: UIViewController {
-
     var item: Binding<ActivityItem?>
     var permittedArrowDirections: UIPopoverArrowDirection
     var completion: UIActivityViewController.CompletionWithItemsHandler?

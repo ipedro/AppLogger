@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  AppLoggerView.swift
 //  AppLogger
 //
 //  Created by Pedro Almeida on 08.04.25.
@@ -7,20 +7,59 @@
 
 import SwiftUI
 import Models
+import class Data.DataObserver
 
-struct AppLoggerView: View {
-    
-    @State
+package final class AppLoggerViewModel: ObservableObject {
+    @Published
     var searchQuery: String = ""
     
-    @State
+    @Published
     var showFilters = false
     
-    @State
+    @Published
     var sorting: Sorting = .ascending
     
-    @State
-    private var activityItem: ActivityItem?
+    @Published
+    var activityItem: ActivityItem?
+    
+    @Published
+    var activeFilters: [Filter.ID] = []
+    
+    @Published
+    var sources: [Filter] = []
+    
+    @Published
+    var categories: [Filter] = []
+    
+    @Published
+    var entries: [ID] = []
+    
+    private let dataObserver: DataObserver
+    
+    let dismissAction: @MainActor () -> Void
+    
+    package init(
+        dataObserver: DataObserver,
+        dismissAction: @escaping @MainActor () -> Void
+    ) {
+        self.dataObserver = dataObserver
+        self.dismissAction = dismissAction
+    }
+}
+
+package struct AppLoggerView: View {
+    
+//    @State
+//    var searchQuery: String = ""
+//    
+//    @State
+//    var showFilters = false
+//    
+//    @State
+//    var sorting: Sorting = .ascending
+//    
+//    @State
+//    private var activityItem: ActivityItem?
     
     @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
@@ -34,30 +73,33 @@ struct AppLoggerView: View {
     @Environment(\.spacing)
     private var spacing
     
-    var bottomPadding: CGFloat = 0
+    @EnvironmentObject
+    private var viewModel: AppLoggerViewModel
     
-    var entries: [ID]
+//    var entries: [ID] { [] }
+//    
+//    var categories: [Filter] { [] }
+//    
+//    var sources: [Filter] { [] }
     
-    var categories: [Filter]
-    
-    var sources: [Filter]
+    package init() {}
     
     private var emptyReason: String {
-        if searchQuery.isEmpty {
+        if viewModel.searchQuery.isEmpty {
             emptyReasons.empty
         } else {
-            "\(emptyReasons.searchResults) \"\(searchQuery)\""
+            "\(emptyReasons.searchResults) \"\(viewModel.searchQuery)\""
         }
     }
     
-    var body: some View {
+    package var body: some View {
         NavigationView {
             VStack(spacing: .zero) {
                 filtersDrawer
                 
                 ScrollView {
                     LazyVStack(spacing: .zero) {
-                        ForEach(entries, id: \.self) { id in
+                        ForEach(viewModel.entries, id: \.self) { id in
                             EntryView(id: id)
                                 .equatable()
                                 .safeAreaInset(
@@ -67,7 +109,7 @@ struct AppLoggerView: View {
                         }
                     }
                     .background {
-                        if entries.isEmpty {
+                        if viewModel.entries.isEmpty {
                             Text(emptyReason)
                                 .foregroundStyle(.secondary)
                                 .font(.callout)
@@ -75,10 +117,9 @@ struct AppLoggerView: View {
                                 .multilineTextAlignment(.center)
                         }
                     }
-                    .padding(.bottom, bottomPadding)
                 }
                 .onDrag { info in
-                    self.showFilters = info.predictedEndTranslation.height > 0
+                    viewModel.showFilters = info.predictedEndTranslation.height > 0
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -89,30 +130,30 @@ struct AppLoggerView: View {
             .endEditingOnDrag()
         }
         .preferredColorScheme(preferredColorScheme)
-        .activitySheet($activityItem)
+        .activitySheet($viewModel.activityItem)
     }
     
     private var filtersDrawer: some View {
         VStack(spacing: .zero) {
             HStack {
                 ActiveFiltersToggle(
-                    isOn: $showFilters,
-                    activeFilters: showFilters ? 3 : 0
+                    isOn: $viewModel.showFilters,
+                    activeFilters: viewModel.activeFilters.count
                 )
-                .disabled(sources.isEmpty && categories.isEmpty)
+                .disabled(viewModel.sources.isEmpty && viewModel.categories.isEmpty)
                 
-                SearchBarView(searchQuery: $searchQuery)
+                SearchBarView(searchQuery: $viewModel.searchQuery)
                 
-                SortingButton(selection: $sorting)
-                    .opacity(entries.isEmpty ? 0.5 : 1)
-                    .disabled(entries.isEmpty)
+                SortingButton(selection: $viewModel.sorting)
+                    .opacity(viewModel.entries.isEmpty ? 0.5 : 1)
+                    .disabled(viewModel.entries.isEmpty)
             }
             .padding(.horizontal)
-            if showFilters && !categories.isEmpty {
-                FiltersView(title: "Categories", data: categories)
+            if viewModel.showFilters && !viewModel.categories.isEmpty {
+                FiltersView(title: "Categories", data: viewModel.categories)
             }
-            if showFilters && !sources.isEmpty {
-                FiltersView(title: "Sources", data: sources)
+            if viewModel.showFilters && !viewModel.sources.isEmpty {
+                FiltersView(title: "Sources", data: viewModel.sources)
             }
         }
         .safeAreaInset(edge: .bottom, content: Divider.init)
@@ -121,24 +162,22 @@ struct AppLoggerView: View {
     
     private var leadingNavigationBarItems: some View {
         ExportButton {
-            self.activityItem = nil //dataStore.csvActivityItem()
+            viewModel.activityItem = nil //dataStore.csvActivityItem()
             fatalError("implement")
         }
         .foregroundColor(.primary)
     }
     
     private var trailingNavigationBarItems: some View {
-        DismissButton {
-            fatalError("implement")
-        }
+        DismissButton(action: viewModel.dismissAction)
     }
 }
 
-#Preview {
-    AppLoggerView(
-        searchQuery: "",
-        entries: [],
-        categories: ["Managers"],
-        sources: ["Apple", "Google"]
-    )
-}
+//#Preview {
+//    AppLoggerView(
+//        searchQuery: "",
+//        entries: [],
+//        categories: ["Managers"],
+//        sources: ["Apple", "Google"]
+//    )
+//}

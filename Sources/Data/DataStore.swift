@@ -18,8 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import class Combine.CurrentValueSubject
-import struct Combine.AnyPublisher
 import struct Models.Category
 import struct Models.Content
 import struct Models.ID
@@ -52,29 +50,53 @@ package actor DataStore {
     /// A set of unique log entry IDs already added, used to prevent duplicate log entries.
     private var knownIDs = Set<ID>()
     
-    weak var observer: DataStoreObserver?
+    weak private var observer: DataObserver?
+    
+    package func makeObserver() -> DataObserver {
+        let observer = DataObserver()
+        self.observer = observer
+        defer {
+            updateObserver()
+        }
+        return observer
+    }
     
     /// Adds a log entry to the DataStore.
     ///
     /// - Parameter logEntry: The log entry to add.
-    /// - Returns: A Boolean indicating whether the log entry was successfully added. Returns false if the log entry's ID already exists.
+    /// - Returns: A Boolean indicating whether the log entry was successfully
+    /// added. Returns false if the log entry's ID already exists.
     @discardableResult
     package func addLogEntry(_ logEntry: LogEntry) -> Bool {
-        // Using a Set (knownIDs) ensures that each log entry is unique, providing O(1) lookup for duplicates.
+        // O(1) lookup for duplicates.
         guard knownIDs.insert(logEntry.id).inserted else {
             return false
         }
+        
+        defer {
+            updateObserver()
+        }
+        
         entryCategories[logEntry.id] = logEntry.category
-        entryContents[logEntry.id]   = logEntry.content
-        entrySources[logEntry.id]    = logEntry.source
+        entryContents[logEntry.id] = logEntry.content
+        entrySources[logEntry.id] = logEntry.source
         allEntries.append(logEntry.id)
         
-        if let observer {
-            observer.allEntries.send(allEntries)
-            observer.entryCategories = entryCategories
-            observer.entryContents = entryContents
-            observer.entrySources = entrySources
-        }
         return true
+    }
+    
+    private func updateObserver() {
+        guard let observer else {
+            return
+        }
+        
+        defer {
+            // push update to subscribers as last step
+            observer.allEntries.send(allEntries)
+        }
+        
+        observer.entryCategories = entryCategories
+        observer.entryContents = entryContents
+        observer.entrySources = entrySources
     }
 }
