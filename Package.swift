@@ -1,22 +1,71 @@
-// swift-tools-version:5.10
+// swift-tools-version: 6.0
 
 import PackageDescription
+
+/// Information about the current state of the package's git repository.
+let git = Context.gitInformation
+
+/// Whether or not this package is being built for development rather than
+/// distribution as a package dependency.
+let buildingForDevelopment = (git?.currentTag == nil)
 
 let package = Package(
     name: "AppLogger",
     platforms: [
         .iOS(.v15)
     ],
-    products: [
-        .library(
-            name: "AppLogger",
-            targets: [
-                "AppLogger"
-            ]
+    products: {
+        var products = [Product]()
+        products.append(
+            .library(
+                name: "AppLogger",
+                targets: [
+                    "AppLogger"
+                ]
+            )
         )
-    ],
+        
+        if buildingForDevelopment {
+            products.append(
+                .library(
+                    name: "Models",
+                    targets: ["Models"]
+                )
+            )
+            products.append(
+                .library(
+                    name: "Data",
+                    targets: ["Data"]
+                )
+            )
+            products.append(
+                .library(
+                    name: "UI",
+                    targets: ["UI"]
+                )
+            )
+        }
+        return products
+    }(),
     targets: [
-        .target(name: "AppLogger"),
+        .target(
+            name: "Models"
+        ),
+        .target(
+            name: "Data",
+            dependencies: ["Models"]
+        ),
+        .target(
+            name: "UI",
+            dependencies: ["Data"]
+        ),
+        .target(
+            name: "AppLogger",
+            dependencies: [
+                "UI",
+                "Data"
+            ]
+        ),
         .testTarget(
             name: "AppLoggerTests",
             dependencies: [
