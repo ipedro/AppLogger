@@ -12,7 +12,7 @@ struct ActiveFiltersToggle: View {
     var isOn: Bool
     var activeFilters: Int = 0
 
-    @Environment(\.appLoggerConfiguration.icons)
+    @Environment(\.configuration.icons)
     private var icons
     
     var body: some View {

@@ -10,7 +10,7 @@ import SwiftUI
 struct DismissButton: View {
     var action: () -> Void
     
-    @Environment(\.appLoggerConfiguration.icons.dismiss)
+    @Environment(\.configuration.icons.dismiss)
     private var icon
     
     var body: some View {

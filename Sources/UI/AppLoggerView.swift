@@ -22,13 +22,13 @@ struct AppLoggerView: View {
     @State
     private var activityItem: ActivityItem?
     
-    @Environment(\.appLoggerConfiguration.colorScheme)
+    @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
     
-    @Environment(\.appLoggerConfiguration.navigationTitle)
+    @Environment(\.configuration.navigationTitle)
     private var navigationTitle
     
-    @Environment(\.appLoggerConfiguration.emptyReasons)
+    @Environment(\.configuration.emptyReasons)
     private var emptyReasons
     
     @Environment(\.spacing)

@@ -20,6 +20,8 @@
 
 import SwiftUI
 
+package typealias Configuration = AppLoggerConfiguration
+
 public struct AppLoggerConfiguration: Sendable {
     public var navigationTitle: String
 
@@ -95,11 +97,11 @@ public extension AppLoggerConfiguration {
 }
 
 struct ConfigurationKey: EnvironmentKey {
-    static let defaultValue: AppLoggerConfiguration = .init()
+    static let defaultValue: Configuration = .init()
 }
 
 package extension EnvironmentValues {
-    var appLoggerConfiguration: AppLoggerConfiguration {
+    var configuration: Configuration {
         get {
             self[ConfigurationKey.self]
         } set {
@@ -109,7 +111,7 @@ package extension EnvironmentValues {
 }
 
 package extension View {
-    func configuration(_ configuration: AppLoggerConfiguration) -> some View {
-        environment(\.appLoggerConfiguration, configuration)
+    func configuration(_ configuration: Configuration) -> some View {
+        environment(\.configuration, configuration)
     }
 }

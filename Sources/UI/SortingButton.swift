@@ -7,7 +7,7 @@
 
 import SwiftUI
 import enum Models.Sorting
-import struct Models.AppLoggerConfiguration
+import struct Models.Configuration
 
 struct SortingButton: View {
     var options = Sorting.allCases
@@ -15,7 +15,7 @@ struct SortingButton: View {
     @Binding
     var selection: Sorting
     
-    @Environment(\.appLoggerConfiguration.icons)
+    @Environment(\.configuration.icons)
     private var icons
     
     var body: some View {

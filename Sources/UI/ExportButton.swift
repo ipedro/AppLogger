@@ -10,7 +10,7 @@ import SwiftUI
 struct ExportButton: View {
     var action: () -> Void
     
-    @Environment(\.appLoggerConfiguration.icons.export)
+    @Environment(\.configuration.icons.export)
     private var icon
     
     var body: some View {
