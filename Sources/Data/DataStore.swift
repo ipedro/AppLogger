@@ -23,6 +23,7 @@ import struct Models.Content
 import struct Models.ID
 import struct Models.LogEntry
 import struct Models.Source
+import struct Models.UserInfo
 
 /// An actor that handles asynchronous storage and management of log entries.
 /// It indexes log entries by their unique IDs and tracks associated metadata such as categories, sources, and content.
@@ -46,6 +47,9 @@ package actor DataStore {
     
     /// A dictionary mapping log entry IDs to their corresponding source.
     package private(set) var entrySources = [ID: Source]()
+    
+    /// A dictionary mapping log entry IDs to their corresponding userInfo.
+    package private(set) var entryUserInfos = [ID: UserInfo]()
     
     weak private var observer: DataObserver?
     
@@ -80,6 +84,7 @@ package actor DataStore {
         entryCategories[logEntry.id] = logEntry.category
         entryContents[logEntry.id] = logEntry.content
         entrySources[logEntry.id] = logEntry.source
+        entryUserInfos[logEntry.id] = logEntry.userInfo
         
         return true
     }
@@ -99,5 +104,6 @@ package actor DataStore {
         observer.entryCategories = entryCategories
         observer.entryContents = entryContents
         observer.entrySources = entrySources
+        observer.entryUserInfos = entryUserInfos
     }
 }

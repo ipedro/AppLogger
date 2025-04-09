@@ -19,13 +19,14 @@
 //  SOFTWARE.
 
 import SwiftUI
+import class Data.ColorStore
+import class Data.DataObserver
 import enum Models.Mock
 import struct Models.Category
 import struct Models.Content
-import struct Models.Source
 import struct Models.ID
-import class Data.ColorStore
-import class Data.DataObserver
+import struct Models.Source
+import struct Models.UserInfo
 
 struct LogEntryView: View {
     let id: ID
@@ -35,6 +36,8 @@ struct LogEntryView: View {
     private var category: Category { data.entryCategories[id]! }
     
     private var content: Content { data.entryContents[id]! }
+    
+    private var userInfo: UserInfo? { data.entryUserInfos[id] }
     
     private var createdAt: Date { id.createdAt }
     
@@ -74,9 +77,9 @@ struct LogEntryView: View {
                 tint: tint
             )
             
-            if !content.userInfo.isEmpty {
+            if let userInfo {
                 LogEntryUserInfoView(
-                    data: content.userInfo,
+                    data: userInfo,
                     tint: tint
                 )
             }

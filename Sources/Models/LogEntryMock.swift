@@ -48,11 +48,11 @@ extension LogEntry {
             LogEntry(
                 category: .debug,
                 source: Source("MyWebView", .swift(lineNumber: 20)),
-                content: .init(
+                content: Content(
                     "func didNavigate()",
-                    output: "Navigation cancelled.",
-                    userInfo: ["url": "https://google.com"]
-                )
+                    output: "Navigation cancelled."
+                ),
+                userInfo: ["url": "https://google.com"]
             )
         }
         
@@ -60,13 +60,11 @@ extension LogEntry {
             LogEntry(
                 category: Category("📈", "Analytics"),
                 source: Source("Google Analytics"),
-                content: .init(
-                    "tracked event",
-                    userInfo: [
-                        "customerID": "3864579",
-                        "screen": "Home"
-                    ]
-                )
+                content: "tracked event",
+                userInfo: [
+                    "customerID": "3864579",
+                    "screen": "Home"
+                ]
             )
         }
         
@@ -74,43 +72,41 @@ extension LogEntry {
             LogEntry(
                 category: Category("👔", "Social Media"),
                 source: Source("Facebook", .sdk(version: "12.2.1")),
-                content: .init(
-                    "Any Social Login",
-                    userInfo: [
-                        "custom_event": "1",
-                        "environment": "dev",
-                        "screenName": "Home",
-                        "user_id": "3864579",
-                        "userName": "John Doe",
-                        "user_type": "premium",
-                        "user_email": "johndoe@example.com",
-                        "user_age": 25,
-                        "user_location": "New York",
-                        "user_gender": "male",
-                        "user_country": "US",
-                        "user_city": "New York",
-                        "user_occupation": "Software Engineer",
-                        "user_language": "en-US",
-                        "user_timezone": "America/New_York",
-                        "user_ip": "192.168.1.1",
-                        "user_device": "iPhone 12 mini",
-                        "user_browser": "Chrome",
-                        "user_browser_version": "92.0.4515.159",
-                        "user_os": "iOS",
-                        "user_os_version": "14.5",
-                        "user_referrer": "https://google.com",
-                        "event": "login",
-                        "event_category": "user",
-                        "event_action": "login",
-                        "event_label": "facebook login",
-                        "event_value": 100,
-                        "event_non_interaction": true,
-                        "event_callback_id": "12345",
-                        "event_custom_params": ["key": "value"],
-                        "event_custom_dimensions": ["key": "value"],
-                        "event_custom_metrics": ["key": 100]
-                    ]
-                )
+                content: "Any Social Login",
+                userInfo: [
+                    "custom_event": "1",
+                    "environment": "dev",
+                    "screenName": "Home",
+                    "user_id": "3864579",
+                    "userName": "John Doe",
+                    "user_type": "premium",
+                    "user_email": "johndoe@example.com",
+                    "user_age": 25,
+                    "user_location": "New York",
+                    "user_gender": "male",
+                    "user_country": "US",
+                    "user_city": "New York",
+                    "user_occupation": "Software Engineer",
+                    "user_language": "en-US",
+                    "user_timezone": "America/New_York",
+                    "user_ip": "192.168.1.1",
+                    "user_device": "iPhone 12 mini",
+                    "user_browser": "Chrome",
+                    "user_browser_version": "92.0.4515.159",
+                    "user_os": "iOS",
+                    "user_os_version": "14.5",
+                    "user_referrer": "https://google.com",
+                    "event": "login",
+                    "event_category": "user",
+                    "event_action": "login",
+                    "event_label": "facebook login",
+                    "event_value": 100,
+                    "event_non_interaction": true,
+                    "event_callback_id": "12345",
+                    "event_custom_params": ["key": "value"],
+                    "event_custom_dimensions": ["key": "value"],
+                    "event_custom_metrics": ["key": 100]
+                ]
             )
         }
         
@@ -118,13 +114,11 @@ extension LogEntry {
             LogEntry(
                 category: Category("📈", "Analytics"),
                 source: Source("Firebase", .sdk(version: "8.9.0")),
-                content: .init(
-                    "Open Screen: Home",
-                    userInfo: [
-                        "environment": "dev",
-                        "event": "open home"
-                    ]
-                )
+                content: "Open Screen: Home",
+                userInfo: [
+                    "environment": "dev",
+                    "event": "open home"
+                ]
             )
         }
         
@@ -135,21 +129,15 @@ extension LogEntry {
                     "Alamofire.AFError",
                     .error(code: 19)
                 ),
-                content: .init(
-                    "Couldn't load url",
-                    userInfo: [:]
-                )
+                content: "Couldn't load url"
             )
         }
         
         private var warning: LogEntry {
             LogEntry(
                 category: .warning,
-                source: Source("I'm a warning"),
-                content: .init(
-                    "Couldn't find user_id",
-                    userInfo: [:]
-                )
+                source: "I'm a warning",
+                content: "Couldn't find user_id"
             )
         }
     }

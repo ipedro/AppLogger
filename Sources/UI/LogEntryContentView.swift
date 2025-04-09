@@ -32,7 +32,7 @@ struct LogEntryContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(content.description)
+            Text(content.message)
                 .bold()
                 .font(.callout)
                 .minimumScaleFactor(0.85)
@@ -62,7 +62,15 @@ struct LogEntryContentView: View {
 #Preview {
     LogEntryContentView(
         category: .alert,
-        content: Content("content description", output: "Bla", userInfo: [:]),
+        content: Content("content description", output: "Bla"),
+        tint: .accentColor
+    )
+}
+
+#Preview {
+    LogEntryContentView(
+        category: .alert,
+        content: "content description",
         tint: .accentColor
     )
 }

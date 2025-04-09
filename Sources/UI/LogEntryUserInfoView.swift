@@ -19,19 +19,29 @@
 //  SOFTWARE.
 
 import SwiftUI
+import struct Models.UserInfo
 
 struct LogEntryUserInfoView: View {
-    var data: [String: String]
+    var data: UserInfo
     var tint: Color? = .secondary
 
     @Environment(\.spacing)
     private var spacing
     
+    private var rows: [(key: String, value: String)] {
+        switch data.storage {
+            case let .dictionary(dictionary):
+                dictionary.sorted(by: <)
+            case let .message(message):
+                [("", message)]
+        }
+    }
+    
     var body: some View {
         LazyVStack(alignment: .leading, spacing: .zero) {
-            let items = data.sorted(by: <)
+            let rows = rows
             
-            ForEach(Array(zip(items.indices, items)), id: \.0) { offset, item in
+            ForEach(Array(zip(rows.indices, rows)), id: \.0) { offset, item in
                 LogEntryUserInfoRow(
                     key: item.key,
                     value: item.value,
@@ -56,8 +66,26 @@ struct LogEntryUserInfoView: View {
         data: [
             "environment": "dev",
             "event": "open screen",
-            "": "Hey test"
+            "": "Hey test",
         ],
+        tint: .blue
+    )
+}
+
+#Preview {
+    LogEntryUserInfoView(
+        data: [
+            "dev",
+            "open screen",
+            "Hey test",
+        ],
+        tint: .blue
+    )
+}
+
+#Preview {
+    LogEntryUserInfoView(
+        data: "Hey test",
         tint: .blue
     )
 }

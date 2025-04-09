@@ -37,6 +37,9 @@ public struct LogEntry: Identifiable, Sendable {
     /// The actual content or message of the log entry.
     public let content: Content
     
+    /// Additional information like a dictionary.
+    public let userInfo: UserInfo?
+    
     /// The date the log was created.
     public var createdAt: Date {
         id.createdAt
@@ -50,10 +53,17 @@ public extension LogEntry {
     ///   - category: The category or classification of the log entry.
     ///   - source: The source from which the log entry originates.
     ///   - content: The detailed content of the log entry.
-    init(category: Category, source: Source, content: Content) {
+    ///   - userInfo: An optional user info.
+    init(
+        category: Category,
+        source: Source,
+        content: Content,
+        userInfo: UserInfo? = nil
+    ) {
         self.id = ID()
         self.source = source
         self.category = category
         self.content = content
+        self.userInfo = userInfo
     }
 }
