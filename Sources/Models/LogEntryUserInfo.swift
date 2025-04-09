@@ -30,21 +30,16 @@ package typealias UserInfo = LogEntry.UserInfo
 
 public extension LogEntry {
     struct UserInfo: Sendable {
-        package let storage: Storage
-        
-        package enum Storage: Sendable {
-            case message(String)
-            case dictionary([String: String])
-        }
+        package let storage: [(key: String, value: String)]
         
         /// Creates a `UserInfo` instance from a given string.
         public init(_ string: String) {
-            storage = .message(string.trimmingCharacters(in: .whitespacesAndNewlines))
+            storage = [(String(), string.trimmingCharacters(in: .whitespacesAndNewlines))]
         }
         
         /// Creates a `UserInfo` instance from a dictionary of `[String: String]`.
         public init(_ dictionary: [String: String]) {
-            storage = .dictionary(dictionary)
+            storage = dictionary.sorted(by: <)
         }
         
         /// Initializes a `UserInfo` instance from a generic dictionary.
@@ -55,10 +50,14 @@ public extension LogEntry {
         ///
         /// - Parameter dictionary: A dictionary with keys conforming to `Hashable` and values of any type.
         public init<Key, Value>(_ dictionary: [Key: Value]) where Key: Hashable {
-            storage = .dictionary(dictionary.reduce(into: [String: String]()) { partialResult, element in
+            storage = dictionary.reduce(into: [String: String]()) { partialResult, element in
                 partialResult[String(describing: element.key)] = Self.convert(toString: element.value)
-            })
+            }
+            .sorted(by: <)
         }
+        
+        private static let emptyValue = "–"
+        
         
         /// Attempts to initialize a `UserInfo` instance from any type of object.
         ///
@@ -72,22 +71,22 @@ public extension LogEntry {
             guard let value = value else { return nil }
             
             if let dict = value as? [AnyHashable: Any] {
-                storage = .dictionary(Self.convert(toDictionary: dict))
+                storage = Self.convert(toDictionary: dict).sorted(by: <)
             }
             else if let array = value as? [Any] {
-                storage = .dictionary(Self.convert(toDictionary: array))
+                storage = Self.convert(toDictionary: array).sorted(by: <)
             }
             else if let str = value as? String {
                 let trimmed = str.trimmingCharacters(in: .whitespacesAndNewlines)
-                storage = .message(trimmed.isEmpty || ["nil", "[]", "{ }", "[:]"].contains(str) ? "(empty)" : trimmed)
+                storage = [("", (trimmed.isEmpty || ["nil", "[]", "{ }", "[:]"].contains(str) ? Self.emptyValue : trimmed))]
             }
             else {
                 let mirror = Mirror(reflecting: value)
                 
                 if mirror.children.isEmpty {
-                    storage = .message(String(describing: value))
+                    storage = [("", String(describing: value))]
                 } else if let dict = Self.convert(toDictionary: value) {
-                    storage = .dictionary(dict)
+                    storage = dict.sorted(by: <)
                 } else {
                     return nil
                 }
@@ -95,13 +94,11 @@ public extension LogEntry {
         }
         
         private static func convert(toString object: Any?) -> String {
-            let emptyString = "–"
-            
             switch object {
             case .none:
-                return emptyString
+                return emptyValue
             case let string as String where ["", "nil", "[]", "{}", "[:]"].contains(string):
-                return emptyString
+                return emptyValue
             case let string as String:
                 return string.trimmingCharacters(in: .whitespacesAndNewlines)
             case let .some(object):
@@ -171,13 +168,10 @@ extension LogEntry.UserInfo: ExpressibleByArrayLiteral {
 
 extension LogEntry.UserInfo: Filterable {
     package func matches(_ filter: Filter) -> Bool {
-        switch storage {
-        case .message(let string):
-            return string.localizedCaseInsensitiveContains(filter.query)
-        case .dictionary(let dictionary):
-            if dictionary.keys.joined().localizedCaseInsensitiveContains(filter.query) { return true }
-            if dictionary.values.joined().localizedCaseInsensitiveContains(filter.query) { return true }
-            return false
+        for (key, value) in storage {
+            if key.localizedCaseInsensitiveContains(filter.query) { return true }
+            if value.localizedCaseInsensitiveContains(filter.query) { return true }
         }
+        return false
     }
 }

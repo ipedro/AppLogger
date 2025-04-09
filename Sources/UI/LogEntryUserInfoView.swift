@@ -28,20 +28,11 @@ struct LogEntryUserInfoView: View {
     @Environment(\.spacing)
     private var spacing
     
-    private var rows: [(key: String, value: String)] {
-        switch data.storage {
-            case let .dictionary(dictionary):
-                dictionary.sorted(by: <)
-            case let .message(message):
-                [("", message)]
-        }
-    }
-    
     var body: some View {
+        let rows = Array(zip(data.storage.indices, data.storage))
+        
         LazyVStack(alignment: .leading, spacing: .zero) {
-            let rows = rows
-            
-            ForEach(Array(zip(rows.indices, rows)), id: \.0) { offset, item in
+            ForEach(rows, id: \.0) { offset, item in
                 LogEntryUserInfoRow(
                     key: item.key,
                     value: item.value,
