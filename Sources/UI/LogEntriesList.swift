@@ -69,7 +69,7 @@ struct LogEntriesList: View {
 }
 
 #Preview {
-    let allEntries = Mock.allCases.map(\.rawValue)
+    let allEntries = Mock.allCases.map { $0.entry() }
     let dataObserver = DataObserver(
         allEntries: allEntries.map(\.id),
         entryCategories: allEntries.reduce(into: [:], { $0[$1.id] = $1.category }),

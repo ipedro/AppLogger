@@ -25,6 +25,7 @@ import struct Models.Content
 import struct Models.ID
 import struct Models.Source
 import struct Models.UserInfo
+import struct Models.UserInfoKey
 
 package final class DataObserver: ObservableObject, @unchecked Sendable {
     package init(
@@ -34,7 +35,7 @@ package final class DataObserver: ObservableObject, @unchecked Sendable {
         entryCategories: [ID : Category] = [:],
         entryContents: [ID : Content] = [:],
         entrySources: [ID : Source] = [:],
-        entryUserInfos: [ID: UserInfo] = [:]
+        entryUserInfos: [ID: UserInfo?] = [:]
     ) {
         self.allCategories = CurrentValueSubject(allCategories)
         self.allEntries = CurrentValueSubject(allEntries)
@@ -42,7 +43,16 @@ package final class DataObserver: ObservableObject, @unchecked Sendable {
         self.entryCategories = entryCategories
         self.entryContents = entryContents
         self.entrySources = entrySources
-        self.entryUserInfos = entryUserInfos
+        
+        for (id, userInfo) in entryUserInfos {
+            guard let (keys, values) = userInfo?.denormalize(id: id) else {
+                continue
+            }
+            entryUserInfoKeys[id] = keys
+            for (key, value) in values {
+                entryUserInfoValues[key] = value
+            }
+        }
     }
     
     /// A published array of log entry IDs from the data store.
@@ -63,6 +73,9 @@ package final class DataObserver: ObservableObject, @unchecked Sendable {
     /// A dictionary mapping log entry IDs to their corresponding source.
     package internal(set) var entrySources: [ID: Source]
     
-    /// A dictionary mapping log entry IDs to their corresponding userInfo.
-    package internal(set) var entryUserInfos: [ID: UserInfo]
+    /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
+    package internal(set) var entryUserInfoKeys = [ID: [UserInfoKey]]()
+    
+    /// A dictionary mapping log entry IDs to their corresponding userInfo values.
+    package internal(set) var entryUserInfoValues = [UserInfoKey: String]()
 }

@@ -23,7 +23,7 @@
 package typealias Mock = LogEntry.Mock
 
 extension LogEntry {
-    package enum Mock: Identifiable, Hashable, CaseIterable {
+    package enum Mock: Hashable, CaseIterable {
         case analytics
         case error
         case googleAnalytics
@@ -31,9 +31,7 @@ extension LogEntry {
         case socialLogin
         case warning
         
-        package var id: Self { self }
-        
-        package var rawValue: LogEntry {
+        package func entry() -> LogEntry {
             switch self {
             case .analytics: analytics
             case .error: error

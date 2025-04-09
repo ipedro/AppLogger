@@ -19,23 +19,26 @@
 //  SOFTWARE.
 
 import SwiftUI
-import struct Models.UserInfo
+import struct Models.UserInfoKey
+import enum Models.Mock
+import class Data.DataObserver
 
-struct LogEntryUserInfoView: View {
-    var data: UserInfo
+struct LogEntryUserInfoRows: View {
+    var ids: [UserInfoKey]
     var tint: Color? = .secondary
 
     @Environment(\.spacing)
     private var spacing
     
+    @EnvironmentObject
+    private var data: DataObserver
+    
     var body: some View {
-        let rows = Array(zip(data.storage.indices, data.storage))
-        
         LazyVStack(alignment: .leading, spacing: .zero) {
-            ForEach(rows, id: \.0) { offset, item in
+            ForEach(Array(zip(ids.indices, ids)), id: \.0) { offset, id in
                 LogEntryUserInfoRow(
-                    key: item.key,
-                    value: item.value,
+                    key: id.key,
+                    value: data.entryUserInfoValues[id]!,
                     tint: tint
                 )
                 .padding(spacing)
@@ -53,30 +56,19 @@ struct LogEntryUserInfoView: View {
 }
 
 #Preview {
-    LogEntryUserInfoView(
-        data: [
-            "environment": "dev",
-            "event": "open screen",
-            "": "Hey test",
-        ],
-        tint: .blue
-    )
-}
-
-#Preview {
-    LogEntryUserInfoView(
-        data: [
-            "dev",
-            "open screen",
-            "Hey test",
-        ],
-        tint: .blue
-    )
-}
-
-#Preview {
-    LogEntryUserInfoView(
-        data: "Hey test",
-        tint: .blue
+    let entry = Mock.socialLogin.entry()
+    
+    ScrollView {
+        LogEntryUserInfoRows(
+            ids: entry.userInfo?.storage.map {
+                UserInfoKey(id: entry.id, key: $0.key)
+            } ?? [],
+            tint: .blue
+        )
+    }
+    .environmentObject(
+        DataObserver(
+            entryUserInfos: [entry.id: entry.userInfo]
+        )
     )
 }

@@ -26,7 +26,7 @@ import struct Models.Category
 import struct Models.Content
 import struct Models.ID
 import struct Models.Source
-import struct Models.UserInfo
+import struct Models.UserInfoKey
 
 struct LogEntryView: View {
     let id: ID
@@ -37,7 +37,7 @@ struct LogEntryView: View {
     
     private var content: Content { data.entryContents[id]! }
     
-    private var userInfo: UserInfo? { data.entryUserInfos[id] }
+    private var userInfo: [UserInfoKey]? { data.entryUserInfoKeys[id] }
     
     private var createdAt: Date { id.createdAt }
     
@@ -78,8 +78,8 @@ struct LogEntryView: View {
             )
             
             if let userInfo {
-                LogEntryUserInfoView(
-                    data: userInfo,
+                LogEntryUserInfoRows(
+                    ids: userInfo,
                     tint: tint
                 )
             }
@@ -92,14 +92,14 @@ struct LogEntryView: View {
 #if DEBUG
 extension LogEntryView {
     init(mock: Mock) {
-        let entry = mock.rawValue
+        let entry = mock.entry()
         self.id = entry.id
     }
 }
 #endif
 
 #Preview {
-    let entry = Mock.socialLogin.rawValue
+    let entry = Mock.socialLogin.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)
@@ -107,12 +107,13 @@ extension LogEntryView {
             .environmentObject(DataObserver(
                 entryCategories: [entry.id: entry.category],
                 entryContents: [entry.id: entry.content],
-                entrySources: [entry.id: entry.source]
+                entrySources: [entry.id: entry.source],
+                entryUserInfos: [entry.id: entry.userInfo]
             ))
     }
 }
 #Preview {
-    let entry = Mock.googleAnalytics.rawValue
+    let entry = Mock.googleAnalytics.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)
@@ -120,7 +121,8 @@ extension LogEntryView {
             .environmentObject(DataObserver(
                 entryCategories: [entry.id: entry.category],
                 entryContents: [entry.id: entry.content],
-                entrySources: [entry.id: entry.source]
+                entrySources: [entry.id: entry.source],
+                entryUserInfos: [entry.id: entry.userInfo]
             ))
     }
     .background(.red)

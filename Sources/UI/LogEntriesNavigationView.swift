@@ -75,7 +75,7 @@ package struct LogEntriesNavigationView: View {
 }
 
 #Preview {
-    let allEntries = Mock.allCases.map(\.rawValue)
+    let allEntries = Mock.allCases.map { $0.entry() }
     let dataObserver = DataObserver(
         allCategories: Set(allEntries.map(\.category)).sorted(),
         allEntries: allEntries.map(\.id),

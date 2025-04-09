@@ -24,6 +24,7 @@ import struct Models.ID
 import struct Models.LogEntry
 import struct Models.Source
 import struct Models.UserInfo
+import struct Models.UserInfoKey
 
 /// An actor that handles asynchronous storage and management of log entries.
 /// It indexes log entries by their unique IDs and tracks associated metadata such as categories, sources, and content.
@@ -48,8 +49,11 @@ package actor DataStore {
     /// A dictionary mapping log entry IDs to their corresponding source.
     package private(set) var entrySources = [ID: Source]()
     
-    /// A dictionary mapping log entry IDs to their corresponding userInfo.
-    package private(set) var entryUserInfos = [ID: UserInfo]()
+    /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
+    package private(set) var entryUserInfoKeys = [ID: [UserInfoKey]]()
+    
+    /// A dictionary mapping log entry IDs to their corresponding userInfo values.
+    package private(set) var entryUserInfoValues = [UserInfoKey: String]()
     
     weak private var observer: DataObserver?
     
@@ -69,8 +73,10 @@ package actor DataStore {
     /// added. Returns false if the log entry's ID already exists.
     @discardableResult
     package func addLogEntry(_ logEntry: LogEntry) -> Bool {
+        let id = logEntry.id
+        
         // O(1) lookup for duplicates.
-        guard allEntries.insert(logEntry.id).inserted else {
+        guard allEntries.insert(id).inserted else {
             return false
         }
         
@@ -81,10 +87,17 @@ package actor DataStore {
         allCategories.insert(logEntry.category)
         allSources.insert(logEntry.source)
         
-        entryCategories[logEntry.id] = logEntry.category
-        entryContents[logEntry.id] = logEntry.content
-        entrySources[logEntry.id] = logEntry.source
-        entryUserInfos[logEntry.id] = logEntry.userInfo
+        entryCategories[id] = logEntry.category
+        entryContents[id] = logEntry.content
+        entrySources[id] = logEntry.source
+        
+        if let userInfo = logEntry.userInfo {
+            let (keys, values) = userInfo.denormalize(id: id)
+            entryUserInfoKeys[id] = keys
+            for (key, value) in values {
+                entryUserInfoValues[key] = value
+            }
+        }
         
         return true
     }
@@ -104,6 +117,22 @@ package actor DataStore {
         observer.entryCategories = entryCategories
         observer.entryContents = entryContents
         observer.entrySources = entrySources
-        observer.entryUserInfos = entryUserInfos
+        observer.entryUserInfoKeys = entryUserInfoKeys
+        observer.entryUserInfoValues = entryUserInfoValues
+    }
+}
+
+extension UserInfo {
+    func denormalize(id logID: ID) -> (keys: [UserInfoKey], values: [UserInfoKey: String]) {
+        var keys = [UserInfoKey]()
+        var values = [UserInfoKey: String]()
+        
+        for (key, value) in storage {
+            let infoID = UserInfoKey(id: logID, key: key)
+            keys.append(infoID)
+            values[infoID] = value
+        }
+        
+        return (keys, values)
     }
 }
