@@ -41,7 +41,7 @@ package final class AppLoggerViewModel: ObservableObject {
     package var activityItem: ActivityItem?
     
     @Published
-    package var activeFilters: [Filter.ID] = []
+    package var activeFilters: Set<Filter.ID> = []
     
     @Published
     package var sources: [Filter] = []

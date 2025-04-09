@@ -82,6 +82,7 @@ struct LogEntryView: View {
             }
         }
         .padding([.leading, .top, .bottom])
+        .background(.background)
     }
 }
 

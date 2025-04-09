@@ -22,17 +22,25 @@ import SwiftUI
 import struct Models.Filter
 
 struct FilterView: View {
-    @Binding
-    var isOn: Bool
     let data: Filter
+    @Binding var isOn: Bool
+    
+    @Environment(\.colorScheme)
+    private var colorScheme
 
     var body: some View {
-        Toggle(data.description, isOn: $isOn)
-            .background(Color(isOn ? .label : .secondarySystemBackground))
-            .foregroundColor(Color(isOn ? .systemBackground : .label))
-            .cornerRadius(12)
-            .toggleStyle(.button)
-            .font(.footnote)
+        Toggle(isOn: $isOn) {
+            Text(data.description).foregroundColor(foregroundColor)
+        }
+        .cornerRadius(12)
+        .toggleStyle(.button)
+        .font(.footnote)
+        .buttonStyle(.borderedProminent)
+        .tint(.primary)
+    }
+    
+    private var foregroundColor: Color {
+        isOn ? .background : .primary
     }
 }
 
@@ -43,8 +51,8 @@ struct FilterView: View {
     
     VStack {
         FilterView(
-            isOn: $isOn,
-            data: "Some Filter"
+            data: "Some Filter",
+            isOn: $isOn
         )
     }
 }

@@ -49,8 +49,12 @@ struct LogEntriesList: View {
                         edge: .bottom,
                         content: Divider.init
                     )
+                    .transition(
+                        .move(edge: viewModel.sorting == .ascending ? .bottom : .top)
+                    )
                 }
             }
+            .animation(.easeInOut(duration: 0.35), value: viewModel.entries)
             .background {
                 if viewModel.entries.isEmpty {
                     Text(emptyReason)

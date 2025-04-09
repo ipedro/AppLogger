@@ -24,62 +24,62 @@ import struct Models.Filter
 struct FiltersRow: View {
     var title: String
     
+    @Binding
+    var selection: Set<Filter.ID>
+    
     let data: [Filter]
     
     @Environment(\.spacing)
     private var spacing
-    
-    @State
-    private var activeFilters: Set<Filter.ID> = []
-    
-    private var sortedData: [Filter] {
-        data.sorted { lhs, rhs in
-            if activeFilters.contains(lhs.id) && !activeFilters.contains(rhs.id) {
-                return true
-            }
-            if activeFilters.contains(rhs.id) && !activeFilters.contains(lhs.id) {
-                return false
-            }
-            return lhs.query < rhs.query
-        }
-    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            Text("\(title) (\(data.count))")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.horizontal, spacing * 2)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: spacing) {
-                    ForEach(sortedData) { filter in
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: spacing, pinnedViews: .sectionHeaders) {
+                Section {
+                    ForEach(Array(zip(data.indices, data)), id: \.0) { _, filter in
                         FilterView(
+                            data: filter,
                             isOn: Binding {
-                                activeFilters.contains(filter.id)
+                                selection.contains(filter.id)
                             } set: { active in
                                 if active {
-                                    activeFilters.insert(filter.id)
+                                    selection.insert(filter.id)
                                 } else {
-                                    activeFilters.remove(filter.id)
+                                    selection.remove(filter.id)
                                 }
-                            },
-                            data: filter
+                            }
                         )
                     }
+                } header: {
+                    Text(title)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(EdgeInsets(
+                            top: spacing,
+                            leading: spacing * 2,
+                            bottom: spacing,
+                            trailing: spacing
+                        ))
+                        .background(Color(uiColor: .systemBackground))
                 }
-                .animation(.default, value: activeFilters)
-                .padding(.horizontal, spacing * 2)
             }
+            .animation(.default, value: selection)
+            .padding(.trailing, spacing * 2)
             .padding(.vertical, spacing)
         }
         .fixedSize(horizontal: false, vertical: true)
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
+    @Previewable @State
+    var activeFilters: Set<Filter.ID> = [
+        "Filter 1"
+    ]
     FiltersRow(
         title: "Filters",
+        selection: $activeFilters,
         data: [
             "Filter 1",
             "Filter 2",

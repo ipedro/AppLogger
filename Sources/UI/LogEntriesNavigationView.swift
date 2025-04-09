@@ -48,7 +48,6 @@ package struct LogEntriesNavigationView: View {
             .navigationTitle(navigationTitle)
             .navigationBarItems(leading: leadingNavigationBarItems)
             .navigationBarItems(trailing: trailingNavigationBarItems)
-            //.animation(.easeInOut(duration: 0.35), value: rows)
             .endEditingOnDrag()
         }
         .preferredColorScheme(preferredColorScheme)

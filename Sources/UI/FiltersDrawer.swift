@@ -42,11 +42,20 @@ struct FiltersDrawer: View {
                     .disabled(viewModel.entries.isEmpty)
             }
             .padding(.horizontal)
+            
             if viewModel.showFilters && !viewModel.categories.isEmpty {
-                FiltersRow(title: "Categories", data: viewModel.categories)
+                FiltersRow(
+                    title: "Categories",
+                    selection: $viewModel.activeFilters,
+                    data: viewModel.categories
+                )
             }
             if viewModel.showFilters && !viewModel.sources.isEmpty {
-                FiltersRow(title: "Sources", data: viewModel.sources)
+                FiltersRow(
+                    title: "Sources",
+                    selection: $viewModel.activeFilters,
+                    data: viewModel.sources
+                )
             }
         }
         .safeAreaInset(edge: .bottom, content: Divider.init)
