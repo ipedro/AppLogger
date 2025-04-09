@@ -31,6 +31,12 @@ package struct Filter: CustomStringConvertible, Identifiable {
     }
 }
 
+extension Filter: Comparable {
+    package static func < (lhs: Filter, rhs: Filter) -> Bool {
+        lhs.query.localizedStandardCompare(rhs.query) == .orderedAscending
+    }
+}
+
 extension Filter: ExpressibleByStringLiteral {
     package init(stringLiteral value: String) {
         self.query = value

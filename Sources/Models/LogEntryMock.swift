@@ -103,7 +103,8 @@ extension LogEntry {
                     "event_callback_id": "12345",
                     "event_custom_params": ["key": "value"],
                     "event_custom_dimensions": ["key": "value"],
-                    "event_custom_metrics": ["key": 100]
+                    "event_custom_metrics": ["key": 100],
+                    "event_description": "A string is a series of characters, such as \"Swift\", that forms a collection. Strings in Swift are Unicode correct and locale insensitive, and are designed to be efficient. The String type bridges with the Objective-C class NSString and offers interoperability with C functions that works with strings."
                 ]
             )
         }

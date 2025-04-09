@@ -41,7 +41,12 @@ package final class AppLoggerViewModel: ObservableObject {
     package var activityItem: ActivityItem?
     
     @Published
-    package var activeFilters: Set<Filter.ID> = []
+    package var activeFilters: Set<Filter.ID> = [] {
+        willSet {
+            sources = sortFilters(sources, with: newValue)
+            categories = sortFilters(categories, with: newValue)
+        }
+    }
     
     @Published
     package var sources: [Filter] = []
@@ -81,7 +86,7 @@ package final class AppLoggerViewModel: ObservableObject {
             .map { $0.map(\.filter) }
             .receive(on: DispatchQueue.main)
             .sink { [unowned self] sources in
-                self.sources = sources
+                self.sources = sortFilters(sources, with: activeFilters)
             }
             .store(in: &cancellables)
         
@@ -90,8 +95,19 @@ package final class AppLoggerViewModel: ObservableObject {
             .map { $0.map(\.filter) }
             .receive(on: DispatchQueue.main)
             .sink { [unowned self] categories in
-                self.categories = categories
+                self.categories = sortFilters(categories, with: activeFilters)
             }
             .store(in: &cancellables)
+    }
+    
+    private func sortFilters(_ filters: [Filter], with selection: Set<Filter.ID>) -> [Filter] {
+        filters.sorted(by: { lhs, rhs in
+            let aActive = selection.contains(lhs.id)
+            let bActive = selection.contains(rhs.id)
+            if aActive != bActive {
+                return aActive && !bActive
+            }
+            return lhs < rhs
+        })
     }
 }
