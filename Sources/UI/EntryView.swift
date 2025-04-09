@@ -85,12 +85,6 @@ struct EntryView: View {
     }
 }
 
-extension EntryView: @preconcurrency Equatable {
-    static func == (lhs: EntryView, rhs: EntryView) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
 #if DEBUG
 extension EntryView {
     init(mock: Mock) {

@@ -27,19 +27,19 @@ import struct Models.Source
 
 package final class DataObserver: ObservableObject, @unchecked Sendable {
     package init(
-        allEntries: [ID] = [],
         allCategories: [Category] = [],
+        allEntries: [ID] = [],
         allSources: [Source] = [],
         entryCategories: [ID : Category] = [:],
         entryContents: [ID : Content] = [:],
         entrySources: [ID : Source] = [:]
     ) {
+        self.allCategories = CurrentValueSubject(allCategories)
+        self.allEntries = CurrentValueSubject(allEntries)
+        self.allSources = CurrentValueSubject(allSources)
         self.entryCategories = entryCategories
         self.entryContents = entryContents
         self.entrySources = entrySources
-        self.allEntries = CurrentValueSubject(allEntries)
-        self.allCategories = CurrentValueSubject(allCategories)
-        self.allSources = CurrentValueSubject(allSources)
     }
     
     /// A published array of log entry IDs from the data store.

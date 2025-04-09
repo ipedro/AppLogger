@@ -82,12 +82,10 @@ package struct AppLoggerView: View {
                 ScrollView {
                     LazyVStack(spacing: .zero) {
                         ForEach(viewModel.entries, id: \.self) { id in
-                            EntryView(id: id)
-                                .equatable()
-                                .safeAreaInset(
-                                    edge: .bottom,
-                                    content: Divider.init
-                                )
+                            EntryView(id: id).safeAreaInset(
+                                edge: .bottom,
+                                content: Divider.init
+                            )
                         }
                     }
                     .background {
