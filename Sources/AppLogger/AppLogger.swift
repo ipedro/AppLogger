@@ -18,22 +18,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import class Data.DataStore
 import class Data.DataObserver
-import class ObjectiveC.NSObject
-import class SwiftUI.UIHostingController
-import class UIKit.UIApplication
-import class UIKit.UIPresentationController
-import class UIKit.UISheetPresentationController
+import class Data.DataStore
 import class UIKit.UIViewController
-import class UIKit.UIWindow
-import class UIKit.UIWindowScene
-import protocol UIKit.UISheetPresentationControllerDelegate
 import struct Models.AppLoggerConfiguration
 import struct Models.LogEntry
-import struct UI.AppLoggerView
-import class UI.AppLoggerViewModel
-import protocol SwiftUI.View
 
 public actor AppLogger {
     private let dataStore = DataStore()
@@ -84,92 +73,5 @@ public actor AppLogger {
                 viewController.dismiss(animated: true)
             }
         }
-    }
-}
-
-@MainActor
-final class Coordinator: NSObject {
-    private let dataObserver: DataObserver
-    
-    private let configuration: AppLoggerConfiguration
-    
-    private let dismiss: (UIViewController?) -> Void
-    
-    private weak var viewController: UIViewController?
-    
-    init(
-        dataObserver: DataObserver,
-        configuration: AppLoggerConfiguration,
-        dismiss: @escaping (_ viewController: UIViewController?) -> Void
-    ) {
-        self.dataObserver = dataObserver
-        self.configuration = configuration
-        self.dismiss = dismiss
-    }
-    
-    private var keyWindow: UIWindow? {
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .filter(\.isKeyWindow)
-            .first
-    }
-    
-    private lazy var viewModel = AppLoggerViewModel(
-        dataObserver: dataObserver,
-        dismissAction: dismissAction
-    )
-    
-    func present(animated: Bool = true, completion: (() -> Void)? = nil) {
-        guard
-            viewController == nil,
-            let presentingController = keyWindow?.rootViewController?.topPresentedViewController
-        else {
-            return
-        }
-        
-        let viewController = makeViewController()
-        self.viewController = viewController
-        
-        if let sheetPresentation = viewController.sheetPresentationController {
-            sheetPresentation.detents = [.large(), .medium()]
-            sheetPresentation.selectedDetentIdentifier = .medium
-            sheetPresentation.prefersGrabberVisible = true
-            sheetPresentation.prefersScrollingExpandsWhenScrolledToEdge = false
-            sheetPresentation.delegate = self
-        }
-        
-        presentingController.present(
-            viewController,
-            animated: animated,
-            completion: completion
-        )
-    }
-    
-    private func dismissAction() {
-        dismiss(viewController)
-    }
-    
-    func makeViewController() -> UIViewController {
-        UIHostingController(rootView: rootView())
-    }
-    
-    func rootView() -> some View {
-        AppLoggerView()
-            .configuration(configuration)
-            .environmentObject(viewModel)
-    }
-}
-
-extension Coordinator: UISheetPresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        // presentation has already ended, no need to send VC reference.
-        dismiss(nil)
-    }
-}
-
-private extension UIViewController {
-    var topPresentedViewController: UIViewController {
-        presentedViewController?.topPresentedViewController ?? self
     }
 }

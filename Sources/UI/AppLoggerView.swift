@@ -49,18 +49,6 @@ package final class AppLoggerViewModel: ObservableObject {
 
 package struct AppLoggerView: View {
     
-//    @State
-//    var searchQuery: String = ""
-//    
-//    @State
-//    var showFilters = false
-//    
-//    @State
-//    var sorting: Sorting = .ascending
-//    
-//    @State
-//    private var activityItem: ActivityItem?
-    
     @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
     
@@ -75,12 +63,6 @@ package struct AppLoggerView: View {
     
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
-    
-//    var entries: [ID] { [] }
-//    
-//    var categories: [Filter] { [] }
-//    
-//    var sources: [Filter] { [] }
     
     package init() {}
     

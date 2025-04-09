@@ -21,7 +21,7 @@
 import struct Foundation.UUID
 
 package struct Filter: CustomStringConvertible, Identifiable {
-    package let id = UUID()
+    package var id: String { query }
     package var query: String
     package var description: String
     

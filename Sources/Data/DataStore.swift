@@ -30,13 +30,13 @@ package actor DataStore {
     package init() {}
     
     /// A reactive subject that holds an array of log entry IDs.
-    package private(set) var allEntries = [ID]()
+    package private(set) var allEntries = Set<ID>()
     
     /// An array holding all log entry categories present in the store.
-    package private(set) var allCategories = [Category]()
+    package private(set) var allCategories = Set<Category>()
     
     /// An array holding all log entry sources present in the store.
-    package private(set) var allSources = [Source]()
+    package private(set) var allSources = Set<Source>()
     
     /// A dictionary mapping log entry IDs to their corresponding category.
     package private(set) var entryCategories = [ID: Category]()
@@ -46,9 +46,6 @@ package actor DataStore {
     
     /// A dictionary mapping log entry IDs to their corresponding source.
     package private(set) var entrySources = [ID: Source]()
-    
-    /// A set of unique log entry IDs already added, used to prevent duplicate log entries.
-    private var knownIDs = Set<ID>()
     
     weak private var observer: DataObserver?
     
@@ -69,7 +66,7 @@ package actor DataStore {
     @discardableResult
     package func addLogEntry(_ logEntry: LogEntry) -> Bool {
         // O(1) lookup for duplicates.
-        guard knownIDs.insert(logEntry.id).inserted else {
+        guard allEntries.insert(logEntry.id).inserted else {
             return false
         }
         
@@ -77,10 +74,12 @@ package actor DataStore {
             updateObserver()
         }
         
+        allCategories.insert(logEntry.category)
+        allSources.insert(logEntry.source)
+        
         entryCategories[logEntry.id] = logEntry.category
         entryContents[logEntry.id] = logEntry.content
         entrySources[logEntry.id] = logEntry.source
-        allEntries.append(logEntry.id)
         
         return true
     }
@@ -92,7 +91,9 @@ package actor DataStore {
         
         defer {
             // push update to subscribers as last step
-            observer.allEntries.send(allEntries)
+            observer.allEntries.send(allEntries.sorted())
+            observer.allSources.send(allSources.sorted())
+            observer.allCategories.send(allCategories.sorted())
         }
         
         observer.entryCategories = entryCategories

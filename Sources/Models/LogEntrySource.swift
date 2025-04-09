@@ -23,7 +23,7 @@ import struct SwiftUICore.Color
 package typealias Source = LogEntry.Source
 
 public extension LogEntry {
-    struct Source: CustomStringConvertible, LogEntrySource, Hashable, Sendable {
+    struct Source: LogEntrySource, Hashable, Sendable {
         public let emoji: Character?
         public let name: String
         public let info: SourceInfo?
@@ -46,13 +46,21 @@ public extension LogEntry {
             self.name = name
             self.info = info
         }
-        
-        public var description: String {
-            if let emoji {
-                "\(emoji) \(name)"
-            } else {
-                name
-            }
+    }
+}
+
+extension LogEntry.Source: Comparable {
+    public static func < (lhs: LogEntry.Source, rhs: LogEntry.Source) -> Bool {
+        lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
+    }
+}
+
+extension LogEntry.Source: CustomStringConvertible {
+    public var description: String {
+        if let emoji {
+            "\(emoji) \(name)"
+        } else {
+            name
         }
     }
 }

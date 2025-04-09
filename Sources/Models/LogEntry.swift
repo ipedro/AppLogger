@@ -39,7 +39,7 @@ public struct LogEntry: Identifiable, Sendable {
     
     /// The date the log was created.
     public var createdAt: Date {
-        Date(timeIntervalSince1970: id.timestamp)
+        id.createdAt
     }
 }
 

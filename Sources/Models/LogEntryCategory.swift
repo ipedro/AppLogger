@@ -38,7 +38,7 @@ public extension LogEntry {
     /// A structure that represents a log entry category with an optional emoji and a debug name.
     ///
     /// It provides computed properties for representing the emoji as a string and for creating a display name by combining the emoji (if available) with the debug name.
-    struct Category: CustomStringConvertible, Sendable {
+    struct Category: Hashable, Sendable {
         /// An optional emoji associated with this log entry category.
         public let emoji: Character?
         /// A string identifier used for debugging and identifying the log entry category.
@@ -61,14 +61,21 @@ public extension LogEntry {
             self.emoji = emoji
             self.name = name
         }
-        
-        /// Returns a display name that includes the emoji (if available) followed by the debug name.
-        public var description: String {
-            if let emoji {
-                "\(emoji) \(name)"
-            } else {
-                name
-            }
+    }
+}
+
+extension LogEntry.Category: Comparable {
+    public static func < (lhs: LogEntry.Category, rhs: LogEntry.Category) -> Bool {
+        lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
+    }
+}
+
+extension LogEntry.Category: CustomStringConvertible {
+    public var description: String {
+        if let emoji {
+            "\(emoji) \(name)"
+        } else {
+            name
         }
     }
 }

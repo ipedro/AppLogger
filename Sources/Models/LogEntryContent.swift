@@ -29,7 +29,7 @@ public extension LogEntry {
         public init(
             _ content: String,
             output: String? = .none,
-            userInfo: [String: String]
+            userInfo: [String: String] = [:]
         ) {
             self.description = content
             self.output = output
@@ -38,10 +38,11 @@ public extension LogEntry {
             }
         }
         
+        @_disfavoredOverload
         public init(
             _ description: String,
             output: String? = .none,
-            userInfo: Any?
+            userInfo: Any? = nil
         ) {
             self.description = description
             self.output = output

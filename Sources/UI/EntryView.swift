@@ -25,14 +25,18 @@ import struct Models.Content
 import struct Models.Source
 import struct Models.ID
 import class Data.ColorStore
+import class Data.DataObserver
 
 struct EntryView: View {
     let id: ID
     
-    private var source: Source { fatalError("subscribe from store") }
-    private var category: Category { fatalError("subscribe from store") }
-    private var content: Content { fatalError("subscribe from store") }
-    private var createdAt: Date { fatalError("subscribe from store") }
+    private var source: Source { data.entrySources[id]! }
+    
+    private var category: Category { data.entryCategories[id]! }
+    
+    private var content: Content { data.entryContents[id]! }
+    
+    private var createdAt: Date { id.createdAt }
     
     @Environment(\.colorScheme)
     private var colorScheme
@@ -42,6 +46,9 @@ struct EntryView: View {
     
     @EnvironmentObject
     private var colorStore: ColorStore<Source>
+    
+    @EnvironmentObject
+    private var data: DataObserver
 
     var body: some View {
         let tint = colorStore
@@ -94,11 +101,13 @@ extension EntryView {
 #endif
 
 #Preview {
+    let allEntries = Mock.allCases.map(\.rawValue)
+    
     ScrollView {
         LazyVStack(spacing: 0) {
             ForEach(0..<10) { _ in
-                ForEach(Mock.allCases.shuffled()) { mock in
-                    EntryView(mock: mock).safeAreaInset(
+                ForEach(allEntries.shuffled()) { entry in
+                    EntryView(id: entry.id).safeAreaInset(
                         edge: .bottom,
                         content: Divider.init
                     )
@@ -107,4 +116,9 @@ extension EntryView {
         }
     }
     .environmentObject(ColorStore<Source>())
+    .environmentObject(DataObserver(
+        entryCategories: allEntries.reduce(into: [:], { $0[$1.id] = $1.category }),
+        entryContents: allEntries.reduce(into: [:], { $0[$1.id] = $1.content }),
+        entrySources: allEntries.reduce(into: [:], { $0[$1.id] = $1.source })
+    ))
 }
