@@ -26,8 +26,11 @@ import protocol Combine.ObservableObject
 import protocol Models.Filterable
 import struct Combine.Published
 import struct Models.ActivityItem
+import struct Models.Category
+import struct Models.Content
 import struct Models.Filter
 import struct Models.ID
+import struct Models.Source
 
 package final class AppLoggerViewModel: ObservableObject {
     @Published
@@ -37,22 +40,13 @@ package final class AppLoggerViewModel: ObservableObject {
     package var showFilters = false
     
     @Published
-    package var sorting: Sorting = .ascending {
-        willSet {
-            entries = entries.reversed()
-        }
-    }
+    package var sorting: Sorting = .ascending
     
     @Published
     package var activityItem: ActivityItem?
     
     @Published
-    package var activeFilters: Set<Filter.ID> = [] {
-        willSet {
-            sources = sortFilters(sources, by: newValue)
-            categories = sortFilters(categories, by: newValue)
-        }
-    }
+    package var activeFilters: Set<Filter> = []
     
     @Published
     package var sources: [Filter] = []
@@ -101,41 +95,65 @@ package final class AppLoggerViewModel: ObservableObject {
         // New pipeline to filter and sort entries based on search and active filters
         Publishers.CombineLatest4(
             dataObserver.allEntries.debounce(for: 0.2, scheduler: DispatchQueue.main),
-            $searchQuery,
+            $searchQuery.debounce(for: 0.3, scheduler: DispatchQueue.main),
             $activeFilters,
             $sorting
         )
         .receive(on: DispatchQueue.main)
-        .map { [unowned self] allEntries, query, filterIDs, sort in
-            var allFilters = Set(filterIDs.map({ Filter(query: $0) }))
+        .map { [unowned self] allEntries, query, filters, sort in
+            var allFilters = filters
             
             if !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                allFilters.insert(Filter(query: query))
+                allFilters.insert(query.filter)
             }
             
             if allFilters.isEmpty {
-                return allEntries
+                return sortEntries(allEntries, by: sort)
             }
             
             let filtered = allEntries.filter { id in
-                let content = dataObserver.entryContents[id]!
-                let source = dataObserver.entrySources[id]!
-                let category = dataObserver.entryCategories[id]!
-                let userInfo = dataObserver.entryUserInfoValues.keys.map(\.key) + dataObserver.entryUserInfoValues.values
-                
-                for filter in allFilters {
-                    if content.matches(filter) { return true }
-                    if source.matches(filter) { return true }
-                    if category.matches(filter) { return true }
-                    if userInfo.contains(where: { $0.matches(filter) }) { return true }
+                var source: Source {
+                    dataObserver.entrySources[id]!
                 }
                 
+                var category: Category {
+                    dataObserver.entryCategories[id]!
+                }
+                
+                var content: Content {
+                    dataObserver.entryContents[id]!
+                }
+                
+                var userInfo: Set<String> {
+                    let keys = dataObserver.entryUserInfoKeys[id, default: []]
+                    var userInfo = Set(keys.map(\.key))
+                    for key in keys {
+                        if let value = dataObserver.entryUserInfoValues[key] {
+                            userInfo.insert(value)
+                        }
+                    }
+                    return userInfo
+                }
+                
+                for filter in allFilters {
+                    if filter.kind.contains(.source) {
+                        if source.matches(filter) { return true }
+                    }
+                    if filter.kind.contains(.category) {
+                        if category.matches(filter) { return true }
+                    }
+                    if filter.kind.contains(.content) {
+                        if content.matches(filter) { return true }
+                    }
+                    if filter.kind.contains(.userInfo) {
+                        if userInfo.contains(where: { $0.matches(filter) }) { return true }
+                    }
+                }
                 return false
             }
             
             return sortEntries(filtered, by: sort)
         }
-        .receive(on: DispatchQueue.main)
         .sink { [unowned self] newValue in
             entries = newValue
         }
@@ -149,20 +167,14 @@ package final class AppLoggerViewModel: ObservableObject {
         }
     }
     
-    private func sortFilters(_ filters: [Filter], by selection: Set<Filter.ID>) -> [Filter] {
+    private func sortFilters(_ filters: [Filter], by selection: Set<Filter>) -> [Filter] {
         filters.sorted { lhs, rhs in
-            let lhsActive = selection.contains(lhs.id)
-            let rhsActive = selection.contains(rhs.id)
+            let lhsActive = selection.contains(lhs)
+            let rhsActive = selection.contains(rhs)
             if lhsActive != rhsActive {
                 return lhsActive && !rhsActive
             }
             return lhs < rhs
         }
-    }
-}
-
-extension String: Filterable {
-    package static var filterable: KeyPath<String, String> {
-        \.self
     }
 }

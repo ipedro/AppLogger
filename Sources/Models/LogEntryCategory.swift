@@ -87,13 +87,7 @@ extension LogEntry.Category: CustomStringConvertible {
 }
 
 extension LogEntry.Category: FilterConvertible {
-    package var filter: Filter {
-        Filter(query: name, description: description)
-    }
-}
-
-extension LogEntry.Category: Filterable {
-    package static var filterable: KeyPath<LogEntry.Category, String> {
-        \.name
-    }
+    package static var filterKind: Filter.Kind { .category }
+    package static var filterDisplayName: KeyPath<LogEntry.Category, String> { \.description }
+    package static var filterQuery: KeyPath<LogEntry.Category, String> { \.name }
 }

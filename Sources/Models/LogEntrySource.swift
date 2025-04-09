@@ -78,13 +78,7 @@ extension LogEntry.Source: CustomStringConvertible {
 }
 
 extension LogEntry.Source: FilterConvertible {
-    package var filter: Filter {
-        Filter(query: name, description: description)
-    }
-}
-
-extension LogEntry.Source: Filterable {
-    package static var filterable: KeyPath<LogEntry.Source, String> {
-        \.name
-    }
+    package static var filterKind: Filter.Kind { .source }
+    package static var filterDisplayName: KeyPath<LogEntry.Source, String> { \.description }
+    package static var filterQuery: KeyPath<LogEntry.Source, String> { \.name }
 }

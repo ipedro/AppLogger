@@ -25,7 +25,7 @@ struct FiltersRow: View {
     var title: String
     
     @Binding
-    var selection: Set<Filter.ID>
+    var selection: Set<Filter>
     
     let data: [Filter]
     
@@ -35,16 +35,16 @@ struct FiltersRow: View {
     var body: some View {ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: spacing, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(data) { filter in
+                    ForEach(data, id: \.self) { filter in
                         FilterView(
                             data: filter,
                             isOn: Binding {
-                                selection.contains(filter.id)
+                                selection.contains(filter)
                             } set: { active in
                                 if active {
-                                    selection.insert(filter.id)
+                                    selection.insert(filter)
                                 } else {
-                                    selection.remove(filter.id)
+                                    selection.remove(filter)
                                 }
                             }
                         )
@@ -73,7 +73,7 @@ struct FiltersRow: View {
 @available(iOS 17.0, *)
 #Preview {
     @Previewable @State
-    var activeFilters: Set<Filter.ID> = [
+    var activeFilters: Set<Filter> = [
         "Filter 1"
     ]
     FiltersRow(

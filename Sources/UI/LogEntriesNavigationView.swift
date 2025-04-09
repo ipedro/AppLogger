@@ -63,7 +63,8 @@ package struct LogEntriesNavigationView: View {
     
     private func leadingNavigationBarItems() -> some View {
         ExportButton {
-            viewModel.activityItem = nil //dataStore.csvActivityItem()
+            viewModel.activityItem = nil
+            //dataStore.csvActivityItem()
             fatalError("implement")
         }
         .foregroundColor(.primary)

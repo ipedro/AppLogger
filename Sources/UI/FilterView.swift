@@ -31,7 +31,7 @@ struct FilterView: View {
     private let clipShape = RoundedRectangle(cornerRadius: 12)
 
     var body: some View {
-        Toggle(data.description, isOn: $isOn)
+        Toggle(data.displayName, isOn: $isOn)
             .clipShape(clipShape)
             .toggleStyle(.button)
             .font(.footnote)

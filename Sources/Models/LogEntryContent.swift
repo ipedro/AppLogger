@@ -42,7 +42,7 @@ extension LogEntry.Content: ExpressibleByStringLiteral {
 }
 
 extension LogEntry.Content: Filterable {
-    package static var filterable: KeyPath<LogEntry.Content, String> {
+    package static var filterQuery: KeyPath<LogEntry.Content, String> {
         \.message
     }
     

@@ -50,7 +50,7 @@ extension LogEntry {
                     "func didNavigate()",
                     output: "Navigation cancelled."
                 ),
-                userInfo: ["url": "https://google.com"]
+                userInfo: ["url": "https://github.com"]
             )
         }
         
@@ -60,7 +60,7 @@ extension LogEntry {
                 source: Source("Google Analytics"),
                 content: "tracked event",
                 userInfo: [
-                    "customerID": "3864579",
+                    "customerID": "1234567890",
                     "screen": "Home"
                 ]
             )
@@ -93,7 +93,7 @@ extension LogEntry {
                     "user_browser_version": "92.0.4515.159",
                     "user_os": "iOS",
                     "user_os_version": "14.5",
-                    "user_referrer": "https://google.com",
+                    "user_referrer": "https://facebook.com",
                     "event": "login",
                     "event_category": "user",
                     "event_action": "login",
