@@ -37,7 +37,7 @@ struct LogEntriesList: View {
         if viewModel.searchQuery.isEmpty {
             emptyReasons.empty
         } else {
-            "\(emptyReasons.searchResults) \"\(viewModel.searchQuery)\""
+            "\(emptyReasons.searchResults):\n\n\(viewModel.activeScope)"
         }
     }
     
@@ -49,21 +49,16 @@ struct LogEntriesList: View {
                         edge: .bottom,
                         content: Divider.init
                     )
-//                    .transition(
-//                        .move(edge: viewModel.sorting == .ascending ? .bottom : .top)
-//                        .combined(with: .opacity)
-//                    )
                 }
             }
             .animation(.easeInOut(duration: 0.35), value: viewModel.entries)
-            .background {
-                if viewModel.entries.isEmpty {
-                    Text(emptyReason)
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
-                        .padding(.top, 200)
-                        .multilineTextAlignment(.center)
-                }
+        }
+        .background {
+            if viewModel.entries.isEmpty {
+                Text(emptyReason)
+                    .foregroundStyle(.secondary)
+                    .font(.callout)
+                    .multilineTextAlignment(.center)
             }
         }
     }

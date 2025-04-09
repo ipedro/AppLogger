@@ -23,6 +23,7 @@ import class Foundation.DispatchQueue
 import enum Combine.Publishers
 import enum Models.Sorting
 import protocol Combine.ObservableObject
+import protocol Combine.Publisher
 import protocol Models.Filterable
 import struct Combine.Published
 import struct Models.ActivityItem
@@ -48,6 +49,14 @@ package final class AppLoggerViewModel: ObservableObject {
     @Published
     package var activeFilters: Set<Filter> = []
     
+    package var activeScope: String {
+        var scope = activeFilters.sorted()
+        if !searchQuery.trimmed.isEmpty {
+            scope.append(searchQuery.trimmed.filter)
+        }
+        return scope.map(\.displayName).joined(separator: ", ")
+    }
+    
     @Published
     package var sources: [Filter] = []
     
@@ -72,17 +81,10 @@ package final class AppLoggerViewModel: ObservableObject {
         
         setupListeners()
     }
-    
-    private func setupListeners() {
-        dataObserver.allSources
-            .debounce(for: 0.1, scheduler: DispatchQueue.global())
-            .map { $0.map(\.filter) }
-            .receive(on: DispatchQueue.main)
-            .sink { [unowned self] newValue in
-                sources = sortFilters(newValue, by: activeFilters)
-            }
-            .store(in: &cancellables)
-        
+}
+
+private extension AppLoggerViewModel {
+    func setupListeners() {
         dataObserver.allCategories
             .debounce(for: 0.1, scheduler: DispatchQueue.global())
             .map { $0.map(\.filter) }
@@ -92,67 +94,24 @@ package final class AppLoggerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        // New pipeline to filter and sort entries based on search and active filters
+        dataObserver.allSources
+            .debounce(for: 0.1, scheduler: DispatchQueue.global())
+            .map { $0.map(\.filter) }
+            .receive(on: DispatchQueue.main)
+            .sink { [unowned self] newValue in
+                sources = sortFilters(newValue, by: activeFilters)
+            }
+            .store(in: &cancellables)
+        
         Publishers.CombineLatest4(
-            dataObserver.allEntries.debounce(for: 0.2, scheduler: DispatchQueue.main),
-            $searchQuery.debounce(for: 0.3, scheduler: DispatchQueue.main),
+            dataObserver.allEntries.debounceOnMain(for: 0.2),
+            $searchQuery.debounceOnMain(for: 0.3).map(\.trimmed),
             $activeFilters,
             $sorting
         )
         .receive(on: DispatchQueue.main)
         .map { [unowned self] allEntries, query, filters, sort in
-            var allFilters = filters
-            
-            if !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                allFilters.insert(query.filter)
-            }
-            
-            if allFilters.isEmpty {
-                return sortEntries(allEntries, by: sort)
-            }
-            
-            let filtered = allEntries.filter { id in
-                var source: Source {
-                    dataObserver.entrySources[id]!
-                }
-                
-                var category: Category {
-                    dataObserver.entryCategories[id]!
-                }
-                
-                var content: Content {
-                    dataObserver.entryContents[id]!
-                }
-                
-                var userInfo: Set<String> {
-                    let keys = dataObserver.entryUserInfoKeys[id, default: []]
-                    var userInfo = Set(keys.map(\.key))
-                    for key in keys {
-                        if let value = dataObserver.entryUserInfoValues[key] {
-                            userInfo.insert(value)
-                        }
-                    }
-                    return userInfo
-                }
-                
-                for filter in allFilters {
-                    if filter.kind.contains(.source) {
-                        if source.matches(filter) { return true }
-                    }
-                    if filter.kind.contains(.category) {
-                        if category.matches(filter) { return true }
-                    }
-                    if filter.kind.contains(.content) {
-                        if content.matches(filter) { return true }
-                    }
-                    if filter.kind.contains(.userInfo) {
-                        if userInfo.contains(where: { $0.matches(filter) }) { return true }
-                    }
-                }
-                return false
-            }
-            
-            return sortEntries(filtered, by: sort)
+            filterEntries(allEntries, filters: filters, query: query, sort: sort)
         }
         .sink { [unowned self] newValue in
             entries = newValue
@@ -160,14 +119,14 @@ package final class AppLoggerViewModel: ObservableObject {
         .store(in: &cancellables)
     }
     
-    private func sortEntries(_ entries: [ID], by sorting: Sorting) -> [ID] {
+    func sortEntries(_ entries: [ID], by sorting: Sorting) -> [ID] {
         switch sorting {
         case .ascending: entries
         case .descending: entries.reversed()
         }
     }
     
-    private func sortFilters(_ filters: [Filter], by selection: Set<Filter>) -> [Filter] {
+    func sortFilters(_ filters: [Filter], by selection: Set<Filter>) -> [Filter] {
         filters.sorted { lhs, rhs in
             let lhsActive = selection.contains(lhs)
             let rhsActive = selection.contains(rhs)
@@ -176,5 +135,81 @@ package final class AppLoggerViewModel: ObservableObject {
             }
             return lhs < rhs
         }
+    }
+    
+    func filterEntries(_ entries: [ID], filters: Set<Filter>, query: String, sort: Sorting) -> [ID] {
+        var result = entries
+        
+        if !filters.isEmpty {
+            result = result.filter { id in
+                return filterEntry(id, with: filters)
+            }
+        }
+        
+        if !query.isEmpty {
+            let search = query.filter
+            result = result.filter { id in
+                return filterEntry(id, with: [search])
+            }
+        }
+        
+        return sortEntries(result, by: sort)
+    }
+    
+    func filterEntry(_ id: ID, with filters: Set<Filter>) -> Bool {
+        var source: Source {
+            dataObserver.entrySources[id]!
+        }
+        
+        var category: Category {
+            dataObserver.entryCategories[id]!
+        }
+        
+        var content: Content {
+            dataObserver.entryContents[id]!
+        }
+        
+        var userInfo: Set<String> {
+            let keys = dataObserver.entryUserInfoKeys[id, default: []]
+            var userInfo = Set(keys.map(\.key))
+            for key in keys {
+                if let value = dataObserver.entryUserInfoValues[key] {
+                    userInfo.insert(value)
+                }
+            }
+            return userInfo
+        }
+        
+        for filter in filters {
+            if filter.kind.contains(.source) {
+                if source.matches(filter) { return true }
+            }
+            if filter.kind.contains(.category) {
+                if category.matches(filter) { return true }
+            }
+            if filter.kind.contains(.content) {
+                if content.matches(filter) { return true }
+            }
+            if filter.kind.contains(.userInfo) {
+                if userInfo.contains(where: { $0.matches(filter) }) { return true }
+            }
+        }
+        
+        return false
+    }
+}
+
+private extension Publisher {
+    func debounceOnMain(
+        for dueTime: DispatchQueue.SchedulerTimeType.Stride,
+        options: DispatchQueue.SchedulerOptions? = nil
+    ) -> Publishers.Debounce<Self, DispatchQueue> {
+        debounce(for: dueTime, scheduler: DispatchQueue.main, options: options)
+    }
+}
+
+private extension String {
+    var trimmed: String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
