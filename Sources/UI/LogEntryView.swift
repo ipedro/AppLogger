@@ -66,12 +66,9 @@ struct LogEntryView: View {
             )
             .padding(.trailing, spacing * 2)
             
-            LogEntrySourceView(
-                name: source.description,
-                data: source.debugInfo
-            )
-            .padding(.horizontal, spacing * 2)
-            .foregroundStyle(tint)
+            LogEntrySourceView(data: source)
+                .padding(.horizontal, spacing * 2)
+                .foregroundStyle(tint)
             
             LogEntryContentView(
                 category: category,

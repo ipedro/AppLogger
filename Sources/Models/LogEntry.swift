@@ -66,4 +66,24 @@ public extension LogEntry {
         self.content = content
         self.userInfo = userInfo
     }
+    
+    /// Creates a new instance of LogEntry with the given source, category, and content.
+    ///
+    /// - Parameters:
+    ///   - category: The category or classification of the log entry.
+    ///   - source: A custom source from which the log entry originates.
+    ///   - content: The detailed content of the log entry.
+    ///   - userInfo: An optional user info.
+    init(
+        category: Category,
+        source: some LogEntrySource,
+        content: Content,
+        userInfo: UserInfo? = nil
+    ) {
+        self.id = ID()
+        self.source = Source(source)
+        self.category = category
+        self.content = content
+        self.userInfo = userInfo
+    }
 }

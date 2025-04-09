@@ -22,18 +22,19 @@ import Foundation
 import UIKit
 
 public protocol LogEntrySource {
-    var description: String { get }
-    var debugInfo: LogEntry.SourceInfo? { get }
+    var logEntryEmoji: Character? { get }
+    var logEntryName: String { get }
+    var logEntryInfo: LogEntry.SourceInfo? { get }
 }
 
-extension LogEntrySource {
-    public var debugInfo: LogEntry.SourceInfo? {
-        .none
-    }
+public extension LogEntrySource {
+    var logEntryEmoji: Character? { nil }
     
-    public var description: String {
+    var logEntryName: String {
         let type = "\(type(of: self))"
         guard let sanitizedType = type.split(separator: "<").first else { return type }
         return String(sanitizedType)
     }
+    
+    var logEntryInfo: LogEntry.SourceInfo? { nil }
 }

@@ -19,22 +19,22 @@
 //  SOFTWARE.
 
 import SwiftUI
-import enum Models.SourceInfo
+import struct Models.Source
+import protocol Models.LogEntrySource
 
 struct LogEntrySourceView: View {
-    let name: String
-    let data: SourceInfo?
+    let data: Source
 
     private var label: String {
-        switch data {
+        switch data.info {
         case let .sdk(version):
-            "\(name) (\(version))"
+            "\(data) (\(version))"
         case let .swift(lineNumber):
-            "\(name).swift:\(lineNumber)"
+            "\(data).swift:\(lineNumber)"
         case let .error(code):
-            "\(name) Code: \(code)"
+            "\(data) Code: \(code)"
         case .none:
-            name
+            data.description
         }
     }
     
@@ -46,23 +46,21 @@ struct LogEntrySourceView: View {
 #Preview {
     VStack {
         LogEntrySourceView(
-            name: "File",
-            data: .swift(lineNumber: 12)
+            data: Source("📄", "File", .swift(lineNumber: 12))
         )
         
         LogEntrySourceView(
-            name: "MySDK",
-            data: .sdk(version: "1.2.3")
+            data: Source("MySDK", .sdk(version: "1.2.3"))
         )
         
         LogEntrySourceView(
-            name: "Something else",
-            data: .none
+            data: "Some source"
         )
         
-        LogEntrySourceView(
-            name: "Some Error",
-            data: .error(code: 15)
-        )
+        LogEntrySourceView(data: Source(CustomSource()))
     }
+}
+
+private struct CustomSource: LogEntrySource {
+    var logEntryEmoji: Character? { "👌" }
 }
