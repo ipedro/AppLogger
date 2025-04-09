@@ -28,7 +28,7 @@ struct UserInfoView: View {
     private var spacing
     
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        LazyVStack(alignment: .leading, spacing: .zero) {
             let items = data.sorted(by: <)
             
             ForEach(Array(zip(items.indices, items)), id: \.0) { offset, item in
@@ -37,9 +37,9 @@ struct UserInfoView: View {
                     value: item.value,
                     tint: tint
                 )
-                .padding(8)
+                .padding(spacing)
                 .background(Color(backgroundColor(for: offset)))
-                .cornerRadius(8)
+                .cornerRadius(spacing)
             }
         }
         .padding(.horizontal, spacing * 2)

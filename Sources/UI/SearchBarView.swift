@@ -26,6 +26,9 @@ struct SearchBarView: View {
     
     @FocusState
     private var focus
+    
+    @Environment(\.spacing)
+    private var spacing
 
     var body: some View {
         HStack {
@@ -50,19 +53,12 @@ struct SearchBarView: View {
                         )
                 }
             }
-            .padding(
-                EdgeInsets(
-                    top: 8,
-                    leading: 6,
-                    bottom: 8,
-                    trailing: 6
-                )
-            )
+            .padding(spacing)
             .foregroundColor(.secondary)
             .background(Color(.secondarySystemBackground))
-            .cornerRadius(10)
+            .cornerRadius(spacing)
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, spacing)
     }
 
     private func dismiss() {

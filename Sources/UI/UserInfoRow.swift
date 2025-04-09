@@ -24,11 +24,14 @@ struct UserInfoRow: View {
     let key: String
     let value: String
     let tint: Color?
+    
+    @Environment(\.spacing)
+    private var spacing
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top, spacing: spacing) {
             keyText
-            Spacer(minLength: 8)
+            Spacer(minLength: spacing)
             valueText
         }
     }
