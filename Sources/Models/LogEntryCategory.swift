@@ -26,9 +26,9 @@ public extension LogEntry.Category {
     static let info = Self("ℹ️", "Info")
     static let notice = Self("✳️", "Notice")
     static let warning = Self("⚠️", "Warning")
-    static let error = Self("‼️", "Error")
+    static let error = Self("💥", "Error")
     static let severe = Self("💣", "Severe")
-    static let alert = Self("🛑", "Alert")
+    static let alert = Self("‼️", "Alert")
     static let emergency = Self("🚨", "Emergency")
 }
 

@@ -65,9 +65,6 @@ struct LogEntriesList: View {
                 }
             }
         }
-        .onDrag { info in
-            viewModel.showFilters = info.predictedEndTranslation.height > 0
-        }
     }
 }
 

@@ -46,15 +46,22 @@ package struct LogEntriesNavigationView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(navigationTitle)
-            .navigationBarItems(leading: leadingNavigationBarItems)
-            .navigationBarItems(trailing: trailingNavigationBarItems)
-            .endEditingOnDrag()
+            .toolbar {
+                ToolbarItem(
+                    placement: .topBarLeading,
+                    content: leadingNavigationBarItems
+                )
+                ToolbarItem(
+                    placement: .topBarTrailing,
+                    content: trailingNavigationBarItems
+                )
+            }
         }
         .preferredColorScheme(preferredColorScheme)
         .activitySheet($viewModel.activityItem)
     }
     
-    private var leadingNavigationBarItems: some View {
+    private func leadingNavigationBarItems() -> some View {
         ExportButton {
             viewModel.activityItem = nil //dataStore.csvActivityItem()
             fatalError("implement")
@@ -62,7 +69,7 @@ package struct LogEntriesNavigationView: View {
         .foregroundColor(.primary)
     }
     
-    private var trailingNavigationBarItems: some View {
+    private func trailingNavigationBarItems() -> some View {
         DismissButton(action: viewModel.dismissAction)
     }
 }
@@ -70,7 +77,7 @@ package struct LogEntriesNavigationView: View {
 #Preview {
     let allEntries = Mock.allCases.map(\.rawValue)
     let dataObserver = DataObserver(
-        allCategories: allEntries.map(\.category),
+        allCategories: Set(allEntries.map(\.category)).sorted(),
         allEntries: allEntries.map(\.id),
         allSources: allEntries.map(\.source),
         entryCategories: allEntries.reduce(into: [:], { $0[$1.id] = $1.category }),

@@ -61,6 +61,7 @@ struct FiltersDrawer: View {
         }
         .safeAreaInset(edge: .bottom, content: Divider.init)
         .foregroundColor(.primary)
+        .background(.background)
     }
 }
 

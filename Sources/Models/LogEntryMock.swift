@@ -58,7 +58,7 @@ extension LogEntry {
         
         private var googleAnalytics: LogEntry {
             LogEntry(
-                category: Category("📈 Analytics"),
+                category: Category("📈", "Analytics"),
                 source: Source("Google Analytics"),
                 content: .init(
                     "tracked event",
@@ -72,7 +72,7 @@ extension LogEntry {
         
         private var socialLogin: LogEntry {
             LogEntry(
-                category: Category("👔 Social Media"),
+                category: Category("👔", "Social Media"),
                 source: Source("Facebook", .sdk(version: "12.2.1")),
                 content: .init(
                     "Any Social Login",
@@ -116,7 +116,7 @@ extension LogEntry {
         
         private var analytics: LogEntry {
             LogEntry(
-                category: Category("📈 Analytics"),
+                category: Category("📈", "Analytics"),
                 source: Source("Firebase", .sdk(version: "8.9.0")),
                 content: .init(
                     "Open Screen: Home",
