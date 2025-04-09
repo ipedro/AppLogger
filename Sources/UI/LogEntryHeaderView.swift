@@ -19,30 +19,47 @@
 //  SOFTWARE.
 
 import SwiftUI
+import struct Models.Source
 
-struct LogEntryTitleView: View {
+struct LogEntryHeaderView: View {
     let tint: Color
-    let title: String
+    let source: Source
+    let category: String
     let createdAt: Date
     
     @Environment(\.spacing)
     private var spacing
 
     var body: some View {
-        HStack(spacing: spacing) {
-            Circle().fill(tint).frame(width: spacing, height: spacing)
-            Text(title).textSelection(.enabled)
+        HStack(spacing: spacing / 2) {
+            Circle()
+                .fill(tint)
+                .frame(width: spacing, height: spacing)
+                .padding(.trailing, spacing / 2)
+            
+            Text(category).bold()
+            
+            Image(systemName: "chevron.forward")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+            
+            LogEntrySourceView(data: source)
+                .foregroundStyle(tint)
+            
             Spacer()
-            Text(createdAt, style: .time).foregroundStyle(.secondary)
+            
+            Text(createdAt, style: .time)
+                .foregroundStyle(.secondary)
         }
         .font(.footnote)
     }
 }
 
 #Preview {
-    LogEntryTitleView(
+    LogEntryHeaderView(
         tint: .pink,
-        title: "Category",
+        source: "Source",
+        category: "Category",
         createdAt: Date()
     )
 }

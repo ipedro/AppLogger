@@ -52,7 +52,7 @@ struct LogEntryContentView: View {
                 .padding(spacing * 1.5)
                 .background {
                     RoundedRectangle(cornerRadius: spacing * 2)
-                        .fill(tint.opacity(0.16))
+                        .fill(tint.opacity(0.1))
                 }
             }
         }

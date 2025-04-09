@@ -59,16 +59,13 @@ struct LogEntryView: View {
             .resolve(with: colorScheme)
         
         VStack(alignment: .leading, spacing: spacing) {
-            LogEntryTitleView(
+            LogEntryHeaderView(
                 tint: tint,
-                title: category.description,
+                source: source,
+                category: category.description,
                 createdAt: createdAt
             )
             .padding(.trailing, spacing * 2)
-            
-            LogEntrySourceView(data: source)
-                .padding(.horizontal, spacing * 2)
-                .foregroundStyle(tint)
             
             LogEntryContentView(
                 category: category,
@@ -82,10 +79,20 @@ struct LogEntryView: View {
                     ids: userInfo,
                     tint: tint
                 )
-                .padding(.horizontal, spacing * 2)
+                .padding(EdgeInsets(
+                    top: spacing,
+                    leading: spacing * 2,
+                    bottom: .zero,
+                    trailing: spacing * 2
+                ))
             }
         }
-        .padding([.leading, .top, .bottom])
+        .padding(EdgeInsets(
+            top: spacing * 2,
+            leading: spacing,
+            bottom: spacing * 2,
+            trailing: .zero
+        ))
         .background(.background)
     }
 }

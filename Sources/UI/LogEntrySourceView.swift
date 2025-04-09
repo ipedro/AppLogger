@@ -32,14 +32,14 @@ struct LogEntrySourceView: View {
         case let .swift(lineNumber):
             "\(data).swift:\(lineNumber)"
         case let .error(code):
-            "\(data) Code: \(code)"
+            "\(data) (Code \(code))"
         case .none:
             data.description
         }
     }
     
     var body: some View {
-        Text(label).font(.footnote)
+        Text(label)
     }
 }
 
