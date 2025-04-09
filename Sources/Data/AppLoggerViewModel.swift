@@ -41,7 +41,7 @@ package final class AppLoggerViewModel: ObservableObject {
     package var showFilters = false
     
     @Published
-    package var sorting: Sorting = .ascending
+    package var sorting: Sorting = .descending
     
     @Published
     package var activityItem: ActivityItem?
@@ -87,7 +87,7 @@ private extension AppLoggerViewModel {
     func setupListeners() {
         dataObserver.allCategories
             .debounce(for: 0.1, scheduler: DispatchQueue.global())
-            .map { $0.map(\.filter) }
+            .map { Set($0.map(\.filter)) }
             .receive(on: DispatchQueue.main)
             .sink { [unowned self] newValue in
                 categories = sortFilters(newValue, by: activeFilters)
@@ -96,7 +96,7 @@ private extension AppLoggerViewModel {
         
         dataObserver.allSources
             .debounce(for: 0.1, scheduler: DispatchQueue.global())
-            .map { $0.map(\.filter) }
+            .map { Set($0.map(\.filter)) }
             .receive(on: DispatchQueue.main)
             .sink { [unowned self] newValue in
                 sources = sortFilters(newValue, by: activeFilters)
@@ -111,10 +111,10 @@ private extension AppLoggerViewModel {
         )
         .receive(on: DispatchQueue.main)
         .map { [unowned self] allEntries, query, filters, sort in
-            filterEntries(allEntries, filters: filters, query: query, sort: sort)
+            filterEntries(allEntries, filters: filters, query: query)
         }
         .sink { [unowned self] newValue in
-            entries = newValue
+            entries = sortEntries(newValue, by: sorting)
         }
         .store(in: &cancellables)
     }
@@ -126,7 +126,7 @@ private extension AppLoggerViewModel {
         }
     }
     
-    func sortFilters(_ filters: [Filter], by selection: Set<Filter>) -> [Filter] {
+    func sortFilters(_ filters: Set<Filter>, by selection: Set<Filter>) -> [Filter] {
         filters.sorted { lhs, rhs in
             let lhsActive = selection.contains(lhs)
             let rhsActive = selection.contains(rhs)
@@ -137,7 +137,7 @@ private extension AppLoggerViewModel {
         }
     }
     
-    func filterEntries(_ entries: [ID], filters: Set<Filter>, query: String, sort: Sorting) -> [ID] {
+    func filterEntries(_ entries: [ID], filters: Set<Filter>, query: String) -> [ID] {
         var result = entries
         
         if !filters.isEmpty {
@@ -153,7 +153,7 @@ private extension AppLoggerViewModel {
             }
         }
         
-        return sortEntries(result, by: sort)
+        return result
     }
     
     func filterEntry(_ id: ID, with filters: Set<Filter>) -> Bool {

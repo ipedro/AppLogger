@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import class Data.AppLoggerViewModel
+import class Data.ColorStore
 import class Data.DataObserver
 import class ObjectiveC.NSObject
 import class SwiftUI.UIHostingController
@@ -82,6 +83,7 @@ final class Coordinator: NSObject {
             sheetPresentation.selectedDetentIdentifier = .medium
             sheetPresentation.prefersGrabberVisible = true
             sheetPresentation.prefersScrollingExpandsWhenScrolledToEdge = false
+            sheetPresentation.largestUndimmedDetentIdentifier = .large
             sheetPresentation.delegate = self
         }
         

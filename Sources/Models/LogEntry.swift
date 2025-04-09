@@ -71,6 +71,26 @@ public extension LogEntry {
     ///
     /// - Parameters:
     ///   - category: The category or classification of the log entry.
+    ///   - source: The source from which the log entry originates.
+    ///   - content: The detailed content of the log entry.
+    ///   - userInfo: An optional user info.
+    init(
+        category: Category,
+        source: Source,
+        content: Content,
+        userInfo: [String: Any]
+    ) {
+        self.id = ID()
+        self.source = source
+        self.category = category
+        self.content = content
+        self.userInfo = .init(userInfo)
+    }
+    
+    /// Creates a new instance of LogEntry with the given source, category, and content.
+    ///
+    /// - Parameters:
+    ///   - category: The category or classification of the log entry.
     ///   - source: A custom source from which the log entry originates.
     ///   - content: The detailed content of the log entry.
     ///   - userInfo: An optional user info.

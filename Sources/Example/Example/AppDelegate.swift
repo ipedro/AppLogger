@@ -41,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             writeToFile: .none,
             fileLevel: nil
         )
-        log.formatters = [AppLoggerFormatter(appLogger: AppLogger.current)]
+        log.formatters = [AppLoggerFormatter()]
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -75,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 
-extension UIApplication.State: CustomDebugStringConvertible {
+extension UIApplication.State: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .active:

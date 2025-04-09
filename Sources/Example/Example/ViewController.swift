@@ -24,12 +24,12 @@ import AppLogger
 class ViewController: UIViewController {
 
     private lazy var presentLightButton = UIButton(primaryAction: .init(title: "Present Light Logger", handler: { action in
-        AppLogger.current.present(animated: true, configuration: .init(colorScheme: .light), completion: .none)
+        Task { await AppLogger.current.present() }
         log.notice(action.title)
     }))
 
     private lazy var presentDarkButton = UIButton(primaryAction: .init(title: "Present Dark Logger", handler: { action in
-        AppLogger.current.present(animated: true, configuration: .init(colorScheme: .dark), completion: .none)
+        Task { await AppLogger.current.present() }
         log.notice(action.title)
     }))
 
@@ -39,10 +39,9 @@ class ViewController: UIViewController {
 
     private lazy var stackView = UIStackView(
         arrangedSubviews: [
-            UIView(),
+            logErrorButton,
             presentLightButton,
             presentDarkButton,
-            logErrorButton,
             UIView()
         ]
     )

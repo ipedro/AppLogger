@@ -141,7 +141,7 @@ extension LogEntry.UserInfo: ExpressibleByStringLiteral {
 }
 
 extension LogEntry.UserInfo: ExpressibleByDictionaryLiteral {
-    public init(dictionaryLiteral elements: (AnyHashable, Any)...) {
+    public init(dictionaryLiteral elements: (String, Any)...) {
         self.init(
             elements.reduce(into: [:]) { partialResult, element in
                 partialResult[element.0] = element.1

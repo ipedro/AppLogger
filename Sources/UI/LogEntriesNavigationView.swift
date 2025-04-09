@@ -36,6 +36,9 @@ package struct LogEntriesNavigationView: View {
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
+    @StateObject
+    private var colorStore = ColorStore<Source>()
+    
     package init() {}
     
     package var body: some View {
@@ -59,6 +62,7 @@ package struct LogEntriesNavigationView: View {
         }
         .preferredColorScheme(preferredColorScheme)
         .activitySheet($viewModel.activityItem)
+        .environmentObject(colorStore)
     }
     
     private func leadingNavigationBarItems() -> some View {

@@ -20,9 +20,8 @@
 
 import class Data.DataObserver
 import class Data.DataStore
+import class Data.ColorStore
 import class UIKit.UIViewController
-import struct Models.AppLoggerConfiguration
-import struct Models.LogEntry
 
 public actor AppLogger {
     private let dataStore = DataStore()

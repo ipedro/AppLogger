@@ -21,7 +21,7 @@
 import AppLogger
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate, LogConvertible {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -56,8 +56,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, LogConvertible {
         self.window = window
         window.rootViewController = ViewController()
         window.makeKeyAndVisible()
-        AppLogger.current.window = window
-        AppLogger.current.presentAppLogger()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
