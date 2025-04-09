@@ -35,7 +35,11 @@ package final class AppLoggerViewModel: ObservableObject {
     package var showFilters = false
     
     @Published
-    package var sorting: Sorting = .ascending
+    package var sorting: Sorting = .ascending {
+        willSet {
+            entries = entries.reversed()
+        }
+    }
     
     @Published
     package var activityItem: ActivityItem?
@@ -43,8 +47,8 @@ package final class AppLoggerViewModel: ObservableObject {
     @Published
     package var activeFilters: Set<Filter.ID> = [] {
         willSet {
-            sources = sortFilters(sources, with: newValue)
-            categories = sortFilters(categories, with: newValue)
+            sources = sortFilters(sources, by: newValue)
+            categories = sortFilters(categories, by: newValue)
         }
     }
     
@@ -75,39 +79,46 @@ package final class AppLoggerViewModel: ObservableObject {
     
     private func setupListeners() {
         dataObserver.allEntries
-            .debounce(for: 0.2, scheduler: DispatchQueue.main)
-            .sink { [unowned self] entries in
-                self.entries = entries
+            .debounce(for: 0.1, scheduler: DispatchQueue.main)
+            .sink { [unowned self] newValue in
+                entries = sortEntries(newValue, by: sorting)
             }
             .store(in: &cancellables)
         
         dataObserver.allSources
-            .debounce(for: 0.2, scheduler: DispatchQueue.global())
+            .debounce(for: 0.1, scheduler: DispatchQueue.global())
             .map { $0.map(\.filter) }
             .receive(on: DispatchQueue.main)
-            .sink { [unowned self] sources in
-                self.sources = sortFilters(sources, with: activeFilters)
+            .sink { [unowned self] newValue in
+                sources = sortFilters(newValue, by: activeFilters)
             }
             .store(in: &cancellables)
         
         dataObserver.allCategories
-            .debounce(for: 0.2, scheduler: DispatchQueue.global())
+            .debounce(for: 0.1, scheduler: DispatchQueue.global())
             .map { $0.map(\.filter) }
             .receive(on: DispatchQueue.main)
-            .sink { [unowned self] categories in
-                self.categories = sortFilters(categories, with: activeFilters)
+            .sink { [unowned self] newValue in
+                categories = sortFilters(newValue, by: activeFilters)
             }
             .store(in: &cancellables)
     }
     
-    private func sortFilters(_ filters: [Filter], with selection: Set<Filter.ID>) -> [Filter] {
-        filters.sorted(by: { lhs, rhs in
-            let aActive = selection.contains(lhs.id)
-            let bActive = selection.contains(rhs.id)
-            if aActive != bActive {
-                return aActive && !bActive
+    private func sortEntries(_ entries: [ID], by sorting: Sorting) -> [ID] {
+        switch sorting {
+        case .ascending: entries
+        case .descending: entries.reversed()
+        }
+    }
+    
+    private func sortFilters(_ filters: [Filter], by selection: Set<Filter.ID>) -> [Filter] {
+        filters.sorted { lhs, rhs in
+            let lhsActive = selection.contains(lhs.id)
+            let rhsActive = selection.contains(rhs.id)
+            if lhsActive != rhsActive {
+                return lhsActive && !rhsActive
             }
             return lhs < rhs
-        })
+        }
     }
 }
