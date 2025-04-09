@@ -31,7 +31,7 @@ import class UIKit.UIWindowScene
 import protocol SwiftUI.View
 import protocol UIKit.UISheetPresentationControllerDelegate
 import struct Models.AppLoggerConfiguration
-import struct UI.AppLoggerView
+import struct UI.LogEntriesNavigationView
 
 @MainActor
 final class Coordinator: NSObject {
@@ -101,7 +101,7 @@ final class Coordinator: NSObject {
     }
     
     func rootView() -> some View {
-        AppLoggerView()
+        LogEntriesNavigationView()
             .configuration(configuration)
             .environmentObject(viewModel)
             .environmentObject(dataObserver)

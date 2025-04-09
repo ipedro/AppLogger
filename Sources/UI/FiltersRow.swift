@@ -21,7 +21,7 @@
 import SwiftUI
 import struct Models.Filter
 
-struct FiltersView: View {
+struct FiltersRow: View {
     var title: String
     
     let data: [Filter]
@@ -54,7 +54,7 @@ struct FiltersView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: spacing) {
                     ForEach(sortedData) { filter in
-                        FilterToggle(
+                        FilterView(
                             isOn: Binding {
                                 activeFilters.contains(filter.id)
                             } set: { active in
@@ -78,7 +78,7 @@ struct FiltersView: View {
 }
 
 #Preview {
-    FiltersView(
+    FiltersRow(
         title: "Filters",
         data: [
             "Filter 1",

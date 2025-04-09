@@ -95,24 +95,13 @@ extension LogEntryView {
 #endif
 
 #Preview {
-    let allEntries = Mock.allCases.map(\.rawValue)
+    let entry = Mock.googleAnalytics.rawValue
     
-    ScrollView {
-        LazyVStack(spacing: 0) {
-            ForEach(0..<10) { _ in
-                ForEach(allEntries.shuffled()) { entry in
-                    LogEntryView(id: entry.id).safeAreaInset(
-                        edge: .bottom,
-                        content: Divider.init
-                    )
-                }
-            }
-        }
-    }
-    .environmentObject(ColorStore<Source>())
-    .environmentObject(DataObserver(
-        entryCategories: allEntries.reduce(into: [:], { $0[$1.id] = $1.category }),
-        entryContents: allEntries.reduce(into: [:], { $0[$1.id] = $1.content }),
-        entrySources: allEntries.reduce(into: [:], { $0[$1.id] = $1.source })
-    ))
+    LogEntryView(id: entry.id)
+        .environmentObject(ColorStore<Source>())
+        .environmentObject(DataObserver(
+            entryCategories: [entry.id: entry.category],
+            entryContents: [entry.id: entry.content],
+            entrySources: [entry.id: entry.source]
+        ))
 }

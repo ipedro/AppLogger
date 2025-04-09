@@ -21,7 +21,7 @@
 import SwiftUI
 import struct Models.Filter
 
-struct FilterToggle: View {
+struct FilterView: View {
     @Binding
     var isOn: Bool
     let data: Filter
@@ -42,7 +42,7 @@ struct FilterToggle: View {
     var isOn = false
     
     VStack {
-        FilterToggle(
+        FilterView(
             isOn: $isOn,
             data: "Some Filter"
         )

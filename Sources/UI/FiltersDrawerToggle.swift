@@ -20,7 +20,7 @@
 
 import SwiftUI
 
-struct ActiveFiltersToggle: View {
+struct FiltersDrawerToggle: View {
     @Binding
     var isOn: Bool
     var activeFilters: Int = 0
@@ -48,5 +48,5 @@ struct ActiveFiltersToggle: View {
     @Previewable @State
     var isOn = false
     
-    ActiveFiltersToggle(isOn: $isOn, activeFilters: isOn ? 3 : 0)
+    FiltersDrawerToggle(isOn: $isOn, activeFilters: isOn ? 3 : 0)
 }
