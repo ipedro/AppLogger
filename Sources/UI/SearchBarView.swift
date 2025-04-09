@@ -53,7 +53,7 @@ struct SearchBarView: View {
             }
             .padding(spacing)
             .foregroundColor(.secondary)
-            .background(Color(.secondarySystemBackground))
+            .background(Color.secondaryBackground)
             .clipShape(RoundedRectangle(cornerRadius: spacing))
         }
         .animation(.interactiveSpring, value: showClearTextButton)

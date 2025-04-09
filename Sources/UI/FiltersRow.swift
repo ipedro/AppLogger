@@ -60,7 +60,7 @@ struct FiltersRow: View {
                             bottom: spacing,
                             trailing: spacing
                         ))
-                        .background(Color(uiColor: .systemBackground))
+                        .background(.background)
                 }
             }
             .animation(.default, value: selection)
