@@ -19,46 +19,32 @@
 //  SOFTWARE.
 
 import SwiftUI
-import UIKit
 
-final class AppLoggerCoordinator: NSObject {
-    let viewModel: ViewModel
+struct LogEntryTitleView: View {
+    let tint: Color
+    let title: String
+    let createdAt: Date
+    
+    @Environment(\.spacing)
+    private var spacing
 
-    init(viewModel: ViewModel) {
-        self.viewModel = viewModel
-    }
-
-    private var startViewController: UIViewController?
-
-    func start() -> UIViewController {
-        let viewController = startViewController ?? makeStartViewController()
-        startViewController = viewController
-        return viewController
-    }
-
-    @discardableResult
-    func stop() -> Bool {
-        if startViewController == nil { return false }
-        startViewController?.dismiss(animated: true, completion: .none)
-        startViewController = .none
-        return true
-    }
-
-    func navigationView(onDismiss: @escaping () -> Void) -> some View {
-        AppLoggerView(dismiss: onDismiss)
-            .environmentObject(viewModel)
+    var body: some View {
+        HStack(spacing: spacing) {
+            Circle().fill(tint).frame(width: spacing, height: spacing)
+            Text(title).textSelection(.enabled)
+            Spacer()
+            Text(createdAt, style: .time).foregroundStyle(.secondary)
+        }
+        .font(.footnote)
+        .padding(.vertical, .zero)
+        .padding(.trailing, spacing * 2)
     }
 }
 
-// MARK: - Private Helpers
-
-private extension AppLoggerCoordinator {
-    func makeStartViewController() -> UIViewController {
-        let hostingController = UIHostingController(
-            rootView: navigationView { [weak self] in
-                self?.stop()
-            }
-        )
-        return hostingController
-    }
+#Preview {
+    LogEntryTitleView(
+        tint: .pink,
+        title: "Category",
+        createdAt: Date()
+    )
 }

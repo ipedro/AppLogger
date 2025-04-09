@@ -37,3 +37,11 @@ extension Filter: ExpressibleByStringLiteral {
         self.description = "\(value)"
     }
 }
+
+package protocol Filterable {
+    func matches(_ filter: Filter) -> Bool
+}
+
+package protocol FilterConvertible {
+    var filter: Filter { get }
+}

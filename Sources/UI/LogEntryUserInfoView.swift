@@ -20,31 +20,44 @@
 
 import SwiftUI
 
-struct TitleView: View {
-    let tint: Color
-    let title: String
-    let createdAt: Date
-    
+struct LogEntryUserInfoView: View {
+    var data: [String: String]
+    var tint: Color? = .secondary
+
     @Environment(\.spacing)
     private var spacing
-
+    
     var body: some View {
-        HStack(spacing: spacing) {
-            Circle().fill(tint).frame(width: spacing, height: spacing)
-            Text(title).textSelection(.enabled)
-            Spacer()
-            Text(createdAt, style: .time).foregroundStyle(.secondary)
+        LazyVStack(alignment: .leading, spacing: .zero) {
+            let items = data.sorted(by: <)
+            
+            ForEach(Array(zip(items.indices, items)), id: \.0) { offset, item in
+                LogEntryUserInfoRow(
+                    key: item.key,
+                    value: item.value,
+                    tint: tint
+                )
+                .padding(spacing)
+                .background(Color(backgroundColor(for: offset)))
+                .cornerRadius(spacing)
+            }
         }
-        .font(.footnote)
-        .padding(.vertical, .zero)
-        .padding(.trailing, spacing * 2)
+        .padding(.horizontal, spacing * 2)
+        .padding(.top, spacing)
+    }
+    
+    private func backgroundColor(for index: Int) -> UIColor {
+        index.isMultiple(of: 2) ? .systemGroupedBackground : .secondarySystemGroupedBackground
     }
 }
 
 #Preview {
-    TitleView(
-        tint: .pink,
-        title: "Category",
-        createdAt: Date()
+    LogEntryUserInfoView(
+        data: [
+            "environment": "dev",
+            "event": "open screen",
+            "": "Hey test"
+        ],
+        tint: .blue
     )
 }

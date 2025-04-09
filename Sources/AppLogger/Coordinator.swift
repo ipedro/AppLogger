@@ -18,10 +18,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import class Data.AppLoggerViewModel
 import class Data.DataObserver
 import class ObjectiveC.NSObject
 import class SwiftUI.UIHostingController
-import class UI.AppLoggerViewModel
 import class UIKit.UIApplication
 import class UIKit.UIPresentationController
 import class UIKit.UISheetPresentationController

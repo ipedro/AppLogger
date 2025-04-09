@@ -27,7 +27,7 @@ import struct Models.ID
 import class Data.ColorStore
 import class Data.DataObserver
 
-struct EntryView: View {
+struct LogEntryView: View {
     let id: ID
     
     private var source: Source { data.entrySources[id]! }
@@ -56,29 +56,29 @@ struct EntryView: View {
             .resolve(with: colorScheme)
         
         VStack(alignment: .leading, spacing: spacing) {
-            TitleView(
+            LogEntryTitleView(
                 tint: tint,
                 title: category.description,
                 createdAt: createdAt
             )
-
-            SourceInfoView(
+            
+            LogEntrySourceView(
                 name: source.description,
                 data: source.debugInfo
             )
             .foregroundStyle(tint)
-
-            ContentView(
+            
+            LogEntryContentView(
                 category: category,
                 content: content,
                 tint: tint
             )
-
+            
             if !content.userInfo.isEmpty {
-                UserInfoView(
+                LogEntryUserInfoView(
                     data: content.userInfo,
                     tint: tint
-                )            
+                )
             }
         }
         .padding([.leading, .top, .bottom])
@@ -86,7 +86,7 @@ struct EntryView: View {
 }
 
 #if DEBUG
-extension EntryView {
+extension LogEntryView {
     init(mock: Mock) {
         let entry = mock.rawValue
         self.id = entry.id
@@ -101,7 +101,7 @@ extension EntryView {
         LazyVStack(spacing: 0) {
             ForEach(0..<10) { _ in
                 ForEach(allEntries.shuffled()) { entry in
-                    EntryView(id: entry.id).safeAreaInset(
+                    LogEntryView(id: entry.id).safeAreaInset(
                         edge: .bottom,
                         content: Divider.init
                     )

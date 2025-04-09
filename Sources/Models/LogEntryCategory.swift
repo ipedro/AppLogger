@@ -80,6 +80,12 @@ extension LogEntry.Category: CustomStringConvertible {
     }
 }
 
+extension LogEntry.Category: FilterConvertible {
+    package var filter: Filter {
+        Filter(query: name, description: description)
+    }
+}
+
 extension LogEntry.Category: Filterable {
     package func matches(_ filter: Filter) -> Bool {
         description.localizedLowercase.contains(filter.query.localizedLowercase)

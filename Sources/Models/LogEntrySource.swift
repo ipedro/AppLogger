@@ -65,6 +65,12 @@ extension LogEntry.Source: CustomStringConvertible {
     }
 }
 
+extension LogEntry.Source: FilterConvertible {
+    package var filter: Filter {
+        Filter(query: name, description: description)
+    }
+}
+
 extension LogEntry.Source: Filterable {
     package func matches(_ filter: Filter) -> Bool {
         description.localizedLowercase.contains(filter.query.localizedLowercase)

@@ -19,45 +19,55 @@
 //  SOFTWARE.
 
 import SwiftUI
+import enum Models.SourceInfo
 
-struct UserInfoView: View {
-    var data: [String: String]
-    var tint: Color? = .secondary
-
+struct LogEntrySourceView: View {
+    let name: String
+    let data: SourceInfo?
+    
     @Environment(\.spacing)
     private var spacing
-    
-    var body: some View {
-        LazyVStack(alignment: .leading, spacing: .zero) {
-            let items = data.sorted(by: <)
-            
-            ForEach(Array(zip(items.indices, items)), id: \.0) { offset, item in
-                UserInfoRow(
-                    key: item.key,
-                    value: item.value,
-                    tint: tint
-                )
-                .padding(spacing)
-                .background(Color(backgroundColor(for: offset)))
-                .cornerRadius(spacing)
-            }
+
+    private var label: String {
+        switch data {
+        case let .sdk(version):
+            "\(name) (\(version))"
+        case let .swift(lineNumber):
+            "\(name).swift:\(lineNumber)"
+        case let .error(code):
+            "\(name) Code: \(code)"
+        case .none:
+            name
         }
-        .padding(.horizontal, spacing * 2)
-        .padding(.top, spacing)
     }
     
-    private func backgroundColor(for index: Int) -> UIColor {
-        index.isMultiple(of: 2) ? .systemGroupedBackground : .secondarySystemGroupedBackground
+    var body: some View {
+        Text(label)
+            .font(.footnote)
+            .padding(.horizontal, spacing * 2)
     }
 }
 
 #Preview {
-    UserInfoView(
-        data: [
-            "environment": "dev",
-            "event": "open screen",
-            "": "Hey test"
-        ],
-        tint: .blue
-    )
+    VStack {
+        LogEntrySourceView(
+            name: "File",
+            data: .swift(lineNumber: 12)
+        )
+        
+        LogEntrySourceView(
+            name: "MySDK",
+            data: .sdk(version: "1.2.3")
+        )
+        
+        LogEntrySourceView(
+            name: "Something else",
+            data: .none
+        )
+        
+        LogEntrySourceView(
+            name: "Some Error",
+            data: .error(code: 15)
+        )
+    }
 }

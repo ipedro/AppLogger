@@ -1,51 +1,25 @@
+//  Copyright (c) 2025 Pedro Almeida
 //
-//  AppLoggerView.swift
-//  AppLogger
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
 //
-//  Created by Pedro Almeida on 08.04.25.
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
 //
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
 
 import SwiftUI
-import Models
-import class Data.DataObserver
-
-package final class AppLoggerViewModel: ObservableObject {
-    @Published
-    var searchQuery: String = ""
-    
-    @Published
-    var showFilters = false
-    
-    @Published
-    var sorting: Sorting = .ascending
-    
-    @Published
-    var activityItem: ActivityItem?
-    
-    @Published
-    var activeFilters: [Filter.ID] = []
-    
-    @Published
-    var sources: [Filter] = []
-    
-    @Published
-    var categories: [Filter] = []
-    
-    @Published
-    var entries: [ID] = []
-    
-    private let dataObserver: DataObserver
-    
-    let dismissAction: @MainActor () -> Void
-    
-    package init(
-        dataObserver: DataObserver,
-        dismissAction: @escaping @MainActor () -> Void
-    ) {
-        self.dataObserver = dataObserver
-        self.dismissAction = dismissAction
-    }
-}
+import class Data.AppLoggerViewModel
 
 package struct AppLoggerView: View {
     
@@ -82,7 +56,7 @@ package struct AppLoggerView: View {
                 ScrollView {
                     LazyVStack(spacing: .zero) {
                         ForEach(viewModel.entries, id: \.self) { id in
-                            EntryView(id: id).safeAreaInset(
+                            LogEntryView(id: id).safeAreaInset(
                                 edge: .bottom,
                                 content: Divider.init
                             )

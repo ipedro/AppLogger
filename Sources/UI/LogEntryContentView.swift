@@ -1,4 +1,4 @@
-//  Copyright (c) 2022 Pedro Almeida
+//  Copyright (c) 2025 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -19,55 +19,49 @@
 //  SOFTWARE.
 
 import SwiftUI
-import enum Models.SourceInfo
+import struct Models.Category
+import struct Models.Content
 
-struct SourceInfoView: View {
-    let name: String
-    let data: SourceInfo?
+struct LogEntryContentView: View {
+    var category: Category
+    var content: Content
+    var tint: Color
     
     @Environment(\.spacing)
     private var spacing
-
-    private var label: String {
-        switch data {
-        case let .sdk(version):
-            "\(name) (\(version))"
-        case let .swift(lineNumber):
-            "\(name).swift:\(lineNumber)"
-        case let .error(code):
-            "\(name) Code: \(code)"
-        case .none:
-            name
-        }
-    }
     
     var body: some View {
-        Text(label)
-            .font(.footnote)
+        Text(content.description)
+            .bold()
+            .font(.callout)
+            .minimumScaleFactor(0.85)
+            .lineLimit(3)
             .padding(.horizontal, spacing * 2)
+        
+        if let message = content.output, !message.isEmpty {
+            HStack(alignment: .top) {
+                if let icon = category.emoji {
+                    Text(String(icon))
+                }
+                
+                LinkText(data: message)
+            }
+            .font(.footnote)
+            .foregroundStyle(tint)
+            .padding(spacing * 1.5)
+            .background(tint.opacity(0.16))
+            .cornerRadius(spacing * 1.8)
+            .padding(.horizontal, spacing * 2)
+            .padding(.vertical, spacing)
+        }
+
     }
 }
 
 #Preview {
-    VStack {
-        SourceInfoView(
-            name: "File",
-            data: .swift(lineNumber: 12)
-        )
-        
-        SourceInfoView(
-            name: "MySDK",
-            data: .sdk(version: "1.2.3")
-        )
-        
-        SourceInfoView(
-            name: "Something else",
-            data: .none
-        )
-        
-        SourceInfoView(
-            name: "Some Error",
-            data: .error(code: 15)
-        )
-    }
+    LogEntryContentView(
+        category: .alert,
+        content: Content("content", output: "Bla", userInfo: [:]),
+        tint: .accentColor
+    )
 }

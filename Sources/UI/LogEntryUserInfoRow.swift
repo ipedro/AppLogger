@@ -20,7 +20,7 @@
 
 import SwiftUI
 
-struct UserInfoRow: View {
+struct LogEntryUserInfoRow: View {
     let key: String
     let value: String
     let tint: Color?
@@ -65,7 +65,7 @@ private extension View {
 
 #Preview {
     VStack {
-        UserInfoRow(
+        LogEntryUserInfoRow(
             key: "Key",
             value: "I'm a value",
             tint: .blue
@@ -73,7 +73,7 @@ private extension View {
         
         Divider()
         
-        UserInfoRow(
+        LogEntryUserInfoRow(
             key: "",
             value: "String interpolations are string literals that evaluate any included expressions and convert the results to string form. String interpolations give you an easy way to build a string from multiple pieces. Wrap each expression in a string interpolation in parentheses, prefixed by a backslash.",
             tint: .blue
