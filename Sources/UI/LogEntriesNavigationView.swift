@@ -81,10 +81,10 @@ package struct LogEntriesNavigationView: View {
         allCategories: Set(allEntries.map(\.category)).sorted(),
         allEntries: allEntries.map(\.id),
         allSources: allEntries.map(\.source),
-        entryCategories: allEntries.reduce(into: [:], { $0[$1.id] = $1.category }),
-        entryContents: allEntries.reduce(into: [:], { $0[$1.id] = $1.content }),
-        entrySources: allEntries.reduce(into: [:], { $0[$1.id] = $1.source }),
-        entryUserInfos: allEntries.reduce(into: [:], { $0[$1.id] = $1.userInfo })
+        entryCategories: allEntries.valuesByID(\.category),
+        entryContents: allEntries.valuesByID(\.content),
+        entrySources: allEntries.valuesByID(\.source),
+        entryUserInfos: allEntries.valuesByID(\.userInfo)
     )
     
     LogEntriesNavigationView()

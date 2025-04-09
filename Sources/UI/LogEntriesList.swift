@@ -73,10 +73,10 @@ struct LogEntriesList: View {
     
     let dataObserver = DataObserver(
         allEntries: allEntries.map(\.id),
-        entryCategories: allEntries.reduce(into: [:], { $0[$1.id] = $1.category }),
-        entryContents: allEntries.reduce(into: [:], { $0[$1.id] = $1.content }),
-        entrySources: allEntries.reduce(into: [:], { $0[$1.id] = $1.source }),
-        entryUserInfos: allEntries.reduce(into: [:], { $0[$1.id] = $1.userInfo })
+        entryCategories: allEntries.valuesByID(\.category),
+        entryContents: allEntries.valuesByID(\.content),
+        entrySources: allEntries.valuesByID(\.source),
+        entryUserInfos: allEntries.valuesByID(\.userInfo)
     )
     
     LogEntriesList()

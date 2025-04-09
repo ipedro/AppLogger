@@ -87,3 +87,11 @@ public extension LogEntry {
         self.userInfo = userInfo
     }
 }
+
+package extension [LogEntry] {
+    func valuesByID<V>(_ keyPath: KeyPath<LogEntry, V>) -> [LogEntry.ID: V] {
+        reduce(into: [:]) { dict, entry in
+            dict[entry.id] = entry[keyPath: keyPath]
+        }
+    }
+}
