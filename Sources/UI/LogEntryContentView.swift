@@ -37,7 +37,6 @@ struct LogEntryContentView: View {
                 .font(.callout)
                 .minimumScaleFactor(0.85)
                 .lineLimit(3)
-                .padding(.horizontal, spacing * 2)
                 .multilineTextAlignment(.leading)
             
             if let message = content.output, !message.isEmpty {
@@ -51,9 +50,10 @@ struct LogEntryContentView: View {
                 .font(.footnote)
                 .foregroundStyle(tint)
                 .padding(spacing * 1.5)
-                .background(tint.opacity(0.16))
-                .cornerRadius(spacing * 1.8)
-                .padding(.horizontal, spacing * 2)
+                .background {
+                    RoundedRectangle(cornerRadius: spacing * 2)
+                        .fill(tint.opacity(0.16))
+                }
             }
         }
     }

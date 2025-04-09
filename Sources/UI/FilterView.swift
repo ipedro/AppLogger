@@ -27,20 +27,15 @@ struct FilterView: View {
     
     @Environment(\.colorScheme)
     private var colorScheme
+    
+    private let clipShape = RoundedRectangle(cornerRadius: 12)
 
     var body: some View {
-        Toggle(isOn: $isOn) {
-            Text(data.description).foregroundColor(foregroundColor)
-        }
-        .cornerRadius(12)
-        .toggleStyle(.button)
-        .font(.footnote)
-        .buttonStyle(.borderedProminent)
-        .tint(.primary)
-    }
-    
-    private var foregroundColor: Color {
-        isOn ? .background : .primary
+        Toggle(data.description, isOn: $isOn)
+            .clipShape(clipShape)
+            .toggleStyle(.button)
+            .font(.footnote)
+            .buttonStyle(.bordered)
     }
 }
 

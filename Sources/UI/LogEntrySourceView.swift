@@ -24,9 +24,6 @@ import enum Models.SourceInfo
 struct LogEntrySourceView: View {
     let name: String
     let data: SourceInfo?
-    
-    @Environment(\.spacing)
-    private var spacing
 
     private var label: String {
         switch data {
@@ -42,9 +39,7 @@ struct LogEntrySourceView: View {
     }
     
     var body: some View {
-        Text(label)
-            .font(.footnote)
-            .padding(.horizontal, spacing * 2)
+        Text(label).font(.footnote)
     }
 }
 

@@ -41,17 +41,18 @@ struct LogEntryUserInfoRows: View {
                     value: data.entryUserInfoValues[id]!,
                     tint: tint
                 )
-                .padding(spacing)
-                .background(Color(backgroundColor(for: offset)))
-                .cornerRadius(spacing)
+                .background {
+                    RoundedRectangle(cornerRadius: spacing)
+                        .fill(backgroundColor(for: offset))
+                }
             }
         }
-        .padding(.horizontal, spacing * 2)
-        .padding(.top, spacing)
     }
     
-    private func backgroundColor(for index: Int) -> UIColor {
-        index.isMultiple(of: 2) ? .systemGroupedBackground : .secondarySystemGroupedBackground
+    private func backgroundColor(for index: Int) -> Color {
+        Color(
+            uiColor: index.isMultiple(of: 2) ? .systemGroupedBackground : .secondarySystemGroupedBackground
+        )
     }
 }
 

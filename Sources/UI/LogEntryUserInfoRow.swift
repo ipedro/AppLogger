@@ -34,6 +34,7 @@ struct LogEntryUserInfoRow: View {
             Spacer(minLength: spacing)
             valueText
         }
+        .padding(spacing)
     }
 
     private var valueText: some View {
@@ -79,5 +80,4 @@ private extension View {
             tint: .blue
         )
     }
-    .padding()
 }

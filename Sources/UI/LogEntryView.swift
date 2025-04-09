@@ -64,11 +64,13 @@ struct LogEntryView: View {
                 title: category.description,
                 createdAt: createdAt
             )
+            .padding(.trailing, spacing * 2)
             
             LogEntrySourceView(
                 name: source.description,
                 data: source.debugInfo
             )
+            .padding(.horizontal, spacing * 2)
             .foregroundStyle(tint)
             
             LogEntryContentView(
@@ -76,12 +78,14 @@ struct LogEntryView: View {
                 content: content,
                 tint: tint
             )
+            .padding(.horizontal, spacing * 2)
             
             if let userInfo {
                 LogEntryUserInfoRows(
                     ids: userInfo,
                     tint: tint
                 )
+                .padding(.horizontal, spacing * 2)
             }
         }
         .padding([.leading, .top, .bottom])

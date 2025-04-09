@@ -36,8 +36,6 @@ struct LogEntryTitleView: View {
             Text(createdAt, style: .time).foregroundStyle(.secondary)
         }
         .font(.footnote)
-        .padding(.vertical, .zero)
-        .padding(.trailing, spacing * 2)
     }
 }
 
