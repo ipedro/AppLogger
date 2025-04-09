@@ -157,13 +157,3 @@ extension LogEntry.UserInfo: ExpressibleByArrayLiteral {
         )
     }
 }
-
-extension LogEntry.UserInfo: Filterable {
-    package func matches(_ filter: Filter) -> Bool {
-        for (key, value) in storage {
-            if key.localizedCaseInsensitiveContains(filter.query) { return true }
-            if value.localizedCaseInsensitiveContains(filter.query) { return true }
-        }
-        return false
-    }
-}

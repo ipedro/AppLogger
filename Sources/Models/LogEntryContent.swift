@@ -42,9 +42,11 @@ extension LogEntry.Content: ExpressibleByStringLiteral {
 }
 
 extension LogEntry.Content: Filterable {
-    package func matches(_ filter: Filter) -> Bool {
-        if message.localizedCaseInsensitiveContains(filter.query) { return true }
-        if output?.localizedCaseInsensitiveContains(filter.query) == true { return true }
-        return false
+    package static var filterable: KeyPath<LogEntry.Content, String> {
+        \.message
+    }
+    
+    package static var filterableOptional: KeyPath<LogEntry.Content, String?> {
+        \.output
     }
 }

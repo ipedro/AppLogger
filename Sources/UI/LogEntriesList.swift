@@ -49,9 +49,10 @@ struct LogEntriesList: View {
                         edge: .bottom,
                         content: Divider.init
                     )
-                    .transition(
-                        .move(edge: viewModel.sorting == .ascending ? .bottom : .top)
-                    )
+//                    .transition(
+//                        .move(edge: viewModel.sorting == .ascending ? .bottom : .top)
+//                        .combined(with: .opacity)
+//                    )
                 }
             }
             .animation(.easeInOut(duration: 0.35), value: viewModel.entries)

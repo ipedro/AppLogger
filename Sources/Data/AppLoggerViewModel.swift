@@ -19,13 +19,15 @@
 //  SOFTWARE.
 
 import class Combine.AnyCancellable
+import class Foundation.DispatchQueue
+import enum Combine.Publishers
 import enum Models.Sorting
 import protocol Combine.ObservableObject
+import protocol Models.Filterable
 import struct Combine.Published
 import struct Models.ActivityItem
 import struct Models.Filter
 import struct Models.ID
-import class Foundation.DispatchQueue
 
 package final class AppLoggerViewModel: ObservableObject {
     @Published
@@ -78,13 +80,6 @@ package final class AppLoggerViewModel: ObservableObject {
     }
     
     private func setupListeners() {
-        dataObserver.allEntries
-            .debounce(for: 0.1, scheduler: DispatchQueue.main)
-            .sink { [unowned self] newValue in
-                entries = sortEntries(newValue, by: sorting)
-            }
-            .store(in: &cancellables)
-        
         dataObserver.allSources
             .debounce(for: 0.1, scheduler: DispatchQueue.global())
             .map { $0.map(\.filter) }
@@ -102,6 +97,49 @@ package final class AppLoggerViewModel: ObservableObject {
                 categories = sortFilters(newValue, by: activeFilters)
             }
             .store(in: &cancellables)
+        
+        // New pipeline to filter and sort entries based on search and active filters
+        Publishers.CombineLatest4(
+            dataObserver.allEntries.debounce(for: 0.2, scheduler: DispatchQueue.main),
+            $searchQuery,
+            $activeFilters,
+            $sorting
+        )
+        .receive(on: DispatchQueue.main)
+        .map { [unowned self] allEntries, query, filterIDs, sort in
+            var allFilters = Set(filterIDs.map({ Filter(query: $0) }))
+            
+            if !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                allFilters.insert(Filter(query: query))
+            }
+            
+            if allFilters.isEmpty {
+                return allEntries
+            }
+            
+            let filtered = allEntries.filter { id in
+                let content = dataObserver.entryContents[id]!
+                let source = dataObserver.entrySources[id]!
+                let category = dataObserver.entryCategories[id]!
+                let userInfo = dataObserver.entryUserInfoValues.keys.map(\.key) + dataObserver.entryUserInfoValues.values
+                
+                for filter in allFilters {
+                    if content.matches(filter) { return true }
+                    if source.matches(filter) { return true }
+                    if category.matches(filter) { return true }
+                    if userInfo.contains(where: { $0.matches(filter) }) { return true }
+                }
+                
+                return false
+            }
+            
+            return sortEntries(filtered, by: sort)
+        }
+        .receive(on: DispatchQueue.main)
+        .sink { [unowned self] newValue in
+            entries = newValue
+        }
+        .store(in: &cancellables)
     }
     
     private func sortEntries(_ entries: [ID], by sorting: Sorting) -> [ID] {
@@ -120,5 +158,11 @@ package final class AppLoggerViewModel: ObservableObject {
             }
             return lhs < rhs
         }
+    }
+}
+
+extension String: Filterable {
+    package static var filterable: KeyPath<String, String> {
+        \.self
     }
 }

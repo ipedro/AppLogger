@@ -20,7 +20,7 @@
 
 import struct Foundation.UUID
 
-package struct Filter: CustomStringConvertible, Identifiable {
+package struct Filter: CustomStringConvertible, Identifiable, Hashable {
     package var id: String { query }
     package var query: String
     package var description: String
@@ -28,6 +28,10 @@ package struct Filter: CustomStringConvertible, Identifiable {
     package init(query: String, description: String? = nil) {
         self.query = query
         self.description = description ?? query
+    }
+    
+    package func hash(into hasher: inout Hasher) {
+        hasher.combine(query)
     }
 }
 
@@ -44,10 +48,32 @@ extension Filter: ExpressibleByStringLiteral {
     }
 }
 
-package protocol Filterable {
-    func matches(_ filter: Filter) -> Bool
-}
+// MARK: - Filter Convertible
 
 package protocol FilterConvertible {
     var filter: Filter { get }
+}
+
+// MARK: - Filterable
+
+package protocol Filterable {
+    static var filterable: KeyPath<Self, String> { get }
+    static var filterableOptional: KeyPath<Self, String?>? { get }
+}
+
+package extension Filterable {
+    static var filterableOptional: KeyPath<Self, String?>? { nil }
+    
+    func matches(_ filter: Filter) -> Bool {
+        if self[keyPath: Self.filterable].localizedCaseInsensitiveContains(filter.query) {
+            return true
+        }
+        
+        if let keyPath = Self.filterableOptional {
+            if self[keyPath: keyPath]?.localizedCaseInsensitiveContains(filter.query) == true {
+                return true
+            }
+        }
+        return false
+    }
 }

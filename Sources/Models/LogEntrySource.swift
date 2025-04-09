@@ -84,7 +84,7 @@ extension LogEntry.Source: FilterConvertible {
 }
 
 extension LogEntry.Source: Filterable {
-    package func matches(_ filter: Filter) -> Bool {
-        description.localizedLowercase.contains(filter.query.localizedLowercase)
+    package static var filterable: KeyPath<LogEntry.Source, String> {
+        \.name
     }
 }
