@@ -49,6 +49,12 @@ public extension LogEntry {
     }
 }
 
+extension LogEntry.Source: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.init(value)
+    }
+}
+
 extension LogEntry.Source: Comparable {
     public static func < (lhs: LogEntry.Source, rhs: LogEntry.Source) -> Bool {
         lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending

@@ -96,13 +96,29 @@ extension LogEntryView {
 #endif
 
 #Preview {
+    let entry = Mock.socialLogin.rawValue
+    
+    ScrollView {
+        LogEntryView(id: entry.id)
+            .environmentObject(ColorStore<Source>())
+            .environmentObject(DataObserver(
+                entryCategories: [entry.id: entry.category],
+                entryContents: [entry.id: entry.content],
+                entrySources: [entry.id: entry.source]
+            ))
+    }
+}
+#Preview {
     let entry = Mock.googleAnalytics.rawValue
     
-    LogEntryView(id: entry.id)
-        .environmentObject(ColorStore<Source>())
-        .environmentObject(DataObserver(
-            entryCategories: [entry.id: entry.category],
-            entryContents: [entry.id: entry.content],
-            entrySources: [entry.id: entry.source]
-        ))
+    ScrollView {
+        LogEntryView(id: entry.id)
+            .environmentObject(ColorStore<Source>())
+            .environmentObject(DataObserver(
+                entryCategories: [entry.id: entry.category],
+                entryContents: [entry.id: entry.content],
+                entrySources: [entry.id: entry.source]
+            ))
+    }
+    .background(.red)
 }

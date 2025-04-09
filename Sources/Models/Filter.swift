@@ -32,9 +32,9 @@ package struct Filter: CustomStringConvertible, Identifiable {
 }
 
 extension Filter: ExpressibleByStringLiteral {
-    package init(stringLiteral value: StaticString) {
-        self.query = "\(value)"
-        self.description = "\(value)"
+    package init(stringLiteral value: String) {
+        self.query = value
+        self.description = value
     }
 }
 

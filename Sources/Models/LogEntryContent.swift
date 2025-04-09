@@ -116,6 +116,12 @@ public extension LogEntry {
     }
 }
 
+extension LogEntry.Content: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.init(value)
+    }
+}
+
 extension LogEntry.Content: Filterable {
     package func matches(_ filter: Filter) -> Bool {
         if description.localizedCaseInsensitiveContains(filter.query) { return true }
