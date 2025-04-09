@@ -34,8 +34,8 @@ struct LogEntryUserInfoRows: View {
     private var data: DataObserver
     
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: .zero) {
-            ForEach(Array(zip(ids.indices, ids)), id: \.0) { offset, id in
+        VStack(alignment: .leading, spacing: .zero) {
+            ForEach(Array(ids.enumerated()), id: \.offset) { offset, id in
                 LogEntryUserInfoRow(
                     key: id.key,
                     value: data.entryUserInfoValues[id]!,

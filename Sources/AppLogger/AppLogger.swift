@@ -30,8 +30,6 @@ public actor AppLogger {
 
     public static let current = AppLogger()
     
-    public var configuration = AppLoggerConfiguration()
-    
     /// Adds a log entry to the DataStore.
     ///
     /// - Parameter logEntry: The log entry to add.
@@ -43,6 +41,7 @@ public actor AppLogger {
     
     public func present(
         animated: Bool = true,
+        configuration: AppLoggerConfiguration = .init(),
         completion: (@Sendable () -> Void)? = nil
     ) async {
         guard coordinator == nil else {

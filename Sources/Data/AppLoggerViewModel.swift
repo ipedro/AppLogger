@@ -86,18 +86,16 @@ package final class AppLoggerViewModel: ObservableObject {
 private extension AppLoggerViewModel {
     func setupListeners() {
         dataObserver.allCategories
-            .debounce(for: 0.1, scheduler: DispatchQueue.global())
+            .debounceOnMain(for: 0.1)
             .map { Set($0.map(\.filter)) }
-            .receive(on: DispatchQueue.main)
             .sink { [unowned self] newValue in
                 categories = sortFilters(newValue, by: activeFilters)
             }
             .store(in: &cancellables)
         
         dataObserver.allSources
-            .debounce(for: 0.1, scheduler: DispatchQueue.global())
+            .debounceOnMain(for: 0.1)
             .map { Set($0.map(\.filter)) }
-            .receive(on: DispatchQueue.main)
             .sink { [unowned self] newValue in
                 sources = sortFilters(newValue, by: activeFilters)
             }
@@ -111,10 +109,11 @@ private extension AppLoggerViewModel {
         )
         .receive(on: DispatchQueue.main)
         .map { [unowned self] allEntries, query, filters, sort in
-            filterEntries(allEntries, filters: filters, query: query)
+            let filtered = filterEntries(allEntries, filters: filters, query: query)
+            return sortEntries(filtered, by: sort)
         }
         .sink { [unowned self] newValue in
-            entries = sortEntries(newValue, by: sorting)
+            entries = newValue
         }
         .store(in: &cancellables)
     }

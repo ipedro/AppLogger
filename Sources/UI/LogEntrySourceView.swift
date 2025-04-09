@@ -29,8 +29,8 @@ struct LogEntrySourceView: View {
         switch data.info {
         case let .sdk(version):
             "\(data) (\(version))"
-        case let .swift(lineNumber):
-            "\(data).swift:\(lineNumber)"
+        case let .file(lineNumber):
+            "\(data):\(lineNumber)"
         case let .error(code):
             "\(data) (Code \(code))"
         case .none:
@@ -46,7 +46,7 @@ struct LogEntrySourceView: View {
 #Preview {
     VStack {
         LogEntrySourceView(
-            data: Source("📄", "File", .swift(lineNumber: 12))
+            data: Source("📄", "File.swift", .file(lineNumber: 12))
         )
         
         LogEntrySourceView(

@@ -23,7 +23,8 @@ import struct SwiftUICore.Color
 package typealias Source = LogEntry.Source
 
 public extension LogEntry {
-    struct Source: Hashable, Sendable {
+    struct Source: Hashable, Identifiable, Sendable {
+        public var id: String { name }
         public let emoji: Character?
         public let name: String
         public let info: SourceInfo?

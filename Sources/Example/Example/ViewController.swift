@@ -24,12 +24,12 @@ import AppLogger
 class ViewController: UIViewController {
 
     private lazy var presentLightButton = UIButton(primaryAction: .init(title: "Present Light Logger", handler: { action in
-        Task { await AppLogger.current.present() }
+        Task { await AppLogger.current.present(configuration: .init(colorScheme: .light)) }
         log.notice(action.title)
     }))
 
     private lazy var presentDarkButton = UIButton(primaryAction: .init(title: "Present Dark Logger", handler: { action in
-        Task { await AppLogger.current.present() }
+        Task { await AppLogger.current.present(configuration: .init(colorScheme: .dark)) }
         log.notice(action.title)
     }))
 

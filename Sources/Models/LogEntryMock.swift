@@ -18,8 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if DEBUG
-
 package typealias Mock = LogEntry.Mock
 
 extension LogEntry {
@@ -45,7 +43,7 @@ extension LogEntry {
         private var logger: LogEntry {
             LogEntry(
                 category: .debug,
-                source: Source("MyWebView", .swift(lineNumber: 20)),
+                source: Source("MyWebView", .file(lineNumber: 20)),
                 content: Content(
                     "func didNavigate()",
                     output: "Navigation cancelled."
@@ -141,4 +139,3 @@ extension LogEntry {
         }
     }
 }
-#endif

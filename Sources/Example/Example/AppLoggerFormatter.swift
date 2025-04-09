@@ -29,13 +29,13 @@ struct AppLoggerFormatter: LogFormatterProtocol {
         Task {
             await AppLogger.current.addLogEntry(
                 LogEntry(
-                    category: logDetails.level.category,
+                    category: LogEntry.Category(logDetails.level.description),
                     source: LogEntry.Source(
-                        String(logDetails.fileName.split(separator: ".").first!.split(separator: "/").last!),
-                        .swift(lineNumber: logDetails.lineNumber)
+                        (logDetails.fileName as NSString).lastPathComponent,
+                        .file(lineNumber: logDetails.lineNumber)
                     ),
                     content: LogEntry.Content(
-                        logDetails.functionName.last == ")" ? "func \(logDetails.functionName)" : "var \(logDetails.functionName)",
+                        logDetails.functionName,
                         output: logDetails.message,
                     ),
                     userInfo: logDetails.userInfo
@@ -47,22 +47,5 @@ struct AppLoggerFormatter: LogFormatterProtocol {
 
     var debugDescription: String {
         "hey"
-    }
-}
-
-private extension XCGLogger.Level {
-    var category: LogEntry.Category {
-        switch self {
-        case .verbose: return .verbose
-        case .debug: return .debug
-        case .info: return .info
-        case .notice: return .notice
-        case .warning: return .warning
-        case .error: return .error
-        case .severe: return .severe
-        case .alert: return .alert
-        case .emergency: return .emergency
-        case .none: return .init("None")
-        }
     }
 }

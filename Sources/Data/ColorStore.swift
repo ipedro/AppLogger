@@ -22,15 +22,15 @@ import protocol SwiftUI.ObservableObject
 import struct Models.DynamicColor
 
 @MainActor
-package final class ColorStore<Element>: ObservableObject where Element: Hashable {
+package final class ColorStore<Element>: ObservableObject where Element: Identifiable {
     private lazy var allColors = [DynamicColor]()
     
-    private var assignedColors: [Element: DynamicColor] = [:]
+    private var assignedColors: [Element.ID: DynamicColor] = [:]
     
     package init() {}
     
     package func color(for element: Element) -> DynamicColor {
-        if let color = assignedColors[element] {
+        if let color = assignedColors[element.id] {
             return color
         }
         
@@ -39,7 +39,7 @@ package final class ColorStore<Element>: ObservableObject where Element: Hashabl
         }
         
         let newColor = allColors.removeFirst()
-        assignedColors[element] = newColor
+        assignedColors[element.id] = newColor
         return newColor
     }
 }

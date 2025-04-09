@@ -24,7 +24,7 @@ package typealias SourceInfo = LogEntry.SourceInfo
 
 public extension LogEntry {
     enum SourceInfo: Hashable, Sendable {
-        case swift(lineNumber: Int)
+        case file(lineNumber: Int)
         
         case sdk(version: String)
         

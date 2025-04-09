@@ -55,7 +55,7 @@ package struct DynamicColor: Sendable {
     VStack {
         let colors = DynamicColor.makeColors()
         
-        ForEach(Array(zip(colors.indices, colors)), id: \.0) { _, color in
+        ForEach(Array(colors.enumerated()), id: \.offset) { _, color in
             color.resolve(with: .light)
         }
     }

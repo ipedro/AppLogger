@@ -65,7 +65,7 @@ public extension LogEntry {
 }
 
 extension LogEntry.Category: ExpressibleByStringLiteral {
-    public init(stringLiteral value: StringLiteralType) {
+    public init(stringLiteral value: String) {
         self.init(value)
     }
 }
