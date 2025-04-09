@@ -20,6 +20,7 @@
 
 import SwiftUI
 import class Data.AppLoggerViewModel
+import class Data.DataObserver
 
 struct FiltersDrawer: View {
     
@@ -61,4 +62,14 @@ struct FiltersDrawer: View {
         .safeAreaInset(edge: .bottom, content: Divider.init)
         .foregroundColor(.primary)
     }
+}
+
+#Preview {
+    FiltersDrawer()
+        .environmentObject(
+            AppLoggerViewModel(
+                dataObserver: DataObserver(),
+                dismissAction: {}
+            )
+        )
 }

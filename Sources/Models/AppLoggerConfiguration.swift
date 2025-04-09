@@ -75,6 +75,7 @@ public extension AppLoggerConfiguration {
         public var dismiss: String
         public var filtersOn: String
         public var filtersOff: String
+        public var sorting: String
         public var sortAscending: String
         public var sortDescending: String
         
@@ -83,13 +84,15 @@ public extension AppLoggerConfiguration {
             dismiss: String = "xmark",
             filtersOn: String = "line.3.horizontal.decrease.circle.fill",
             filtersOff: String = "line.3.horizontal.decrease.circle",
-            sortAscending: String = "arrowtriangle.up.circle",
-            sortDescending: String = "arrowtriangle.down.circle"
+            sorting: String = "arrow.up.arrow.down",
+            sortAscending: String = "arrow.up",
+            sortDescending: String = "arrow.down"
         ) {
             self.export = export
             self.dismiss = dismiss
             self.filtersOn = filtersOn
             self.filtersOff = filtersOff
+            self.sorting = sorting
             self.sortAscending = sortAscending
             self.sortDescending = sortDescending
         }

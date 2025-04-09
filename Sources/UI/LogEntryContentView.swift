@@ -31,37 +31,38 @@ struct LogEntryContentView: View {
     private var spacing
     
     var body: some View {
-        Text(content.description)
-            .bold()
-            .font(.callout)
-            .minimumScaleFactor(0.85)
-            .lineLimit(3)
-            .padding(.horizontal, spacing * 2)
-        
-        if let message = content.output, !message.isEmpty {
-            HStack(alignment: .top) {
-                if let icon = category.emoji {
-                    Text(String(icon))
+        VStack(alignment: .leading) {
+            Text(content.description)
+                .bold()
+                .font(.callout)
+                .minimumScaleFactor(0.85)
+                .lineLimit(3)
+                .padding(.horizontal, spacing * 2)
+                .multilineTextAlignment(.leading)
+            
+            if let message = content.output, !message.isEmpty {
+                HStack(alignment: .top) {
+                    if let icon = category.emoji {
+                        Text(String(icon))
+                    }
+                    
+                    LinkText(data: message)
                 }
-                
-                LinkText(data: message)
+                .font(.footnote)
+                .foregroundStyle(tint)
+                .padding(spacing * 1.5)
+                .background(tint.opacity(0.16))
+                .cornerRadius(spacing * 1.8)
+                .padding(.horizontal, spacing * 2)
             }
-            .font(.footnote)
-            .foregroundStyle(tint)
-            .padding(spacing * 1.5)
-            .background(tint.opacity(0.16))
-            .cornerRadius(spacing * 1.8)
-            .padding(.horizontal, spacing * 2)
-            .padding(.vertical, spacing)
         }
-
     }
 }
 
 #Preview {
     LogEntryContentView(
         category: .alert,
-        content: Content("content", output: "Bla", userInfo: [:]),
+        content: Content("content description", output: "Bla", userInfo: [:]),
         tint: .accentColor
     )
 }

@@ -44,24 +44,27 @@ struct SearchBarView: View {
                 .foregroundColor(.primary)
                 .focused($focus)
 
-                Button(action: self.dismiss) {
-                    Image(systemName: "xmark.circle.fill")
-                        .opacity(
-                            searchQuery
-                                .trimmingCharacters(in: .whitespacesAndNewlines)
-                                .isEmpty ? 0 : 1
-                        )
+                if showClearTextButton {
+                    Button(action: clearText) {
+                        Image(systemName: "xmark.circle.fill")
+                    }
+                    .transition(.scale.combined(with: .opacity))
                 }
             }
             .padding(spacing)
             .foregroundColor(.secondary)
             .background(Color(.secondarySystemBackground))
-            .cornerRadius(spacing)
+            .clipShape(RoundedRectangle(cornerRadius: spacing))
         }
+        .animation(.interactiveSpring, value: showClearTextButton)
         .padding(.vertical, spacing)
     }
+    
+    private var showClearTextButton: Bool {
+        focus || !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 
-    private func dismiss() {
+    private func clearText() {
         searchQuery = String()
         focus.toggle()
     }
@@ -71,5 +74,5 @@ struct SearchBarView: View {
 #Preview {
     @Previewable @State
     var query: String = "Query"
-    SearchBarView(searchQuery: $query)
+    SearchBarView(searchQuery: $query).padding()
 }

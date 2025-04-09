@@ -41,12 +41,12 @@ struct SortingButton: View {
                 )
             }
         } label: {
-            Image(systemName: icon).font(.title3)
+            Image(systemName: icon)
         }
     }
     
     private var icon: String {
-        icon(selection)
+        icons.sorting
     }
     
     private func icon(_ sorting: Sorting) -> String {

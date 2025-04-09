@@ -26,7 +26,7 @@ import enum Models.Mock
 import struct Models.Source
 
 package struct LogEntriesNavigationView: View {
-    
+
     @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
     
@@ -82,7 +82,7 @@ package struct LogEntriesNavigationView: View {
         .environmentObject(
             AppLoggerViewModel(
                 dataObserver: dataObserver,
-                dismissAction: {}
+                dismissAction: { print("dismiss") }
             )
         )
         .environmentObject(ColorStore<Source>())
