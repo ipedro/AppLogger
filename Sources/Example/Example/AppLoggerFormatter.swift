@@ -31,8 +31,8 @@ struct AppLoggerFormatter: LogFormatterProtocol {
                 LogEntry(
                     date: logDetails.date,
                     category: LogEntry.Category(logDetails.level.description),
-                    source: LogEntry.Source(
-                        (logDetails.fileName as NSString).lastPathComponent,
+                    source: logDetails.fileName.isEmpty ? "XCGLogger" : LogEntry.Source(
+                         (logDetails.fileName as NSString).lastPathComponent,
                         .file(line: logDetails.lineNumber)
                     ),
                     content: LogEntry.Content(
