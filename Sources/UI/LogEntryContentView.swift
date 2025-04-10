@@ -51,7 +51,7 @@ struct LogEntryContentView: View {
                 .foregroundStyle(tint)
                 .padding(spacing * 1.5)
                 .background {
-                    RoundedRectangle(cornerRadius: spacing * 2)
+                    RoundedRectangle(cornerRadius: spacing * 1.5)
                         .fill(tint.opacity(0.1))
                 }
             }

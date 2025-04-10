@@ -20,6 +20,7 @@
 
 import class Combine.AnyCancellable
 import class Foundation.DispatchQueue
+import class Foundation.UserDefaults
 import enum Combine.Publishers
 import enum Models.Sorting
 import protocol Combine.ObservableObject
@@ -38,10 +39,14 @@ package final class AppLoggerViewModel: ObservableObject {
     package var searchQuery: String = ""
     
     @Published
-    package var showFilters = false
+    package var showFilters: Bool {
+        willSet {
+            UserDefaults.standard.showFilters = newValue
+        }
+    }
     
     @Published
-    package var sorting: Sorting = .descending
+    package var sorting: Sorting
     
     @Published
     package var activityItem: ActivityItem?
@@ -78,6 +83,8 @@ package final class AppLoggerViewModel: ObservableObject {
     ) {
         self.dataObserver = dataObserver
         self.dismissAction = dismissAction
+        self.sorting = UserDefaults.standard.sorting
+        self.showFilters = UserDefaults.standard.showFilters
         
         setupListeners()
     }
@@ -109,6 +116,8 @@ private extension AppLoggerViewModel {
         )
         .receive(on: DispatchQueue.main)
         .map { [unowned self] allEntries, query, filters, sort in
+            UserDefaults.standard.sorting = sort
+
             var result = filterEntries(allEntries, with: filters)
             if !query.isEmpty {
                 result = filterEntries(result, with: [query.filter])
@@ -207,5 +216,26 @@ private extension Publisher {
 private extension String {
     var trimmed: String {
         trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+private extension UserDefaults {
+    var sorting: Sorting {
+        get {
+            let rawValue = integer(forKey: "AppLogger.sorting")
+            return Sorting(rawValue: rawValue) ?? .descending
+        }
+        set {
+            set(newValue.rawValue, forKey: "AppLogger.sorting")
+        }
+    }
+    
+    var showFilters: Bool {
+        get {
+            bool(forKey: "AppLogger.showFilters")
+        }
+        set {
+            set(newValue, forKey: "AppLogger.showFilters")
+        }
     }
 }

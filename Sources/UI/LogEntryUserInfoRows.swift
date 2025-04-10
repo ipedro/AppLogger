@@ -41,18 +41,18 @@ struct LogEntryUserInfoRows: View {
                     value: data.entryUserInfoValues[id]!,
                     tint: tint
                 )
-                .background {
-                    RoundedRectangle(cornerRadius: spacing)
-                        .fill(backgroundColor(for: offset))
-                }
+                .background(backgroundColor(for: offset))
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: spacing * 1.5))
     }
     
     private func backgroundColor(for index: Int) -> Color {
-        Color(
-            uiColor: index.isMultiple(of: 2) ? .systemGroupedBackground : .secondarySystemGroupedBackground
-        )
+        if index.isMultiple(of: 2) {
+            Color(uiColor: .secondarySystemFill)
+        } else {
+            Color(uiColor: .quaternarySystemFill)
+        }
     }
 }
 
@@ -66,6 +66,7 @@ struct LogEntryUserInfoRows: View {
             } ?? [],
             tint: .blue
         )
+        .padding()
     }
     .environmentObject(
         DataObserver(
