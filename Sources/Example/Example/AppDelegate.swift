@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     override init() {
         super.init()
+        log.formatters = [AppLoggerFormatter()]
         log.setup(
             level: .verbose,
             showLogIdentifier: false,
@@ -41,7 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             writeToFile: .none,
             fileLevel: nil
         )
-        log.formatters = [AppLoggerFormatter()]
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -70,8 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
         log.verbose(sceneSessions)
     }
-
-
 }
 
 
