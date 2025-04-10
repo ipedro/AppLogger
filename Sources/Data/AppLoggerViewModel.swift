@@ -109,8 +109,12 @@ private extension AppLoggerViewModel {
         )
         .receive(on: DispatchQueue.main)
         .map { [unowned self] allEntries, query, filters, sort in
-            let filtered = filterEntries(allEntries, filters: filters, query: query)
-            return sortEntries(filtered, by: sort)
+            var result = filterEntries(allEntries, with: filters)
+            if !query.isEmpty {
+                result = filterEntries(result, with: [query.filter])
+            }
+            result = sortEntries(result, by: sort)
+            return result
         }
         .sink { [unowned self] newValue in
             entries = newValue
@@ -136,26 +140,19 @@ private extension AppLoggerViewModel {
         }
     }
     
-    func filterEntries(_ entries: [ID], filters: Set<Filter>, query: String) -> [ID] {
+    func filterEntries(_ entries: [ID], with filters: Set<Filter>) -> [ID] {
         var result = entries
         
         if !filters.isEmpty {
             result = result.filter { id in
-                return filterEntry(id, filters: filters)
-            }
-        }
-        
-        if !query.isEmpty {
-            let search = query.filter
-            result = result.filter { id in
-                return filterEntry(id, filters: [search])
+                return filterEntry(id, with: filters)
             }
         }
         
         return result
     }
     
-    func filterEntry(_ id: ID, filters: Set<Filter>) -> Bool {
+    func filterEntry(_ id: ID, with filters: Set<Filter>) -> Bool {
         var source: Source {
             dataObserver.entrySources[id]!
         }
