@@ -36,10 +36,7 @@ struct FiltersDrawerToggle: View {
         } label: {
             Image(systemName: isOn ? icons.filtersOn : icons.filtersOff)
                 .badge(count: activeFilters)
-                .font(.title3)
         }
-        .toggleStyle(.button)
-        .buttonStyle(.plain)
     }
 }
 

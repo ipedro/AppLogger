@@ -52,6 +52,7 @@ struct BadgeModifier: ViewModifier {
                         .fixedSize()
                         .padding([.leading, .trailing], 4)
                         .padding([.top, .bottom], 1)
+                        .frame(minWidth: 16, minHeight: 16)
                         .background(Capsule().fill(backgroundColor))
                     
                 }

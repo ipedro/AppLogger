@@ -26,10 +26,10 @@ public extension LogEntry {
         public let output: String?
         
         public init(
-            _ content: String,
+            _ message: String,
             output: String? = .none
         ) {
-            self.message = content
+            self.message = message
             self.output = output
         }
     }

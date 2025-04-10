@@ -28,7 +28,7 @@ struct ExportButton: View {
     
     var body: some View {
         Button(action: action) {
-            Image(systemName: icon).font(.callout)
+            Image(systemName: icon)
         }
     }
 }

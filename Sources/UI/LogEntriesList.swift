@@ -37,28 +37,38 @@ struct LogEntriesList: View {
         if viewModel.searchQuery.isEmpty {
             emptyReasons.empty
         } else {
-            "\(emptyReasons.searchResults):\n\n\(viewModel.activeScope)"
+            "\(emptyReasons.searchResults):\n\n\(viewModel.activeScope.joined(separator: ", "))"
         }
     }
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: .zero) {
-                ForEach(viewModel.entries, id: \.self) { id in
-                    LogEntryView(id: id).safeAreaInset(
-                        edge: .bottom,
-                        content: Divider.init
-                    )
+            LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
+                Section {
+                    ForEach(viewModel.entries, id: \.self) { id in
+                        LogEntryView(id: id).safeAreaInset(
+                            edge: .bottom,
+                            content: Divider.init
+                        )
+                    }
+                } header: {
+                    if viewModel.showFilters {
+                        FiltersDrawer()
+                    }
                 }
             }
-            .animation(.easeInOut(duration: 0.35), value: viewModel.entries)
+            .animation(.default, value: viewModel.entries)
         }
+        .clipped()
+        .ignoresSafeArea(.container, edges: .bottom)
         .background {
             if viewModel.entries.isEmpty {
                 Text(emptyReason)
+                    .frame(maxWidth: .infinity)
                     .foregroundStyle(.secondary)
                     .font(.callout)
                     .multilineTextAlignment(.center)
+                    .padding(.top, viewModel.showFilters ? 150 : 0)
             }
         }
     }
@@ -75,13 +85,16 @@ struct LogEntriesList: View {
         entryUserInfos: allEntries.valuesByID(\.userInfo)
     )
     
+    let viewModel = AppLoggerViewModel(
+        dataObserver: dataObserver,
+        dismissAction: {}
+    )
+    
     LogEntriesList()
-        .environmentObject(
-            AppLoggerViewModel(
-                dataObserver: dataObserver,
-                dismissAction: {}
-            )
-        )
+        .environmentObject(viewModel)
         .environmentObject(ColorStore<Source>())
         .environmentObject(dataObserver)
+        .onAppear {
+            viewModel.showFilters = true
+        }
 }

@@ -54,7 +54,7 @@ struct SearchBarView: View {
             .padding(spacing)
             .foregroundColor(.secondary)
             .background(Color.secondaryBackground)
-            .clipShape(RoundedRectangle(cornerRadius: spacing))
+            .clipShape(Capsule())
         }
         .animation(.interactiveSpring, value: showClearTextButton)
         .padding(.vertical, spacing)
@@ -74,5 +74,5 @@ struct SearchBarView: View {
 #Preview {
     @Previewable @State
     var query: String = "Query"
-    SearchBarView(searchQuery: $query).padding()
+    SearchBarView(searchQuery: $query)
 }

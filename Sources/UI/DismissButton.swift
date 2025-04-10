@@ -29,12 +29,7 @@ struct DismissButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: icon)
-                .foregroundColor(.secondary)
-                .font(.footnote.bold())
-                .padding(7)
-                .background {
-                    Circle().fill(Color.primary.opacity(0.1))
-                }
+                .symbolRenderingMode(.hierarchical)
         }
     }
 }

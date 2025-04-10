@@ -81,12 +81,12 @@ public extension AppLoggerConfiguration {
         
         public init(
             export: String = "square.and.arrow.up",
-            dismiss: String = "xmark",
+            dismiss: String = "xmark.circle.fill",
             filtersOn: String = "line.3.horizontal.decrease.circle.fill",
             filtersOff: String = "line.3.horizontal.decrease.circle",
-            sorting: String = "arrow.up.arrow.down",
-            sortAscending: String = "arrow.up",
-            sortDescending: String = "arrow.down"
+            sorting: String = "chevron.up.chevron.down",
+            sortAscending: String = "chevron.up",
+            sortDescending: String = "chevron.down"
         ) {
             self.export = export
             self.dismiss = dismiss

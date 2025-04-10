@@ -29,29 +29,17 @@ struct FiltersDrawer: View {
     
     var body: some View {
         VStack(spacing: .zero) {
-            HStack {
-                FiltersDrawerToggle(
-                    isOn: $viewModel.showFilters,
-                    activeFilters: viewModel.activeFilters.count
-                )
-                .disabled(viewModel.sources.isEmpty && viewModel.categories.isEmpty)
-                
-                SearchBarView(searchQuery: $viewModel.searchQuery)
-                
-                SortingButton(selection: $viewModel.sorting)
-                    .opacity(viewModel.entries.isEmpty ? 0.5 : 1)
-                    .disabled(viewModel.entries.isEmpty)
-            }
-            .padding(.horizontal)
+            SearchBarView(searchQuery: $viewModel.searchQuery)
+                .padding(.horizontal)
             
-            if viewModel.showFilters && !viewModel.categories.isEmpty {
+            if !viewModel.categories.isEmpty {
                 FiltersRow(
                     title: "Categories",
                     selection: $viewModel.activeFilters,
                     data: viewModel.categories
                 )
             }
-            if viewModel.showFilters && !viewModel.sources.isEmpty {
+            if !viewModel.sources.isEmpty {
                 FiltersRow(
                     title: "Sources",
                     selection: $viewModel.activeFilters,
@@ -59,9 +47,8 @@ struct FiltersDrawer: View {
                 )
             }
         }
-        .safeAreaInset(edge: .bottom, content: Divider.init)
-        .foregroundColor(.primary)
         .background(.background)
+        .safeAreaInset(edge: .bottom, content: Divider.init)
     }
 }
 

@@ -28,11 +28,9 @@ struct FilterView: View {
     @Environment(\.colorScheme)
     private var colorScheme
     
-    private let clipShape = RoundedRectangle(cornerRadius: 12)
-
     var body: some View {
         Toggle(data.displayName, isOn: $isOn)
-            .clipShape(clipShape)
+            .clipShape(Capsule())
             .toggleStyle(.button)
             .font(.footnote)
             .buttonStyle(.bordered)

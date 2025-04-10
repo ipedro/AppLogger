@@ -30,48 +30,47 @@ package struct LogEntriesNavigationView: View {
     @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
     
+    @Environment(\.colorScheme)
+    private var colorScheme
+    
     @Environment(\.configuration.navigationTitle)
     private var navigationTitle
     
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
-    @StateObject
-    private var colorStore = ColorStore<Source>()
-    
     package init() {}
     
     package var body: some View {
         NavigationView {
-            VStack(spacing: .zero) {
-                FiltersDrawer()
-                LogEntriesList()
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(navigationTitle)
-            .toolbar {
-                ToolbarItem(
-                    placement: .topBarLeading,
-                    content: leadingNavigationBarItems
-                )
-                ToolbarItem(
-                    placement: .topBarTrailing,
-                    content: trailingNavigationBarItems
-                )
-            }
+            LogEntriesList()
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(navigationTitle)
+                .toolbar {
+                    ToolbarItem(
+                        placement: .topBarLeading,
+                        content: leadingNavigationBarItems
+                    )
+                    ToolbarItem(
+                        placement: .topBarTrailing,
+                        content: trailingNavigationBarItems
+                    )
+                }
         }
-        .preferredColorScheme(preferredColorScheme)
+        .colorScheme(preferredColorScheme ?? colorScheme)
         .activitySheet($viewModel.activityItem)
-        .environmentObject(colorStore)
     }
     
     private func leadingNavigationBarItems() -> some View {
-        ExportButton {
-            viewModel.activityItem = nil
-            //dataStore.csvActivityItem()
-            fatalError("implement")
+        HStack {
+            FiltersDrawerToggle(
+                isOn: $viewModel.showFilters,
+                activeFilters: viewModel.activeScope.count
+            )
+            
+            SortingButton(selection: $viewModel.sorting)
+                .disabled(viewModel.entries.isEmpty)
         }
-        .foregroundColor(.primary)
     }
     
     private func trailingNavigationBarItems() -> some View {

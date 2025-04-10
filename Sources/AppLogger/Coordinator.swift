@@ -31,7 +31,6 @@ import class UIKit.UIWindow
 import class UIKit.UIWindowScene
 import protocol SwiftUI.View
 import protocol UIKit.UISheetPresentationControllerDelegate
-import struct Models.AppLoggerConfiguration
 import struct UI.LogEntriesNavigationView
 
 @MainActor
@@ -39,6 +38,8 @@ final class Coordinator: NSObject {
     private let dataObserver: DataObserver
     
     private let configuration: AppLoggerConfiguration
+    
+    private let colorStore = ColorStore<Source>()
     
     private let dismiss: (UIViewController?) -> Void
     
@@ -99,14 +100,15 @@ final class Coordinator: NSObject {
     }
     
     func makeViewController() -> UIViewController {
-        UIHostingController(rootView: rootView())
+        UIHostingController(rootView: makeView())
     }
     
-    func rootView() -> some View {
+    func makeView() -> some View {
         LogEntriesNavigationView()
             .configuration(configuration)
             .environmentObject(viewModel)
             .environmentObject(dataObserver)
+            .environmentObject(colorStore)
     }
 }
 

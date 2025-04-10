@@ -46,7 +46,7 @@ struct SortingButton: View {
     }
     
     private var icon: String {
-        icons.sorting
+        icon(selection) + ".circle"
     }
     
     private func icon(_ sorting: Sorting) -> String {

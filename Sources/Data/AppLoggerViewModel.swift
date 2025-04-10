@@ -49,12 +49,12 @@ package final class AppLoggerViewModel: ObservableObject {
     @Published
     package var activeFilters: Set<Filter> = []
     
-    package var activeScope: String {
+    package var activeScope: [String] {
         var scope = activeFilters.sorted()
         if !searchQuery.trimmed.isEmpty {
             scope.append(searchQuery.trimmed.filter)
         }
-        return scope.map(\.displayName).joined(separator: ", ")
+        return scope.map(\.displayName)
     }
     
     @Published
@@ -141,21 +141,21 @@ private extension AppLoggerViewModel {
         
         if !filters.isEmpty {
             result = result.filter { id in
-                return filterEntry(id, with: filters)
+                return filterEntry(id, filters: filters)
             }
         }
         
         if !query.isEmpty {
             let search = query.filter
             result = result.filter { id in
-                return filterEntry(id, with: [search])
+                return filterEntry(id, filters: [search])
             }
         }
         
         return result
     }
     
-    func filterEntry(_ id: ID, with filters: Set<Filter>) -> Bool {
+    func filterEntry(_ id: ID, filters: Set<Filter>) -> Bool {
         var source: Source {
             dataObserver.entrySources[id]!
         }
