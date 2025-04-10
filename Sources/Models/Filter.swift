@@ -115,13 +115,13 @@ package extension Filterable {
     func matches(_ filter: Filter) -> Bool {
         let value = self[keyPath: Self.filterQuery]
         if value.localizedCaseInsensitiveContains(filter.query) {
-            print("Filter \(filter.kind):", filter.query, "–", "Match:", value)
+            //print("Filter \(filter.kind):", filter.query, "–", "Match:", value)
             return true
         }
         
         if let keyPath = Self.filterCriteriaOptional, let optionalValue = self[keyPath: keyPath] {
             if optionalValue.localizedCaseInsensitiveContains(filter.query) {
-                print("Filter \(filter.kind):", filter.query, "–", "Match:", optionalValue)
+                //print("Filter \(filter.kind):", filter.query, "–", "Match:", optionalValue)
                 return true
             }
         }

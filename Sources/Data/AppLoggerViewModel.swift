@@ -92,21 +92,26 @@ package final class AppLoggerViewModel: ObservableObject {
 
 private extension AppLoggerViewModel {
     func setupListeners() {
-        dataObserver.allCategories
-            .debounceOnMain(for: 0.1)
-            .map { Set($0.map(\.filter)) }
-            .sink { [unowned self] newValue in
-                categories = sortFilters(newValue, by: activeFilters)
-            }
-            .store(in: &cancellables)
+        Publishers.CombineLatest(
+            dataObserver.allCategories.debounceOnMain(for: 0.1).map { Set($0.map(\.filter)) },
+            $activeFilters
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [unowned self] sources, filters in
+            self.categories = sortFilters(sources, by: filters)
+        }
+        .store(in: &cancellables)
         
-        dataObserver.allSources
-            .debounceOnMain(for: 0.1)
-            .map { Set($0.map(\.filter)) }
-            .sink { [unowned self] newValue in
-                sources = sortFilters(newValue, by: activeFilters)
-            }
-            .store(in: &cancellables)
+        Publishers.CombineLatest(
+            dataObserver.allSources.debounceOnMain(for: 0.1).map { Set($0.map(\.filter)) },
+            $activeFilters
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [unowned self] sources, filters in
+            self.sources = sortFilters(sources, by: filters)
+        }
+        .store(in: &cancellables)
+        
         
         Publishers.CombineLatest4(
             dataObserver.allEntries.debounceOnMain(for: 0.2),
@@ -139,7 +144,7 @@ private extension AppLoggerViewModel {
     }
     
     func sortFilters(_ filters: Set<Filter>, by selection: Set<Filter>) -> [Filter] {
-        filters.sorted { lhs, rhs in
+        return filters.sorted { lhs, rhs in
             let lhsActive = selection.contains(lhs)
             let rhsActive = selection.contains(rhs)
             if lhsActive != rhsActive {
