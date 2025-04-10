@@ -22,14 +22,14 @@ package typealias Sorting = LogEntry.Sorting
 
 public extension LogEntry {
     enum Sorting: Int, CustomStringConvertible, CaseIterable, Identifiable {
-        case descending, ascending
+        case ascending, descending
         
         public var description: String {
             switch self {
             case .ascending:
-                "Oldest First"
+                "New Logs Last"
             case .descending:
-                "Newest First"
+                "New Logs First"
             }
         }
         

@@ -23,44 +23,70 @@ import AppLogger
 
 class ViewController: UIViewController {
     
-    private lazy var presentLightButton: UIButton = {
-        return UIButton(primaryAction: .init(title: "Present Light Logger", handler: { action in
+    private lazy var presentButton = UIButton(
+        primaryAction: UIAction(title: "Present Logger", handler: { action in
+            Task { await AppLogger.current.present() }
+            // Log only the action title instead of the entire action object.
+            log.info(action.title, userInfo: [
+                "discoverabilityTitle": action.discoverabilityTitle,
+                "identifier": action.identifier.rawValue,
+                "attributes": action.attributes.rawValue,
+                "state": action.state.rawValue
+            ])
+        })
+    )
+    
+    private lazy var presentLightButton = UIButton(
+        primaryAction: UIAction(title: "Present Light Logger", handler: { action in
             Task { await AppLogger.current.present(configuration: .init(colorScheme: .light)) }
             // Log only the action title instead of the entire action object.
-            log.notice(userInfo: ["actionTitle": action.title])
-        }))
-    }()
+            log.info(action.title, userInfo: [
+                "discoverabilityTitle": action.discoverabilityTitle,
+                "identifier": action.identifier.rawValue,
+                "attributes": action.attributes.rawValue,
+                "state": action.state.rawValue
+            ])
+        })
+    )
     
-    private lazy var presentDarkButton: UIButton = {
-        return UIButton(primaryAction: .init(title: "Present Dark Logger", handler: { action in
+    private lazy var presentDarkButton = UIButton(
+        primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
             Task { await AppLogger.current.present(configuration: .init(colorScheme: .dark)) }
-            log.notice(userInfo: ["actionTitle": action.title])
-        }))
-    }()
+            log.info(action.title, userInfo: [
+                "discoverabilityTitle": action.discoverabilityTitle,
+                "identifier": action.identifier.rawValue,
+                "attributes": action.attributes.rawValue,
+                "state": action.state.rawValue
+            ])
+        })
+    )
     
-    private lazy var logErrorButton: UIButton = {
-        return UIButton(primaryAction: .init(title: "Log Error", handler: { action in
+    private lazy var logErrorButton = UIButton(
+        primaryAction: UIAction(title: "Log Error", handler: { action in
             // Log a small string message along with the action title.
-            log.error("Error occurred", userInfo: ["actionTitle": action.title])
-        }))
-    }()
+            log.error("Error occurred", userInfo: [
+                "code": 123,
+                "domain": "example.com",
+                "reason": "Something went wrong"
+            ])
+        })
+    )
     
-    private lazy var stackView: UIStackView = {
-        return UIStackView(
-            arrangedSubviews: [
-                logErrorButton,
-                presentLightButton,
-                presentDarkButton,
-                UIView() // Extra view for layout purposes.
-            ]
-        )
-    }()
+    private lazy var stackView = UIStackView(
+        arrangedSubviews: [
+            logErrorButton,
+            presentButton,
+            presentLightButton,
+            presentDarkButton,
+            UIView() // Extra view for layout purposes.
+        ]
+    )
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
+        stackView.isLayoutMarginsRelativeArrangement = true
         view.addSubview(stackView)
         view.layoutIfNeeded()
         

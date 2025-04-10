@@ -62,7 +62,6 @@ struct FiltersRow: View {
                         .background(.background)
                 }
             }
-            .animation(.default, value: selection)
             .padding(.trailing, spacing * 2)
             .padding(.vertical, spacing)
         }

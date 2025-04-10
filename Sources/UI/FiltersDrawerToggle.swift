@@ -30,7 +30,7 @@ struct FiltersDrawerToggle: View {
     
     var body: some View {
         Button {
-            withAnimation(.bouncy) {
+            withAnimation(.snappy) {
                 isOn.toggle()
             }
         } label: {
@@ -45,5 +45,8 @@ struct FiltersDrawerToggle: View {
     @Previewable @State
     var isOn = false
     
-    FiltersDrawerToggle(isOn: $isOn, activeFilters: isOn ? 3 : 0)
+    FiltersDrawerToggle(
+        isOn: $isOn,
+        activeFilters: isOn ? 3 : 0
+    )
 }

@@ -39,7 +39,7 @@ final class Coordinator: NSObject {
     
     private let configuration: AppLoggerConfiguration
     
-    private let colorStore = ColorStore<Source>()
+    private static let colorStore = ColorStore<Source>()
     
     private let dismiss: (UIViewController?) -> Void
     
@@ -108,7 +108,7 @@ final class Coordinator: NSObject {
             .configuration(configuration)
             .environmentObject(viewModel)
             .environmentObject(dataObserver)
-            .environmentObject(colorStore)
+            .environmentObject(Self.colorStore)
     }
 }
 

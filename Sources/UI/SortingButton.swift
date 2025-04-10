@@ -42,10 +42,11 @@ struct SortingButton: View {
         } label: {
             Image(systemName: icon)
         }
+        .symbolRenderingMode(.hierarchical)
     }
     
     private var icon: String {
-        icon(selection) + ".circle"
+        icon(selection)
     }
     
     private func icon(_ sorting: Sorting) -> String {

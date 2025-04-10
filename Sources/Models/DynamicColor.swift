@@ -32,7 +32,7 @@ package struct DynamicColor: Sendable {
         data[colorScheme, default: .secondary]
     }
     
-    package static func makeColors(count: Int = 15) -> [DynamicColor] {
+    package static func makeColors(count: Int = 10) -> [DynamicColor] {
         stride(from: 0, to: 1, by: 1 / CGFloat(count)).map { hue in
             let saturation = CGFloat.random(in: 0.2...0.7)
             let brightness = CGFloat.random(in: 0.4...0.7)

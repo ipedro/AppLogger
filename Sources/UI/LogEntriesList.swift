@@ -54,12 +54,15 @@ struct LogEntriesList: View {
                     }
                 } header: {
                     if viewModel.showFilters {
-                        FiltersDrawer()
+                        FiltersDrawer().transition(
+                            .move(edge: .top)
+                            .combined(with: .opacity)
+                        )
                     }
                 }
             }
             .padding(.bottom, 50)
-            .animation(.default, value: viewModel.entries)
+            .animation(.snappy, value: viewModel.entries)
         }
         .clipped()
         .ignoresSafeArea(.container, edges: .bottom)

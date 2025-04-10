@@ -30,11 +30,11 @@ public struct AppLoggerConfiguration: Sendable {
     public var navigationTitle: String
 
     public init(
-        accentColor: Color = .accentColor,
+        accentColor: Color = .secondary,
         colorScheme: ColorScheme? = nil,
         emptyReasons: EmptyReasons = .init(),
         icons: Icons = .init(),
-        navigationTitle: String = "App Logs"
+        navigationTitle: String = "Logs"
     ) {
         self.accentColor = accentColor
         self.colorScheme = colorScheme
@@ -65,16 +65,14 @@ public extension AppLoggerConfiguration {
         public var filtersOn: String
         public var sortAscending: String
         public var sortDescending: String
-        public var sorting: String
         
         public init(
             dismiss: String = "xmark.circle.fill",
             export: String = "square.and.arrow.up",
             filtersOff: String = "line.3.horizontal.decrease.circle",
             filtersOn: String = "line.3.horizontal.decrease.circle.fill",
-            sortAscending: String = "chevron.up",
-            sortDescending: String = "chevron.down",
-            sorting: String = "chevron.up.chevron.down"
+            sortAscending: String = "text.line.last.and.arrowtriangle.forward", //"arrowtriangle.up",
+            sortDescending: String = "text.line.first.and.arrowtriangle.forward" // "arrowtriangle.down"
         ) {
             self.dismiss = dismiss
             self.export = export
@@ -82,7 +80,6 @@ public extension AppLoggerConfiguration {
             self.filtersOn = filtersOn
             self.sortAscending = sortAscending
             self.sortDescending = sortDescending
-            self.sorting = sorting
         }
     }
 }

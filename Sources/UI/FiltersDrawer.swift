@@ -38,7 +38,7 @@ struct FiltersDrawer: View {
                     selection: $viewModel.activeFilters,
                     data: viewModel.categories
                 )
-                .animation(.default, value: viewModel.categories)
+                .animation(.snappy, value: viewModel.categories)
             }
             if !viewModel.sources.isEmpty {
                 FiltersRow(
@@ -46,7 +46,7 @@ struct FiltersDrawer: View {
                     selection: $viewModel.activeFilters,
                     data: viewModel.sources
                 )
-                .animation(.default, value: viewModel.sources)
+                .animation(.snappy, value: viewModel.sources)
             }
         }
         .background(.background)

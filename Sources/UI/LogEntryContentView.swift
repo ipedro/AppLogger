@@ -33,7 +33,6 @@ struct LogEntryContentView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(content.function)
-                .bold()
                 .font(.callout)
                 .minimumScaleFactor(0.85)
                 .lineLimit(3)
@@ -50,10 +49,10 @@ struct LogEntryContentView: View {
                 .font(.footnote)
                 .foregroundStyle(tint)
                 .padding(spacing * 1.5)
-                .background {
-                    RoundedRectangle(cornerRadius: spacing * 1.5)
-                        .fill(tint.opacity(0.1))
-                }
+                .background(
+                    tint.opacity(0.1),
+                    in: RoundedRectangle(cornerRadius: spacing * 2)
+                )
             }
         }
     }
