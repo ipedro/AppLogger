@@ -41,6 +41,7 @@ struct SearchBarView: View {
                     text: $searchQuery
                 )
                 .autocorrectionDisabled()
+                .submitLabel(.search)
                 .foregroundColor(.primary)
                 .focused($focus)
 
