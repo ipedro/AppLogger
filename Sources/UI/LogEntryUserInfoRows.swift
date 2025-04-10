@@ -30,6 +30,9 @@ struct LogEntryUserInfoRows: View {
     @Environment(\.spacing)
     private var spacing
     
+    @Environment(\.colorScheme)
+    private var colorScheme
+    
     @EnvironmentObject
     private var data: DataObserver
     
@@ -49,9 +52,11 @@ struct LogEntryUserInfoRows: View {
     
     private func backgroundColor(for index: Int) -> Color {
         if index.isMultiple(of: 2) {
-            Color(uiColor: .secondarySystemFill)
+            Color(uiColor: .systemGray5)
+        } else if colorScheme == .dark {
+            Color(uiColor: .systemGray4)
         } else {
-            Color(uiColor: .quaternarySystemFill)
+            Color(uiColor: .systemGray6)
         }
     }
 }
