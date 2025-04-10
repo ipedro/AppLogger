@@ -31,10 +31,16 @@ struct AppLoggerFormatter: LogFormatterProtocol {
                 LogEntry(
                     date: logDetails.date,
                     category: LogEntry.Category(logDetails.level.description),
-                    source: logDetails.fileName.isEmpty ? "XCGLogger" : LogEntry.Source(
-                         (logDetails.fileName as NSString).lastPathComponent,
-                        .file(line: logDetails.lineNumber)
-                    ),
+                    source: {
+                        if logDetails.fileName.isEmpty {
+                            "XCGLogger"
+                        } else {
+                            LogEntry.Source(
+                                (logDetails.fileName as NSString).lastPathComponent,
+                                .file(line: logDetails.lineNumber)
+                            )
+                        }
+                    }(),
                     content: LogEntry.Content(
                         function: logDetails.functionName,
                         message: logDetails.message,
@@ -47,6 +53,6 @@ struct AppLoggerFormatter: LogFormatterProtocol {
     }
 
     var debugDescription: String {
-        "hey"
+        "AppLoggerFormatter"
     }
 }

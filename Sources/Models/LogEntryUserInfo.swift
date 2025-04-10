@@ -62,7 +62,7 @@ public extension LogEntry {
         public init?(_ value: Any? = nil) {
             guard let value = value else { return nil }
             
-            if let dict = value as? [AnyHashable: Any] {
+            if let dict = value as? [String: Any] {
                 storage = Self.convert(toDictionary: dict).sorted(by: <)
             }
             else if let array = value as? [Any] {
@@ -100,7 +100,7 @@ public extension LogEntry {
         
         private static func convert(toDictionary object: Any?) -> [String: String]? {
             switch object {
-            case let dictionary as [AnyHashable: Any]:
+            case let dictionary as [String: Any]:
                 convert(toDictionary: dictionary)
                 
             case let array as [Any]:
@@ -116,10 +116,10 @@ public extension LogEntry {
             }
         }
         
-        private static func convert(toDictionary dict: [AnyHashable: Any]) -> [String: String] {
+        private static func convert(toDictionary dict: [String: Any]) -> [String: String] {
             dict.reduce([String: String]()) { partialResult, element in
                 var dict = partialResult
-                dict[String(describing: element.key.base)] = convert(toString: element.value)
+                dict[element.key] = convert(toString: element.value)
                 return dict
             }
         }

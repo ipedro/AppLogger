@@ -47,27 +47,6 @@ public struct LogEntry: Identifiable, Sendable {
 }
 
 public extension LogEntry {
-    /// Creates a new instance of LogEntry with the given source, category, and content.
-    ///
-    /// - Parameters:
-    ///   - date: The date the log was sent.
-    ///   - category: The category or classification of the log entry.
-    ///   - source: The source from which the log entry originates.
-    ///   - content: The detailed content of the log entry.
-    ///   - userInfo: An optional user info.
-    init(
-        date: Date = Date(),
-        category: Category,
-        source: Source,
-        content: Content,
-        userInfo: UserInfo? = nil
-    ) {
-        self.id = ID(date: date)
-        self.source = source
-        self.category = category
-        self.content = content
-        self.userInfo = userInfo
-    }
     
     /// Creates a new instance of LogEntry with the given source, category, and content.
     ///
@@ -82,13 +61,13 @@ public extension LogEntry {
         category: Category,
         source: Source,
         content: Content,
-        userInfo: [String: Any]
+        userInfo: [String: Any]? = nil
     ) {
         self.id = ID(date: date)
         self.source = source
         self.category = category
         self.content = content
-        self.userInfo = .init(userInfo)
+        self.userInfo = UserInfo(userInfo)
     }
     
     /// Creates a new instance of LogEntry with the given source, category, and content.
@@ -104,13 +83,13 @@ public extension LogEntry {
         category: Category,
         source: some LogEntrySource,
         content: Content,
-        userInfo: UserInfo? = nil
+        userInfo: [String: Any]? = nil
     ) {
         self.id = ID(date: date)
         self.source = Source(source)
         self.category = category
         self.content = content
-        self.userInfo = userInfo
+        self.userInfo = UserInfo(userInfo)
     }
 }
 
