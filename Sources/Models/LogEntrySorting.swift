@@ -21,8 +21,17 @@
 package typealias Sorting = LogEntry.Sorting
 
 public extension LogEntry {
-    enum Sorting: String, CaseIterable, Identifiable {
+    enum Sorting: Int, CustomStringConvertible, CaseIterable, Identifiable {
         case ascending, descending
+        
+        public var description: String {
+            switch self {
+            case .ascending:
+                "Oldest First"
+            case .descending:
+                "Newest First"
+            }
+        }
         
         public var id: RawValue {
             rawValue

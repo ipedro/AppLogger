@@ -33,13 +33,12 @@ struct SortingButton: View {
     
     var body: some View {
         Menu {
-            ForEach(options, id: \.rawValue) { option in
-                Button(
-                    option.rawValue.localizedCapitalized + (option == selection ? " ✓" : ""),
-                    systemImage: icon(option),
-                    action: { selection = option }
-                )
+            Picker("", selection: $selection) {
+                ForEach(options, id: \.rawValue) { option in
+                    Label(option.description, systemImage: icon(option)).tag(option)
+                }
             }
+
         } label: {
             Image(systemName: icon)
         }
