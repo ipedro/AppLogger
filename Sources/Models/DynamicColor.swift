@@ -33,20 +33,35 @@ package struct DynamicColor: Sendable {
     }
     
     package static func makeColors(count: Int = 10) -> [DynamicColor] {
-        stride(from: 0, to: 1, by: 1 / CGFloat(count)).map { hue in
-            let saturation = CGFloat.random(in: 0.2...0.7)
+        stride(
+            from: CGFloat.random(in: 0...0.2),
+            to: CGFloat.random(in: 0.8...1),
+            by: 1 / CGFloat(count)
+        ).map { hue in
+            let saturation = CGFloat.random(in: 0.2...0.8)
             let brightness = CGFloat.random(in: 0.4...0.7)
             
-            return DynamicColor(ColorScheme.allCases.reduce(into: [:]) { partialResult, colorScheme in
-                let uiColor = UIColor(
-                    hue: hue + .random(in: 0...0.1),
-                    saturation: colorScheme == .dark ? saturation : saturation + 0.4,
-                    brightness: colorScheme == .dark ? brightness + 0.3 : brightness,
-                    alpha: 1
-                )
-                
-                partialResult[colorScheme] = Color(uiColor: uiColor)
-            })
+            return DynamicColor(
+                ColorScheme.allCases.reduce(into: [:]) { partialResult, colorScheme in
+                    let uiColor = if colorScheme == .dark {
+                        UIColor(
+                            hue: hue,
+                            saturation: saturation,
+                            brightness: brightness + 0.3,
+                            alpha: 1
+                        )
+                    } else {
+                        UIColor(
+                            hue: hue,
+                            saturation: saturation + 0.4,
+                            brightness: brightness,
+                            alpha: 1
+                        )
+                    }
+                    
+                    partialResult[colorScheme] = Color(uiColor: uiColor)
+                }
+            )
         }
     }
 }
@@ -55,8 +70,14 @@ package struct DynamicColor: Sendable {
     VStack {
         let colors = DynamicColor.makeColors()
         
-        ForEach(Array(colors.enumerated()), id: \.offset) { _, color in
-            color.resolve(with: .light)
+        VStack {
+            ForEach(Array(colors.enumerated()), id: \.offset) { _, color in
+                HStack(spacing: .zero) {
+                    color.resolve(with: .light)
+                    color.resolve(with: .dark)
+                }
+            }
         }
+        .padding()
     }
 }
