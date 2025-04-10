@@ -24,15 +24,8 @@ package typealias SourceInfo = LogEntry.SourceInfo
 
 public extension LogEntry {
     enum SourceInfo: Hashable, Sendable {
-        case file(lineNumber: Int)
-        
+        case file(line: Int)
         case sdk(version: String)
-        
         case error(code: Int)
-        
-        public static func version(_ optionalVersion: String?) -> SourceInfo? {
-            guard let string = optionalVersion else { return nil }
-            return .sdk(version: string)
-        }
     }
 }

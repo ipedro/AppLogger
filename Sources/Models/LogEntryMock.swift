@@ -25,7 +25,8 @@ extension LogEntry {
         case analytics
         case error
         case googleAnalytics
-        case logger
+        case debug
+        case notice
         case socialLogin
         case warning
         
@@ -34,28 +35,51 @@ extension LogEntry {
             case .analytics: analytics
             case .error: error
             case .googleAnalytics: googleAnalytics
-            case .logger: logger
+            case .debug: debug
+            case .notice: notice
             case .socialLogin: socialLogin
             case .warning: warning
             }
         }
         
-        private var logger: LogEntry {
+        private var debug: LogEntry {
             LogEntry(
                 category: .debug,
-                source: Source("MyWebView", .file(lineNumber: 20)),
+                source: Source("MyWebView", .file(line: 20)),
                 content: Content(
-                    "func didNavigate()",
-                    output: "Navigation cancelled."
+                    function: "func didNavigate()",
+                    message: "Navigation cancelled."
                 ),
-                userInfo: ["url": "https://github.com"]
+                userInfo: [
+                    "url": "https://github.com",
+                    "line": 20,
+                    "file": "MyWebView",
+                    "function": "didNavigate",
+                    "reason": "Navigation cancelled."
+                ]
+            )
+        }
+        
+        private var notice: LogEntry {
+            LogEntry(
+                category: .notice,
+                source: Source("MyWebView", .file(line: 450)),
+                content: Content(
+                    function: "func didRefresh()",
+                    message: "Page refreshed."
+                ),
+                userInfo: [
+                    "line": 450,
+                    "file": "MyWebView",
+                    "function": "didRefresh"
+                ]
             )
         }
         
         private var googleAnalytics: LogEntry {
             LogEntry(
                 category: Category("📈", "Analytics"),
-                source: Source("Google Analytics"),
+                source: "Google Analytics",
                 content: "tracked event",
                 userInfo: [
                     "customerID": "1234567890",
@@ -133,7 +157,7 @@ extension LogEntry {
         private var warning: LogEntry {
             LogEntry(
                 category: .warning,
-                source: "I'm a warning",
+                source: Source("MyWebView", .file(line: 150)),
                 content: "Couldn't find user_id"
             )
         }

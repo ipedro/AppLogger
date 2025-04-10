@@ -32,14 +32,14 @@ struct LogEntryContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(content.message)
+            Text(content.function)
                 .bold()
                 .font(.callout)
                 .minimumScaleFactor(0.85)
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
             
-            if let message = content.output, !message.isEmpty {
+            if let message = content.message, !message.isEmpty {
                 HStack(alignment: .top) {
                     if let icon = category.emoji {
                         Text(String(icon))
@@ -62,7 +62,10 @@ struct LogEntryContentView: View {
 #Preview {
     LogEntryContentView(
         category: .alert,
-        content: Content("content description", output: "Bla"),
+        content: Content(
+            function: "content description",
+            message: "Bla"
+        ),
         tint: .accentColor
     )
 }

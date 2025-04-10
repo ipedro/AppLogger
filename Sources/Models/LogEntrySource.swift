@@ -35,7 +35,7 @@ public extension LogEntry {
         ) {
             self.emoji = nil
             self.info = info
-            self.name = name
+            self.name = Self.cleanName(name)
         }
         
         public init(
@@ -45,13 +45,21 @@ public extension LogEntry {
         ) {
             self.emoji = emoji
             self.info = info
-            self.name = name
+            self.name = Self.cleanName(name)
         }
         
         package init(_ source: some LogEntrySource) {
             emoji = source.logEntryEmoji
             info = source.logEntryInfo
-            name = source.logEntryName
+            name = Self.cleanName(source.logEntryName)
+        }
+        
+        private static func cleanName(_ name: String) -> String {
+            if name.hasSuffix(".swift") {
+                name.replacingOccurrences(of: ".swift", with: "")
+            } else {
+                name
+            }
         }
     }
 }

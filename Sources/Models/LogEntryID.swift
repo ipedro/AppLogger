@@ -27,7 +27,11 @@ package typealias ID = LogEntry.ID
 public extension LogEntry {
     struct ID: Hashable, Comparable, Sendable {
         private let rawValue = UUID()
-        package let timestamp = Date().timeIntervalSince1970
+        package let timestamp: TimeInterval
+        
+        package init(date: Date) {
+            self.timestamp = date.timeIntervalSince1970
+        }
         
         public static func < (lhs: ID, rhs: ID) -> Bool {
             lhs.timestamp < rhs.timestamp

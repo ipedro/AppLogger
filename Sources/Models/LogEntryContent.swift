@@ -22,31 +22,31 @@ package typealias Content = LogEntry.Content
 
 public extension LogEntry {
     struct Content: Sendable {
-        public let message: String
-        public let output: String?
+        public let function: String
+        public let message: String?
         
         public init(
-            _ message: String,
-            output: String? = .none
+            function: String,
+            message: String? = .none
         ) {
+            self.function = function
             self.message = message
-            self.output = output
         }
     }
 }
 
 extension LogEntry.Content: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
-        self.init(value)
+        self.init(function: value)
     }
 }
 
 extension LogEntry.Content: Filterable {
     package static var filterQuery: KeyPath<LogEntry.Content, String> {
-        \.message
+        \.function
     }
     
     package static var filterableOptional: KeyPath<LogEntry.Content, String?> {
-        \.output
+        \.message
     }
 }

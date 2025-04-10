@@ -31,6 +31,7 @@ struct DismissButton: View {
             Image(systemName: icon)
                 .symbolRenderingMode(.hierarchical)
         }
+        .tint(.secondary)
     }
 }
 

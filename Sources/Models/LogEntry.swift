@@ -50,17 +50,19 @@ public extension LogEntry {
     /// Creates a new instance of LogEntry with the given source, category, and content.
     ///
     /// - Parameters:
+    ///   - date: The date the log was sent.
     ///   - category: The category or classification of the log entry.
     ///   - source: The source from which the log entry originates.
     ///   - content: The detailed content of the log entry.
     ///   - userInfo: An optional user info.
     init(
+        date: Date = Date(),
         category: Category,
         source: Source,
         content: Content,
         userInfo: UserInfo? = nil
     ) {
-        self.id = ID()
+        self.id = ID(date: date)
         self.source = source
         self.category = category
         self.content = content
@@ -70,17 +72,19 @@ public extension LogEntry {
     /// Creates a new instance of LogEntry with the given source, category, and content.
     ///
     /// - Parameters:
+    ///   - date: The date the log was sent.
     ///   - category: The category or classification of the log entry.
     ///   - source: The source from which the log entry originates.
     ///   - content: The detailed content of the log entry.
     ///   - userInfo: An optional user info.
     init(
+        date: Date = Date(),
         category: Category,
         source: Source,
         content: Content,
         userInfo: [String: Any]
     ) {
-        self.id = ID()
+        self.id = ID(date: date)
         self.source = source
         self.category = category
         self.content = content
@@ -90,17 +94,19 @@ public extension LogEntry {
     /// Creates a new instance of LogEntry with the given source, category, and content.
     ///
     /// - Parameters:
+    ///   - date: The date the log was sent.
     ///   - category: The category or classification of the log entry.
     ///   - source: A custom source from which the log entry originates.
     ///   - content: The detailed content of the log entry.
     ///   - userInfo: An optional user info.
     init(
+        date: Date = Date(),
         category: Category,
         source: some LogEntrySource,
         content: Content,
         userInfo: UserInfo? = nil
     ) {
-        self.id = ID()
+        self.id = ID(date: date)
         self.source = Source(source)
         self.category = category
         self.content = content

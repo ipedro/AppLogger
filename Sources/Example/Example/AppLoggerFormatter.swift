@@ -29,14 +29,15 @@ struct AppLoggerFormatter: LogFormatterProtocol {
         Task {
             await AppLogger.current.addLogEntry(
                 LogEntry(
+                    date: logDetails.date,
                     category: LogEntry.Category(logDetails.level.description),
                     source: LogEntry.Source(
                         (logDetails.fileName as NSString).lastPathComponent,
-                        .file(lineNumber: logDetails.lineNumber)
+                        .file(line: logDetails.lineNumber)
                     ),
                     content: LogEntry.Content(
-                        logDetails.functionName,
-                        output: logDetails.message,
+                        function: logDetails.functionName,
+                        message: logDetails.message,
                     ),
                     userInfo: logDetails.userInfo
                 )

@@ -1,13 +1,13 @@
 {
-  "originHash" : "b3edf104d5bc39dca321226bf1c4a003a1bf778fb60ca3d67d5caa25a9a9aed7",
+  "originHash" : "824f3e2fdbeba6632a97d119f455996f647feb3570295242d216c9f64bcd1b7c",
   "pins" : [
     {
       "identity" : "xcglogger",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DaveWoodCom/XCGLogger.git",
       "state" : {
-        "revision" : "a9c4667b247928a29bdd41be2ec2c8d304215a54",
-        "version" : "7.0.1"
+        "revision" : "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
+        "version" : "7.1.5"
       }
     }
   ],

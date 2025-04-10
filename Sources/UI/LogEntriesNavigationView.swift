@@ -36,6 +36,9 @@ package struct LogEntriesNavigationView: View {
     @Environment(\.configuration.navigationTitle)
     private var navigationTitle
     
+    @Environment(\.configuration.accentColor)
+    private var accentColor
+    
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
@@ -57,6 +60,7 @@ package struct LogEntriesNavigationView: View {
                     )
                 }
         }
+        .tint(accentColor)
         .colorScheme(preferredColorScheme ?? colorScheme)
         .activitySheet($viewModel.activityItem)
     }
@@ -100,4 +104,5 @@ package struct LogEntriesNavigationView: View {
         )
         .environmentObject(ColorStore<Source>())
         .environmentObject(dataObserver)
+        .configuration(.init(accentColor: .red))
 }
