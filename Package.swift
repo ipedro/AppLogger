@@ -63,7 +63,8 @@ let package = Package(
             name: "AppLogger",
             dependencies: [
                 "UI",
-                "Data"
+                "Data",
+                "Models"
             ]
         ),
         .testTarget(
@@ -72,5 +73,6 @@ let package = Package(
                 "AppLogger"
             ]
         )
-    ]
+    ],
+    swiftLanguageModes: [.v5, .v6]
 )
