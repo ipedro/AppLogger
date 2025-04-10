@@ -44,11 +44,10 @@ struct SearchBarView: View {
                 .foregroundColor(.primary)
                 .focused($focus)
 
-                if showClearTextButton {
-                    Button(action: clearText) {
-                        Image(systemName: "xmark.circle.fill")
-                    }
-                    .transition(.scale.combined(with: .opacity))
+                if showDismiss {
+                    DismissButton(action: clearText).transition(
+                        .scale.combined(with: .opacity)
+                    )
                 }
             }
             .padding(spacing)
@@ -56,11 +55,11 @@ struct SearchBarView: View {
             .background(Color.secondaryBackground)
             .clipShape(Capsule())
         }
-        .animation(.interactiveSpring, value: showClearTextButton)
+        .animation(.interactiveSpring, value: showDismiss)
         .padding(.vertical, spacing)
     }
     
-    private var showClearTextButton: Bool {
+    private var showDismiss: Bool {
         focus || !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
