@@ -23,14 +23,14 @@ import SwiftUI
 package typealias Configuration = AppLoggerConfiguration
 
 public struct AppLoggerConfiguration: Sendable {
-    public var accentColor: Color?
+    public var accentColor: Color
     public var colorScheme: ColorScheme?
     public var emptyReasons: EmptyReasons = .init()
     public var icons: Icons = .init()
     public var navigationTitle: String
 
     public init(
-        accentColor: Color? = nil,
+        accentColor: Color = .accentColor,
         colorScheme: ColorScheme? = nil,
         emptyReasons: EmptyReasons = .init(),
         icons: Icons = .init(),

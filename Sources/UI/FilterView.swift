@@ -28,12 +28,18 @@ struct FilterView: View {
     @Environment(\.colorScheme)
     private var colorScheme
     
+    @Environment(\.configuration.accentColor)
+    private var accentColor
+    
+    private let shape = Capsule()
+    
     var body: some View {
         Toggle(data.displayName, isOn: $isOn)
-            .clipShape(Capsule())
+            .clipShape(shape)
             .toggleStyle(.button)
             .font(.footnote)
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
+            .background(accentColor.opacity(0.08), in: shape)
     }
 }
 

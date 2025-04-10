@@ -46,10 +46,11 @@ struct LogEntriesList: View {
             LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
                 Section {
                     ForEach(viewModel.entries, id: \.self) { id in
-                        LogEntryView(id: id).safeAreaInset(
-                            edge: .bottom,
-                            content: Divider.init
-                        )
+                        LogEntryView(id: id)
+                        
+                        if id != viewModel.entries.last {
+                            Divider()
+                        }
                     }
                 } header: {
                     if viewModel.showFilters {
@@ -57,6 +58,7 @@ struct LogEntriesList: View {
                     }
                 }
             }
+            .padding(.bottom, 50)
             .animation(.default, value: viewModel.entries)
         }
         .clipped()
