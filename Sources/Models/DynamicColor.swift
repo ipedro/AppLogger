@@ -22,7 +22,7 @@ import SwiftUI
 import UIKit
 
 package struct DynamicColor: Sendable {
-    let data: [ColorScheme: Components]
+    private let data: [ColorScheme: Components]
     
     private init(_ value: [ColorScheme: Components]) {
         data = value
@@ -32,10 +32,18 @@ package struct DynamicColor: Sendable {
         data[colorScheme]?.color() ?? .secondary
     }
     
-    struct Components {
+    package func description(with colorScheme: ColorScheme) -> String {
+        data[colorScheme]!.description
+    }
+    
+    struct Components: CustomStringConvertible {
         let hue: CGFloat
         let saturation: CGFloat
         let brightness: CGFloat
+        
+        var description: String {
+            "H: \(hue)\nS: \(saturation)\nB: \(brightness)"
+        }
         
         func color() -> Color {
             Color(
@@ -49,7 +57,7 @@ package struct DynamicColor: Sendable {
         }
     }
     
-    package static func makeColors(count: Int = 5) -> [DynamicColor] {
+    package static func makeColors(count: Int = 10) -> [DynamicColor] {
         let start: CGFloat = .random(in: 0...0.3)
         let end: CGFloat = .random(in: 0.8...1.2)
         let strideLength = (end - start) / CGFloat(count)
@@ -58,7 +66,7 @@ package struct DynamicColor: Sendable {
             .suffix(count)
             .map { hue in
                 let saturation = CGFloat.random(in: 0.2...0.8)
-                let brightness = CGFloat.random(in: 0.3...0.8)
+                let brightness = CGFloat.random(in: 0.4...0.8)
                 
                 return DynamicColor(
                     ColorScheme.allCases.reduce(into: [:]) { dict, colorScheme in
@@ -94,8 +102,7 @@ package struct DynamicColor: Sendable {
             HStack(spacing: .zero) {
                 ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
                     color.resolve(with: colorScheme).overlay {
-                        let c = color.data[colorScheme]!
-                        Text("H: \(c.hue)\nS: \(c.saturation)\nB: \(c.brightness)")
+                        Text(color.description(with: colorScheme))
                             .font(.caption2.monospaced().bold())
                             .foregroundStyle(colorScheme == .dark ? .black : .white)
                     }

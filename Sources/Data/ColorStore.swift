@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import protocol SwiftUI.ObservableObject
+import SwiftUI
 import struct Models.DynamicColor
 import struct Models.Source
 
@@ -26,7 +26,7 @@ package typealias SourceColorStore = ColorStore<Source>
 
 @MainActor
 package final class ColorStore<Element>: ObservableObject where Element: Identifiable {
-    private lazy var allColors = [DynamicColor]()
+    private var unassignedColors = [DynamicColor]()
     
     private var assignedColors: [Element.ID: DynamicColor] = [:]
     
@@ -37,12 +37,50 @@ package final class ColorStore<Element>: ObservableObject where Element: Identif
             return color
         }
         
-        if allColors.isEmpty {
-            allColors = DynamicColor.makeColors().shuffled()
+        if unassignedColors.isEmpty {
+            unassignedColors = DynamicColor.makeColors(count: .random(in: 4...8)).shuffled()
         }
         
-        let newColor = allColors.removeFirst()
+        let newColor = unassignedColors.removeFirst()
         assignedColors[element.id] = newColor
         return newColor
     }
+}
+
+private struct PreviewItem: Identifiable {
+    let id: Int
+}
+
+@available(iOS 17, *)
+#Preview {
+    @Previewable @State
+    var colorStore = ColorStore<PreviewItem>()
+    
+    let items = (0..<1000).map(PreviewItem.init(id:))
+    
+    ScrollView {
+        LazyVStack(spacing: 10) {
+            ForEach(items) { item in
+                HStack(spacing: .zero) {
+                    ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
+                        colorStore.color(for: item).resolve(with: colorScheme)
+                            .frame(height: 80)
+                            .overlay {
+                                Text(colorStore.color(for: item).description(with: colorScheme))
+                                    .font(.caption2.monospaced().bold())
+                                    .foregroundStyle(colorScheme == .dark ? .black : .white)
+                            }
+                    }
+                }
+            }
+        }
+        .padding(15)
+    }
+    .background(content: {
+        HStack(spacing: .zero) {
+            Rectangle().fill(Color.white.gradient)
+            Rectangle().fill(Color.black.gradient)
+        }
+        .ignoresSafeArea(edges: .all)
+    })
 }

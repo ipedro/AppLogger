@@ -37,7 +37,7 @@ struct LogEntryHeaderView: View {
                 .frame(width: spacing, height: spacing)
                 .padding(.trailing, spacing / 2)
             
-            Text(category).bold()
+            Text(category)
             
             Image(systemName: "chevron.forward")
                 .font(.caption2)
@@ -49,9 +49,10 @@ struct LogEntryHeaderView: View {
             Spacer()
             
             Text(createdAt, style: .time)
+                .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .font(.footnote)
+        .font(.footnote.bold())
     }
 }
 

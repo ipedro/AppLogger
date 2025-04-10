@@ -33,7 +33,7 @@ struct LogEntryContentView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(content.function)
-                .font(.callout)
+                .font(.callout.bold())
                 .minimumScaleFactor(0.85)
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
