@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import SwiftUI
-import class Data.ColorStore
+import class Data.SourceColorStore
 import class Data.DataObserver
 import enum Models.Mock
 import struct Models.Category
@@ -48,7 +48,7 @@ struct LogEntryView: View {
     private var spacing
     
     @EnvironmentObject
-    private var colorStore: ColorStore<Source>
+    private var colorStore: SourceColorStore
     
     @EnvironmentObject
     private var data: DataObserver
@@ -111,7 +111,7 @@ extension LogEntryView {
     
     ScrollView {
         LogEntryView(id: entry.id)
-            .environmentObject(ColorStore<Source>())
+            .environmentObject(SourceColorStore())
             .environmentObject(DataObserver(
                 entryCategories: [entry.id: entry.category],
                 entryContents: [entry.id: entry.content],
@@ -125,7 +125,7 @@ extension LogEntryView {
     
     ScrollView {
         LogEntryView(id: entry.id)
-            .environmentObject(ColorStore<Source>())
+            .environmentObject(SourceColorStore())
             .environmentObject(DataObserver(
                 entryCategories: [entry.id: entry.category],
                 entryContents: [entry.id: entry.content],

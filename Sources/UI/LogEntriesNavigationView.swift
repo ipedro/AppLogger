@@ -20,7 +20,7 @@
 
 import SwiftUI
 import class Data.AppLoggerViewModel
-import class Data.ColorStore
+import class Data.SourceColorStore
 import class Data.DataObserver
 import enum Models.Mock
 import struct Models.Source
@@ -102,7 +102,7 @@ package struct LogEntriesNavigationView: View {
                 dismissAction: { print("dismiss") }
             )
         )
-        .environmentObject(ColorStore<Source>())
+        .environmentObject(SourceColorStore())
         .environmentObject(dataObserver)
         .configuration(.init(accentColor: .red))
 }

@@ -20,6 +20,9 @@
 
 import protocol SwiftUI.ObservableObject
 import struct Models.DynamicColor
+import struct Models.Source
+
+package typealias SourceColorStore = ColorStore<Source>
 
 @MainActor
 package final class ColorStore<Element>: ObservableObject where Element: Identifiable {

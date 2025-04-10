@@ -24,6 +24,7 @@ import AppLogger
 class ViewController: UIViewController {
     
     private lazy var presentButton = UIButton(
+        configuration: .bordered(),
         primaryAction: UIAction(title: "Present Logger", handler: { action in
             Task { await AppLogger.current.present() }
             // Log only the action title instead of the entire action object.
@@ -37,6 +38,7 @@ class ViewController: UIViewController {
     )
     
     private lazy var presentLightButton = UIButton(
+        configuration: .bordered(),
         primaryAction: UIAction(title: "Present Light Logger", handler: { action in
             Task { await AppLogger.current.present(configuration: .init(colorScheme: .light)) }
             // Log only the action title instead of the entire action object.
@@ -50,6 +52,7 @@ class ViewController: UIViewController {
     )
     
     private lazy var presentDarkButton = UIButton(
+        configuration: .bordered(),
         primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
             Task { await AppLogger.current.present(configuration: .init(colorScheme: .dark)) }
             log.info(action.title, userInfo: [
@@ -62,6 +65,7 @@ class ViewController: UIViewController {
     )
     
     private lazy var logErrorButton = UIButton(
+        configuration: .bordered(),
         primaryAction: UIAction(title: "Log Error", handler: { action in
             // Log a small string message along with the action title.
             log.error("Error occurred", userInfo: [
@@ -86,7 +90,14 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         stackView.axis = .vertical
+        stackView.spacing = 10
         stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = .init(
+            top: 20,
+            leading: 20,
+            bottom: 20,
+            trailing: 20
+        )
         view.addSubview(stackView)
         view.layoutIfNeeded()
         

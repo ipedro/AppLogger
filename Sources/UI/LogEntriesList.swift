@@ -20,7 +20,7 @@
 
 import SwiftUI
 import class Data.AppLoggerViewModel
-import class Data.ColorStore
+import class Data.SourceColorStore
 import class Data.DataObserver
 import enum Models.Mock
 import struct Models.Source
@@ -97,7 +97,7 @@ struct LogEntriesList: View {
     
     LogEntriesList()
         .environmentObject(viewModel)
-        .environmentObject(ColorStore<Source>())
+        .environmentObject(SourceColorStore())
         .environmentObject(dataObserver)
         .onAppear {
             viewModel.showFilters = true

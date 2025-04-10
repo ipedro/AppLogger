@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import class Data.AppLoggerViewModel
-import class Data.ColorStore
+import class Data.SourceColorStore
 import class Data.DataObserver
 import class ObjectiveC.NSObject
 import class SwiftUI.UIHostingController
@@ -39,7 +39,7 @@ final class Coordinator: NSObject {
     
     private let configuration: AppLoggerConfiguration
     
-    private static let colorStore = ColorStore<Source>()
+    private static let colorStore = SourceColorStore()
     
     private let dismiss: (UIViewController?) -> Void
     
