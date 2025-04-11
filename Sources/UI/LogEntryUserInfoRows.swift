@@ -16,7 +16,7 @@ struct LogEntryUserInfoRows: View {
 
     var body: some View {
         let _ = Self._debugPrintChanges()
-        LazyVStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .leading, spacing: .zero) {
             ForEach(Array(ids.enumerated()), id: \.element) { offset, id in
                 let backgroundColor = backgroundColor(for: offset)
 
