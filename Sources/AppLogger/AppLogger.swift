@@ -12,16 +12,13 @@ public actor AppLogger {
     /// Shared instance of `AppLogger` for global accessibility.
     public static let current = AppLogger()
 
-    /// Asynchronously adds a log entry to the underlying data store.
+    /// Adds a log entry to the underlying data store.
     ///
     /// This method offloads the logging operation to a background task, ensuring that the
     /// user interface remains responsive. It uses Swift concurrency to perform asynchronous
     /// writes without blocking the main thread.
     ///
     /// - Parameter log: A `LogEntry` instance representing the event or message to be logged.
-    ///
-    /// - Important: Ensure that the provided `LogEntry` conforms to the expected format to prevent
-    ///   any data inconsistency issues.
     public nonisolated func addLogEntry(_ log: LogEntry) {
         Task {
             await dataStore.addLogEntry(log)

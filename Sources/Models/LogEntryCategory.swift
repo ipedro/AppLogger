@@ -1,20 +1,44 @@
 import Foundation
 
 public extension LogEntryCategory {
+    /// Basic informational messages for detailed debugging.
     static let verbose = Self("🗯", "Verbose")
+    /// Debug-level messages for development purposes.
     static let debug = Self("🔹", "Debug")
+    /// General information messages.
     static let info = Self("ℹ️", "Info")
+    /// Notable events that are worth attention.
     static let notice = Self("✳️", "Notice")
+    /// Warning messages for potential issues.
     static let warning = Self("⚠️", "Warning")
+    /// Error messages for recoverable failures.
     static let error = Self("💥", "Error")
+    /// Severe error messages for critical issues.
     static let severe = Self("💣", "Severe")
+    /// Alert messages requiring immediate attention.
     static let alert = Self("‼️", "Alert")
+    /// Emergency messages for system-wide failures.
     static let emergency = Self("🚨", "Emergency")
 }
 
 /// A structure that represents a log entry category with an optional emoji and a debug name.
 ///
 /// It provides computed properties for representing the emoji as a string and for creating a display name by combining the emoji (if available) with the debug name.
+///
+/// ```swift
+/// // Create a category with just a name
+/// let basic = LogEntryCategory("Custom")
+///
+/// // Create a category with emoji and name
+/// let network = LogEntryCategory("🌐", "Network")
+///
+/// // Use string literal initialization
+/// let simple: LogEntryCategory = "Database"
+///
+/// // Use predefined categories
+/// let error = LogEntryCategory.error
+/// let warning = LogEntryCategory.warning
+/// ```
 public struct LogEntryCategory: Hashable, Sendable {
     /// An optional emoji associated with this log entry category.
     public let emoji: Character?
