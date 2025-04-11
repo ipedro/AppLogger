@@ -12,10 +12,10 @@ struct LogEntryUserInfoRow: View {
 
     @Environment(\.spacing)
     private var spacing
-    
+
     @Environment(\.colorScheme)
     private var colorScheme
-    
+
     @EnvironmentObject
     private var viewModel: VisualLoggerViewModel
 
@@ -31,7 +31,7 @@ struct LogEntryUserInfoRow: View {
         .padding(spacing)
         .background(backgroundColor)
     }
-    
+
     private var backgroundColor: Color {
         if offset.isMultiple(of: 2) {
             Color(uiColor: .systemGray5)
