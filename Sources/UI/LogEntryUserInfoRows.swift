@@ -7,13 +7,13 @@ struct LogEntryUserInfoRows: View {
 
     @Environment(\.spacing)
     private var spacing
-    
+
     @Environment(\.colorScheme)
     private var colorScheme
-    
+
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         LazyVStack(alignment: .leading, spacing: .zero) {
@@ -27,7 +27,7 @@ struct LogEntryUserInfoRows: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: spacing * 1.5))
     }
-    
+
     private func backgroundColor(for index: Int) -> Color {
         if index.isMultiple(of: 2) {
             Color(uiColor: .systemGray5)
@@ -41,7 +41,7 @@ struct LogEntryUserInfoRows: View {
 
 #Preview {
     let entry = LogEntryMock.socialLogin.entry()
-    
+
     ScrollView {
         LogEntryUserInfoRows(
             ids: entry.userInfo?.storage.map {

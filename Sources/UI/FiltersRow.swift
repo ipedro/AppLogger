@@ -1,17 +1,17 @@
-import SwiftUI
 import Models
+import SwiftUI
 
 struct FiltersRow: View {
     var title: String
-    
+
     @Binding
     var selection: Set<Filter>
-    
+
     let data: [Filter]
-    
+
     @Environment(\.spacing)
     private var spacing
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         ScrollView(.horizontal, showsIndicators: false) {
@@ -54,7 +54,7 @@ struct FiltersRow: View {
 #Preview {
     @Previewable @State
     var activeFilters: Set<Filter> = [
-        "Filter 1"
+        "Filter 1",
     ]
     FiltersRow(
         title: "Filters",
@@ -62,7 +62,7 @@ struct FiltersRow: View {
         data: [
             "Filter 1",
             "Filter 2",
-            "Filter 3"
+            "Filter 3",
         ]
     )
 }

@@ -1,7 +1,7 @@
 public struct LogEntryContent: Sendable {
     public let function: String
     public let message: String?
-    
+
     public init(
         function: String,
         message: String? = .none

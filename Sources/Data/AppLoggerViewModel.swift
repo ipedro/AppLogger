@@ -5,35 +5,34 @@ import SwiftUI
 
 @MainActor
 package final class AppLoggerViewModel: ObservableObject {
-    
     package let dismissAction: @MainActor () -> Void
-    
+
     package let dataObserver: DataObserver
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // Subjects
-    
+
     package let searchQuerySubject = CurrentValueSubject<String, Never>("")
-    
+
     package let showFilterDrawerSubject = CurrentValueSubject<Bool, Never>(UserDefaults.standard.showFilters)
-    
+
     package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(UserDefaults.standard.sorting)
-    
+
     package let activeFiltersSubject = CurrentValueSubject<Set<Filter>, Never>([])
-    
+
     package var sourcesSubject = CurrentValueSubject<[Filter], Never>([])
 
     package var categoriesSubject = CurrentValueSubject<[Filter], Never>([])
-    
+
     package var entriesSubject = CurrentValueSubject<[LogEntryID], Never>([])
-    
+
     package var activeFilterScopeSubject = CurrentValueSubject<[String], Never>([])
-    
+
     package init(dataObserver: DataObserver, dismissAction: @escaping @MainActor () -> Void) {
         self.dataObserver = dataObserver
         self.dismissAction = dismissAction
-        
+
         setupPublishers()
     }
 }
@@ -42,27 +41,27 @@ package extension AppLoggerViewModel {
     func sourceColor(_ source: LogEntrySource, for colorScheme: ColorScheme) -> Color {
         dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
     }
-    
+
     func entrySource(_ id: LogEntryID) -> LogEntrySource {
         dataObserver.entrySources[id]!
     }
-    
+
     func entryCategory(_ id: LogEntryID) -> LogEntryCategory {
         dataObserver.entryCategories[id]!
     }
-    
+
     func entryContent(_ id: LogEntryID) -> LogEntryContent {
         dataObserver.entryContents[id]!
     }
-    
+
     func entryUserInfoKeys(_ id: LogEntryID) -> [LogEntryUserInfoKey]? {
         dataObserver.entryUserInfoKeys[id]
     }
-    
+
     func entryUserInfoValue(_ id: LogEntryUserInfoKey) -> String {
         dataObserver.entryUserInfoValues[id]!
     }
-    
+
     func entryCreatedAt(_ id: LogEntryID) -> Date {
         id.createdAt
     }
@@ -83,7 +82,7 @@ private extension AppLoggerViewModel {
             categoriesSubject.send($0)
         }
         .store(in: &cancellables)
-        
+
         // Sources pipeline
         Publishers.CombineLatest(
             dataObserver.allSources.throttleOnMain(for: 0.15),
@@ -97,7 +96,7 @@ private extension AppLoggerViewModel {
             sourcesSubject.send($0)
         }
         .store(in: &cancellables)
-        
+
         // Active Filter Scope pipeline
         Publishers.CombineLatest(
             activeFiltersSubject,
@@ -115,7 +114,7 @@ private extension AppLoggerViewModel {
             activeFilterScopeSubject.send($0)
         }
         .store(in: &cancellables)
-        
+
         // Entries pipeline
         Publishers.CombineLatest4(
             dataObserver.allEntries.throttleOnMain(for: 0.15),
@@ -136,7 +135,7 @@ private extension AppLoggerViewModel {
             entriesSubject.send($0)
         }
         .store(in: &cancellables)
-        
+
         // Persisting showFilters to UserDefaults
         showFilterDrawerSubject
             .sink {
@@ -149,29 +148,29 @@ private extension AppLoggerViewModel {
 private extension AppLoggerViewModel {
     func filterEntries(_ entries: [LogEntryID], with filters: Set<Filter>) -> [LogEntryID] {
         var result = entries
-        
+
         if !filters.isEmpty {
             result = result.filter { id in
-                return filterEntry(id, with: filters)
+                filterEntry(id, with: filters)
             }
         }
-        
+
         return result
     }
-    
+
     func filterEntry(_ id: LogEntryID, with filters: Set<Filter>) -> Bool {
         var source: LogEntrySource {
             dataObserver.entrySources[id]!
         }
-        
+
         var category: LogEntryCategory {
             dataObserver.entryCategories[id]!
         }
-        
+
         var content: LogEntryContent {
             dataObserver.entryContents[id]!
         }
-        
+
         var userInfo: Set<String> {
             let keys = dataObserver.entryUserInfoKeys[id, default: []]
             var userInfo = Set(keys.map(\.key))
@@ -182,7 +181,7 @@ private extension AppLoggerViewModel {
             }
             return userInfo
         }
-        
+
         for filter in filters {
             if filter.kind.contains(.source) {
                 if source.matches(filter) { return true }
@@ -197,7 +196,7 @@ private extension AppLoggerViewModel {
                 if userInfo.contains(where: { $0.matches(filter) }) { return true }
             }
         }
-        
+
         return false
     }
 }
@@ -209,7 +208,7 @@ private extension Publisher {
     ) -> Publishers.Debounce<Self, RunLoop> {
         debounce(for: dueTime, scheduler: RunLoop.main, options: options)
     }
-    
+
     func throttleOnMain(
         for dueTime: RunLoop.SchedulerTimeType.Stride,
         latest: Bool = true
@@ -234,7 +233,7 @@ private extension UserDefaults {
             set(newValue.rawValue, forKey: "AppLogger.sorting")
         }
     }
-    
+
     var showFilters: Bool {
         get {
             bool(forKey: "AppLogger.showFilters")

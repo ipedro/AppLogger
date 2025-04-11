@@ -3,7 +3,7 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
-    
+
     // Helper function to consolidate scene details for logging.
     private func sceneDetails(for scene: UIScene) -> [String: Any] {
         // Break down session and configuration details into smaller parts.
@@ -24,9 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 default:
                     return "Unknown"
                 }
-            }()
+            }(),
         ]
-        
+
         if let windowScene = scene as? UIWindowScene {
             let trait = windowScene.traitCollection
             details["interfaceOrientation"] = windowScene.interfaceOrientation.rawValue
@@ -39,42 +39,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             details["windowsCount"] = windowScene.windows.count
             details["isFullScreen"] = windowScene.isFullScreen
         }
-        
+
         return details
     }
-    
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+
+    func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
         // Ensure the scene is a UIWindowScene
         guard let windowScene = (scene as? UIWindowScene) else {
             log.error("No window scene")
             return
         }
-        
+
         // Log enriched scene details with smaller, extracted properties.
         log.info(userInfo: sceneDetails(for: scene))
-        
+
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         window.rootViewController = ViewController()
         window.makeKeyAndVisible()
     }
-    
+
     func sceneDidDisconnect(_ scene: UIScene) {
         log.info(userInfo: sceneDetails(for: scene))
     }
-    
+
     func sceneDidBecomeActive(_ scene: UIScene) {
         log.info(userInfo: sceneDetails(for: scene))
     }
-    
+
     func sceneWillResignActive(_ scene: UIScene) {
         log.info(userInfo: sceneDetails(for: scene))
     }
-    
+
     func sceneWillEnterForeground(_ scene: UIScene) {
         log.info(userInfo: sceneDetails(for: scene))
     }
-    
+
     func sceneDidEnterBackground(_ scene: UIScene) {
         log.info(userInfo: sceneDetails(for: scene))
     }

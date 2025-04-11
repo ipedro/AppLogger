@@ -3,28 +3,28 @@ import UIKit
 
 package struct DynamicColor: Sendable {
     private let data: [ColorScheme: Components]
-    
+
     private init(_ value: [ColorScheme: Components]) {
         data = value
     }
-    
+
     package subscript(colorScheme: ColorScheme) -> Components? {
         data[colorScheme]
     }
-    
+
     package func description(with colorScheme: ColorScheme) -> String {
         data[colorScheme]!.description
     }
-    
+
     package struct Components: Sendable, CustomStringConvertible {
         let hue: CGFloat
         let saturation: CGFloat
         let brightness: CGFloat
-        
+
         package var description: String {
             "H: \(hue)\nS: \(saturation)\nB: \(brightness)"
         }
-        
+
         package func color() -> Color {
             Color(
                 uiColor: UIColor(
@@ -36,18 +36,18 @@ package struct DynamicColor: Sendable {
             )
         }
     }
-    
+
     package static func makeColors(count: Int = 10) -> [DynamicColor] {
-        let start: CGFloat = .random(in: 0...0.3)
-        let end: CGFloat = .random(in: 0.8...1.2)
+        let start: CGFloat = .random(in: 0 ... 0.3)
+        let end: CGFloat = .random(in: 0.8 ... 1.2)
         let strideLength = (end - start) / CGFloat(count)
-        
+
         return stride(from: start, to: end + strideLength, by: strideLength)
             .suffix(count)
             .map { hue in
-                let saturation = CGFloat.random(in: 0.2...0.8)
-                let brightness = CGFloat.random(in: 0.4...0.8)
-                
+                let saturation = CGFloat.random(in: 0.2 ... 0.8)
+                let brightness = CGFloat.random(in: 0.4 ... 0.8)
+
                 return DynamicColor(
                     ColorScheme.allCases.reduce(into: [:]) { dict, colorScheme in
                         let components = switch colorScheme {
@@ -64,7 +64,7 @@ package struct DynamicColor: Sendable {
                                 brightness: brightness
                             )
                         }
-                        
+
                         dict[colorScheme] = components
                     }
                 )
@@ -76,9 +76,9 @@ package struct DynamicColor: Sendable {
 #Preview {
     @Previewable @State
     var colors = DynamicColor.makeColors()
-    
+
     VStack(spacing: 10) {
-        ForEach(Array(colors.enumerated()), id: \.offset) { offset, color in
+        ForEach(Array(colors.enumerated()), id: \.offset) { _, color in
             HStack(spacing: .zero) {
                 ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
                     color[colorScheme]!.color().overlay {

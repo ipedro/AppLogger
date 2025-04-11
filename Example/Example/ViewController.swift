@@ -1,9 +1,9 @@
-import UIKit
 import AppLogger
+import UIKit
 
 class ViewController: UIViewController {
     private var errorCount = 0
-    
+
     private lazy var presentButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Logger", handler: { action in
@@ -13,11 +13,11 @@ class ViewController: UIViewController {
                 "discoverabilityTitle": action.discoverabilityTitle,
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
-                "state": action.state.rawValue
+                "state": action.state.rawValue,
             ])
         })
     )
-    
+
     private lazy var presentLightButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Light Logger", handler: { action in
@@ -27,11 +27,11 @@ class ViewController: UIViewController {
                 "discoverabilityTitle": action.discoverabilityTitle,
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
-                "state": action.state.rawValue
+                "state": action.state.rawValue,
             ])
         })
     )
-    
+
     private lazy var presentDarkButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
@@ -40,34 +40,34 @@ class ViewController: UIViewController {
                 "discoverabilityTitle": action.discoverabilityTitle,
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
-                "state": action.state.rawValue
+                "state": action.state.rawValue,
             ])
         })
     )
-    
+
     private lazy var logErrorButton = UIButton(
         configuration: .bordered(),
-        primaryAction: UIAction(title: "Log Error", handler: { action in
+        primaryAction: UIAction(title: "Log Error", handler: { _ in
             // Log a small string message along with the action title.
             log.error("Error #\(self.errorCount) occurred", userInfo: [
                 "code": 123,
                 "domain": "example.com",
-                "reason": "Something went wrong"
+                "reason": "Something went wrong",
             ])
             self.errorCount += 1
         })
     )
-    
+
     private lazy var stackView = UIStackView(
         arrangedSubviews: [
             logErrorButton,
             presentButton,
             presentLightButton,
             presentDarkButton,
-            UIView() // Extra view for layout purposes.
+            UIView(), // Extra view for layout purposes.
         ]
     )
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -82,57 +82,57 @@ class ViewController: UIViewController {
         )
         view.addSubview(stackView)
         view.layoutIfNeeded()
-        
+
         // Log key details from the view controller without logging entire objects.
         log.info(userInfo: viewControllerDetails())
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         stackView.frame = view.bounds
         log.verbose(userInfo: [
             "viewFrame": view.frame,
             "stackViewFrame": stackView.frame,
-            "subviewsCount": view.allSuviews.count
+            "subviewsCount": view.allSuviews.count,
         ])
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         log.verbose(userInfo: [
             "event": "viewWillAppear",
             "animated": animated,
-            "currentViewFrame": view.frame
+            "currentViewFrame": view.frame,
         ])
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         log.verbose(userInfo: [
             "event": "viewDidAppear",
             "animated": animated,
-            "currentViewFrame": view.frame
+            "currentViewFrame": view.frame,
         ])
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         log.verbose(userInfo: [
             "event": "viewWillDisappear",
             "animated": animated,
-            "currentViewFrame": view.frame
+            "currentViewFrame": view.frame,
         ])
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         log.verbose(userInfo: [
             "event": "viewDidDisappear",
             "animated": animated,
-            "currentViewFrame": view.frame
+            "currentViewFrame": view.frame,
         ])
     }
-    
+
     /// Extracts key information about the view controller and its view.
     private func viewControllerDetails() -> [String: Any] {
         return [
@@ -142,7 +142,7 @@ class ViewController: UIViewController {
             "subviewsCount": view.allSuviews.count,
             "stackViewAxis": stackView.axis == .horizontal ? "horizontal" : "vertical",
             "stackViewDistribution": stackView.distribution.rawValue,
-            "stackViewArrangedSubviewsCount": stackView.arrangedSubviews.count
+            "stackViewArrangedSubviewsCount": stackView.arrangedSubviews.count,
         ]
     }
 }

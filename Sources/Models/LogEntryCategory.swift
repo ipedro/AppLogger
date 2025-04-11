@@ -20,15 +20,15 @@ public struct LogEntryCategory: Hashable, Sendable {
     public let emoji: Character?
     /// A string identifier used for debugging and identifying the log entry category.
     public let name: String
-    
+
     /// Initializes a new log entry category with the given debug name.
     ///
     /// - Parameter name: A string identifier for the category.
     public init(_ name: String) {
-        self.emoji = nil
+        emoji = nil
         self.name = name
     }
-    
+
     /// Initializes a new log entry category with the given emoji and debug name.
     ///
     /// - Parameters:

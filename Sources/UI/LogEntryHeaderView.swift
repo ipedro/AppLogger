@@ -5,7 +5,7 @@ struct LogEntryHeaderView: View {
     let source: LogEntrySource
     let category: String
     let createdAt: Date
-    
+
     @Environment(\.spacing)
     private var spacing
 
@@ -14,17 +14,17 @@ struct LogEntryHeaderView: View {
         HStack(spacing: spacing / 2) {
             Text(category)
                 .foregroundStyle(.primary)
-            
+
             Image(systemName: "chevron.forward")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
                 .accessibilityHidden(true)
-            
+
             LogEntrySourceView(data: source)
                 .foregroundStyle(.tint)
-            
+
             Spacer()
-            
+
             Text(createdAt, style: .time)
         }
         .foregroundStyle(.secondary)

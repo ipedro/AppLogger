@@ -4,10 +4,10 @@ import SwiftUI
 struct LogEntryContentView: View {
     var category: LogEntryCategory
     var content: LogEntryContent
-    
+
     @Environment(\.spacing)
     private var spacing
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack(alignment: .leading, spacing: spacing) {
@@ -16,13 +16,13 @@ struct LogEntryContentView: View {
                 .minimumScaleFactor(0.85)
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
-            
+
             if let message = content.message, !message.isEmpty {
                 HStack(alignment: .top, spacing: spacing) {
                     if let icon = category.emoji {
                         Text(String(icon))
                     }
-                    
+
                     LinkText(data: message)
                 }
                 .font(.footnote)

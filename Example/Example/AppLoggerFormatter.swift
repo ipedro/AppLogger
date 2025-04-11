@@ -1,7 +1,7 @@
 import AppLogger
 import Foundation
-import XCGLogger
 import UIKit
+import XCGLogger
 
 struct AppLoggerFormatter: LogFormatterProtocol {
     func format(logDetails: inout LogDetails, message: inout String) -> String {

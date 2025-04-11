@@ -1,11 +1,11 @@
-import SwiftUI
 import Models
+import SwiftUI
 
 extension View {
     /// Presents an activity sheet when the associated `ActivityItem` is present
     ///
     /// The system provides several standard services, such as copying items to the pasteboard, posting content to social media sites, sending items via email or SMS, and more. Apps can also define custom services.
-    /// 
+    ///
     /// - Parameters:
     ///   - item: The item to use for this activity
     ///   - onComplete: When the sheet is dismissed, the this will be called with the result
@@ -16,7 +16,6 @@ extension View {
     ) -> some View {
         background(ActivityView(item: item, permittedArrowDirections: permittedArrowDirections, onComplete: onComplete))
     }
-
 }
 
 private struct ActivityView: UIViewControllerRepresentable {
@@ -31,19 +30,18 @@ private struct ActivityView: UIViewControllerRepresentable {
     ) {
         _item = item
         self.permittedArrowDirections = permittedArrowDirections
-        self.completion = onComplete
+        completion = onComplete
     }
 
-    func makeUIViewController(context: Context) -> ActivityViewControllerWrapper {
+    func makeUIViewController(context _: Context) -> ActivityViewControllerWrapper {
         ActivityViewControllerWrapper(item: $item, permittedArrowDirections: permittedArrowDirections, completion: completion)
     }
 
-    func updateUIViewController(_ controller: ActivityViewControllerWrapper, context: Context) {
+    func updateUIViewController(_ controller: ActivityViewControllerWrapper, context _: Context) {
         controller.item = $item
         controller.completion = completion
         controller.updateState()
     }
-
 }
 
 private final class ActivityViewControllerWrapper: UIViewController {
@@ -62,7 +60,8 @@ private final class ActivityViewControllerWrapper: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -79,7 +78,7 @@ private final class ActivityViewControllerWrapper: UIViewController {
                 let controller = UIActivityViewController(activityItems: item.wrappedValue?.items ?? [], applicationActivities: item.wrappedValue?.activities)
                 controller.popoverPresentationController?.permittedArrowDirections = permittedArrowDirections
                 controller.popoverPresentationController?.sourceView = view
-                controller.completionWithItemsHandler = { [weak self] (activityType, success, items, error) in
+                controller.completionWithItemsHandler = { [weak self] activityType, success, items, error in
                     self?.item.wrappedValue = nil
                     self?.completion?(activityType, success, items, error)
                 }
@@ -87,5 +86,4 @@ private final class ActivityViewControllerWrapper: UIViewController {
             }
         }
     }
-
 }

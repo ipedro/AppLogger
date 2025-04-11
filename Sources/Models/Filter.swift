@@ -4,7 +4,7 @@ package struct Filter: Hashable {
     package let kind: Kind
     package let query: String
     package let displayName: String
-    
+
     init(_ kind: Kind, query: String, displayName: String) {
         self.query = query
         self.kind = kind
@@ -12,28 +12,28 @@ package struct Filter: Hashable {
     }
 }
 
-extension Filter {
+package extension Filter {
     package struct Kind: CustomStringConvertible, Hashable, OptionSet {
         package let rawValue: Int8
-        
+
         package var description: String {
             var components = [String]()
-            if self.contains(.source) { components.append("source") }
-            if self.contains(.category) { components.append("category") }
-            if self.contains(.content) { components.append("content") }
-            if self.contains(.userInfo) { components.append("userInfo") }
+            if contains(.source) { components.append("source") }
+            if contains(.category) { components.append("category") }
+            if contains(.content) { components.append("content") }
+            if contains(.userInfo) { components.append("userInfo") }
             return components.joined(separator: ", ")
         }
-        
+
         package init(rawValue: Int8) {
             self.rawValue = rawValue
         }
-        
+
         package static let source = Kind(rawValue: 1 << 0)
         package static let category = Kind(rawValue: 1 << 1)
         package static let content = Kind(rawValue: 1 << 2)
         package static let userInfo = Kind(rawValue: 1 << 3)
-        
+
         package static let all: Kind = [
             .source,
             .category,
@@ -51,9 +51,9 @@ extension Filter: Comparable {
 
 extension Filter: ExpressibleByStringLiteral {
     package init(stringLiteral value: String) {
-        self.query = value
-        self.displayName = value
-        self.kind = .all
+        query = value
+        displayName = value
+        kind = .all
     }
 }
 
@@ -62,7 +62,7 @@ package extension Collection where Element == Filter {
         sorted { lhs, rhs in
             let lhsActive = selection.contains(lhs)
             let rhsActive = selection.contains(rhs)
-            
+
             if lhsActive != rhsActive {
                 return lhsActive && !rhsActive
             }
@@ -104,14 +104,13 @@ extension String: FilterConvertible {
     package static var filterCriteriaOptional: KeyPath<String, String?>? { nil }
 }
 
-
 package extension Filterable {
     func matches(_ filter: Filter) -> Bool {
         let value = self[keyPath: Self.filterCriteria]
         if value.localizedCaseInsensitiveContains(filter.query) {
             return true
         }
-        
+
         if let keyPath = Self.filterCriteriaOptional, let optionalValue = self[keyPath: keyPath] {
             if optionalValue.localizedCaseInsensitiveContains(filter.query) {
                 return true

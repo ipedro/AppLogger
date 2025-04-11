@@ -4,13 +4,13 @@ import SwiftUI
 
 struct LogEntryView: View {
     let id: LogEntryID
-    
+
     @Environment(\.colorScheme)
     private var colorScheme
-    
+
     @Environment(\.spacing)
     private var spacing
-    
+
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
 
@@ -22,19 +22,19 @@ struct LogEntryView: View {
         let content = viewModel.entryContent(id)
         let userInfo = viewModel.entryUserInfoKeys(id)
         let tint = viewModel.sourceColor(source, for: colorScheme)
-        
+
         VStack(alignment: .leading, spacing: spacing) {
             LogEntryHeaderView(
                 source: source,
                 category: category.description,
                 createdAt: createdAt
             )
-            
+
             LogEntryContentView(
                 category: category,
                 content: content
             )
-            
+
             if let userInfo {
                 LogEntryUserInfoRows(
                     ids: userInfo
@@ -48,17 +48,17 @@ struct LogEntryView: View {
 }
 
 #if DEBUG
-extension LogEntryView {
-    init(mock: LogEntryMock) {
-        let entry = mock.entry()
-        self.id = entry.id
+    extension LogEntryView {
+        init(mock: LogEntryMock) {
+            let entry = mock.entry()
+            id = entry.id
+        }
     }
-}
 #endif
 
 #Preview {
     let entry = LogEntryMock.socialLogin.entry()
-    
+
     ScrollView {
         LogEntryView(id: entry.id)
             .environmentObject(
@@ -78,7 +78,7 @@ extension LogEntryView {
 
 #Preview {
     let entry = LogEntryMock.googleAnalytics.entry()
-    
+
     ScrollView {
         LogEntryView(id: entry.id)
             .environmentObject(

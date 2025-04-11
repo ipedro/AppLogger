@@ -5,16 +5,16 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
     public let emoji: Character?
     public let name: String
     public let info: LogEntrySourceInfo?
-    
+
     public init(
         _ name: String,
         _ info: LogEntrySourceInfo? = .none
     ) {
-        self.emoji = nil
+        emoji = nil
         self.info = info
         self.name = Self.cleanName(name)
     }
-    
+
     public init(
         _ emoji: Character,
         _ name: String,
@@ -24,13 +24,13 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
         self.info = info
         self.name = Self.cleanName(name)
     }
-    
+
     package init(_ source: some LogEntrySourceProtocol) {
         emoji = source.logEntryEmoji
         info = source.logEntryInfo
         name = Self.cleanName(source.logEntryName)
     }
-    
+
     private static func cleanName(_ name: String) -> String {
         if name.hasSuffix(".swift") {
             name.replacingOccurrences(of: ".swift", with: "")

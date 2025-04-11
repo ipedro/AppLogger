@@ -7,7 +7,7 @@ struct FiltersDrawerToggle: View {
 
     @Environment(\.configuration.icons)
     private var icons
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         Button {
@@ -25,7 +25,7 @@ struct FiltersDrawerToggle: View {
 #Preview {
     @Previewable @State
     var isOn = false
-    
+
     FiltersDrawerToggle(
         isOn: $isOn,
         activeFilters: isOn ? 3 : 0

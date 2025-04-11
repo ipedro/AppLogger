@@ -26,7 +26,7 @@ public extension AppLoggerConfiguration {
     struct EmptyReasons: Sendable {
         public var empty: String
         public var searchResults: String
-        
+
         public init(
             empty: String = "No Entries Yet",
             searchResults: String = "No results matching"
@@ -43,13 +43,13 @@ public extension AppLoggerConfiguration {
         public var filtersOn: String
         public var sortAscending: String
         public var sortDescending: String
-        
+
         public init(
             dismiss: String = "xmark.circle.fill",
             export: String = "square.and.arrow.up",
             filtersOff: String = "line.3.horizontal.decrease.circle",
             filtersOn: String = "line.3.horizontal.decrease.circle.fill",
-            sortAscending: String = "text.line.last.and.arrowtriangle.forward", //"arrowtriangle.up",
+            sortAscending: String = "text.line.last.and.arrowtriangle.forward", // "arrowtriangle.up",
             sortDescending: String = "text.line.first.and.arrowtriangle.forward" // "arrowtriangle.down"
         ) {
             self.dismiss = dismiss

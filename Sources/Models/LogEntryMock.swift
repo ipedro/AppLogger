@@ -6,7 +6,7 @@ package enum LogEntryMock: Hashable, CaseIterable {
     case notice
     case socialLogin
     case warning
-    
+
     package func entry() -> LogEntry {
         switch self {
         case .analytics: analytics
@@ -18,7 +18,7 @@ package enum LogEntryMock: Hashable, CaseIterable {
         case .warning: warning
         }
     }
-    
+
     private var debug: LogEntry {
         LogEntry(
             category: .debug,
@@ -32,11 +32,11 @@ package enum LogEntryMock: Hashable, CaseIterable {
                 "line": 20,
                 "file": "MyWebView",
                 "function": "didNavigate",
-                "reason": "Navigation cancelled."
+                "reason": "Navigation cancelled.",
             ]
         )
     }
-    
+
     private var notice: LogEntry {
         LogEntry(
             category: .notice,
@@ -48,11 +48,11 @@ package enum LogEntryMock: Hashable, CaseIterable {
             userInfo: [
                 "line": 450,
                 "file": "MyWebView",
-                "function": "didRefresh"
+                "function": "didRefresh",
             ]
         )
     }
-    
+
     private var googleAnalytics: LogEntry {
         LogEntry(
             category: LogEntryCategory("📈", "Analytics"),
@@ -60,11 +60,11 @@ package enum LogEntryMock: Hashable, CaseIterable {
             content: "tracked event",
             userInfo: [
                 "customerID": "1234567890",
-                "screen": "Home"
+                "screen": "Home",
             ]
         )
     }
-    
+
     private var socialLogin: LogEntry {
         LogEntry(
             category: LogEntryCategory("👔", "Social Media"),
@@ -106,11 +106,11 @@ package enum LogEntryMock: Hashable, CaseIterable {
                 "event_custom_params": ["key": "value"],
                 "event_custom_dimensions": ["key": "value"],
                 "event_custom_metrics": ["key": 100],
-                "event_description": "A string is a series of characters, such as \"Swift\", that forms a collection. Strings in Swift are Unicode correct and locale insensitive, and are designed to be efficient. The String type bridges with the Objective-C class NSString and offers interoperability with C functions that works with strings."
+                "event_description": "A string is a series of characters, such as \"Swift\", that forms a collection. Strings in Swift are Unicode correct and locale insensitive, and are designed to be efficient. The String type bridges with the Objective-C class NSString and offers interoperability with C functions that works with strings.",
             ]
         )
     }
-    
+
     private var analytics: LogEntry {
         LogEntry(
             category: LogEntryCategory("📈", "Analytics"),
@@ -118,11 +118,11 @@ package enum LogEntryMock: Hashable, CaseIterable {
             content: "Open Screen: Home",
             userInfo: [
                 "environment": "dev",
-                "event": "open home"
+                "event": "open home",
             ]
         )
     }
-    
+
     private var error: LogEntry {
         LogEntry(
             category: .error,
@@ -133,7 +133,7 @@ package enum LogEntryMock: Hashable, CaseIterable {
             content: "Couldn't load url"
         )
     }
-    
+
     private var warning: LogEntry {
         LogEntry(
             category: .warning,

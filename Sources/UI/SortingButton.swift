@@ -4,16 +4,16 @@ import SwiftUI
 
 struct SortingButton: View {
     var options = LogEntrySorting.allCases
-    
+
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
-    
+
     @State
     private var selection: LogEntrySorting = .ascending
-    
+
     @Environment(\.configuration.icons)
     private var icons
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         Menu {
@@ -33,11 +33,11 @@ struct SortingButton: View {
             viewModel.entriesSortingSubject.send($0)
         }
     }
-    
+
     private var icon: String {
         icon(selection)
     }
-    
+
     private func icon(_ sorting: LogEntrySorting) -> String {
         switch sorting {
         case .ascending: icons.sortAscending

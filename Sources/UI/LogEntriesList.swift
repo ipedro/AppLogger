@@ -3,25 +3,24 @@ import Models
 import SwiftUI
 
 package struct LogEntriesList: View {
-    
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
-    
+
     @Environment(\.configuration)
     private var configuration
-    
+
     @State
     private var entries: [LogEntryID] = []
-    
+
     @State
     private var searchQuery = ""
-    
+
     @State
     private var showFilters: Bool = false
-    
+
     @State
     private var activeFilterScope: [String] = []
-    
+
     package var body: some View {
         let _ = Self._debugPrintChanges()
         ScrollView {
@@ -29,7 +28,7 @@ package struct LogEntriesList: View {
                 Section {
                     ForEach(entries, id: \.self) { id in
                         LogEntryView(id: id)
-                        
+
                         if id != entries.last {
                             Divider()
                         }
@@ -38,7 +37,7 @@ package struct LogEntriesList: View {
                     if showFilters {
                         FiltersDrawer().transition(
                             .move(edge: .top)
-                            .combined(with: .opacity)
+                                .combined(with: .opacity)
                         )
                     }
                 }
@@ -83,7 +82,7 @@ package struct LogEntriesList: View {
             activeFilterScope = $0
         }
     }
-    
+
     private var emptyReason: String {
         if searchQuery.isEmpty {
             configuration.emptyReasons.empty
@@ -91,19 +90,19 @@ package struct LogEntriesList: View {
             configuration.emptyReasons.searchResults + ":\n\n\(activeFilterScope.joined(separator: ", "))"
         }
     }
-    
+
     private func leadingNavigationBarItems() -> some View {
         HStack {
             FiltersDrawerToggle(
                 isOn: $showFilters,
                 activeFilters: activeFilterScope.count
             )
-            
+
             SortingButton()
                 .disabled(entries.isEmpty)
         }
     }
-    
+
     private func trailingNavigationBarItems() -> some View {
         DismissButton(action: viewModel.dismissAction)
             .font(.title2)
@@ -112,9 +111,9 @@ package struct LogEntriesList: View {
 
 #Preview {
     let allEntries = LogEntryMock.allCases.map { $0.entry() }
-    
+
     var colorGenerator = DynamicColorGenerator<LogEntrySource>()
-    
+
     let dataObserver = DataObserver(
         allCategories: allEntries.map(\.category),
         allEntries: allEntries.map(\.id),
@@ -123,16 +122,16 @@ package struct LogEntriesList: View {
         entryContents: allEntries.valuesByID(\.content),
         entrySources: allEntries.valuesByID(\.source),
         entryUserInfos: allEntries.valuesByID(\.userInfo),
-        sourceColors: allEntries.map(\.source).reduce(into: [:], { partialResult, source in
+        sourceColors: allEntries.map(\.source).reduce(into: [:]) { partialResult, source in
             partialResult[source.id] = colorGenerator.color(for: source)
-        })
+        }
     )
-    
+
     let viewModel = AppLoggerViewModel(
         dataObserver: dataObserver,
         dismissAction: {}
     )
-    
+
     LogEntriesList()
         .environmentObject(viewModel)
         .onAppear {

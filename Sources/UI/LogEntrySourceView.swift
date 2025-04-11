@@ -16,7 +16,7 @@ struct LogEntrySourceView: View {
             data.description
         }
     }
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         Text(label)
@@ -28,15 +28,15 @@ struct LogEntrySourceView: View {
         LogEntrySourceView(
             data: LogEntrySource("📄", "File.swift", .file(line: 12))
         )
-        
+
         LogEntrySourceView(
             data: LogEntrySource("MySDK", .sdk(version: "1.2.3"))
         )
-        
+
         LogEntrySourceView(
             data: "Some source"
         )
-        
+
         LogEntrySourceView(data: LogEntrySource(CustomSource()))
     }
 }

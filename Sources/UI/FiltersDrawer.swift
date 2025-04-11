@@ -1,30 +1,29 @@
-import SwiftUI
 import Data
 import Models
+import SwiftUI
 
 struct FiltersDrawer: View {
-    
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
-    
+
     @Environment(\.spacing)
     private var spacing
-    
+
     @State
     private var activeFilters: Set<Filter> = []
-    
+
     @State
     private var categories: [Filter] = []
-    
+
     @State
     private var sources: [Filter] = []
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack(spacing: spacing) {
             SearchBarView()
                 .padding(.horizontal, spacing * 2)
-            
+
             if !categories.isEmpty {
                 FiltersRow(
                     title: "Categories",

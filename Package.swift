@@ -12,7 +12,7 @@ let buildingForDevelopment = (git?.currentTag == nil)
 let package = Package(
     name: "AppLogger",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v15),
     ],
     products: {
         var products = [Product]()
@@ -20,11 +20,11 @@ let package = Package(
             .library(
                 name: "AppLogger",
                 targets: [
-                    "AppLogger"
+                    "AppLogger",
                 ]
             )
         )
-        
+
         if buildingForDevelopment {
             products.append(
                 .library(
@@ -65,15 +65,15 @@ let package = Package(
             dependencies: [
                 "UI",
                 "Data",
-                "Models"
+                "Models",
             ]
         ),
         .testTarget(
             name: "AppLoggerTests",
             dependencies: [
-                "AppLogger"
+                "AppLogger",
             ]
-        )
+        ),
     ],
     swiftLanguageModes: [.v5, .v6]
 )

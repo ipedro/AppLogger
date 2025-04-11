@@ -20,7 +20,7 @@ struct BadgeModifier: ViewModifier {
     var count: Int
     var foregroundColor: Color
     var backgroundColor: Color
-    
+
     func body(content: Content) -> some View {
         ZStack(alignment: .topTrailing) {
             content
@@ -34,7 +34,6 @@ struct BadgeModifier: ViewModifier {
                         .padding([.top, .bottom], 1)
                         .frame(minWidth: 16, minHeight: 16)
                         .background(backgroundColor, in: Capsule())
-                    
                 }
                 .transition(.scale.combined(with: .opacity))
                 .frame(width: 0, height: 0)
@@ -47,7 +46,7 @@ struct BadgeModifier: ViewModifier {
 #Preview(body: {
     @Previewable @State
     var count = 0
-    
+
     Button("Test") {
         count = count == 0 ? 10 : 0
     }

@@ -5,13 +5,13 @@ import UI
 @MainActor
 final class Coordinator: NSObject {
     private let dataObserver: DataObserver
-    
+
     private let configuration: AppLoggerConfiguration
-    
+
     private let dismiss: (UIViewController?) -> Void
-    
+
     private weak var viewController: UIViewController?
-    
+
     init(
         dataObserver: DataObserver,
         configuration: AppLoggerConfiguration,
@@ -21,7 +21,7 @@ final class Coordinator: NSObject {
         self.configuration = configuration
         self.dismiss = dismiss
     }
-    
+
     private var keyWindow: UIWindow? {
         UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
@@ -29,12 +29,12 @@ final class Coordinator: NSObject {
             .filter(\.isKeyWindow)
             .first
     }
-    
+
     private lazy var viewModel = AppLoggerViewModel(
         dataObserver: dataObserver,
         dismissAction: dismissAction
     )
-    
+
     func present(animated: Bool = true, completion: (() -> Void)? = nil) {
         guard
             viewController == nil,
@@ -42,11 +42,11 @@ final class Coordinator: NSObject {
         else {
             return
         }
-        
+
         let viewController = makeViewController()
         print(type(of: viewController))
         self.viewController = viewController
-        
+
         if let sheetPresentation = viewController.sheetPresentationController {
             sheetPresentation.detents = [.large(), .medium()]
             sheetPresentation.selectedDetentIdentifier = .medium
@@ -55,18 +55,18 @@ final class Coordinator: NSObject {
             sheetPresentation.largestUndimmedDetentIdentifier = .large
             sheetPresentation.delegate = self
         }
-        
+
         presentingController.present(
             viewController,
             animated: animated,
             completion: completion
         )
     }
-    
+
     private func dismissAction() {
         dismiss(viewController)
     }
-    
+
     func makeViewController() -> UIViewController {
         if #available(iOS 16.0, *) {
             UIHostingController(rootView: makeNavigationStack())
@@ -75,16 +75,16 @@ final class Coordinator: NSObject {
             UIHostingController(rootView: makeNavigationView())
         }
     }
-    
+
     func makeNavigationView() -> some View {
         injectDependencies(AppLoggerView.navigationView())
     }
-    
+
     @available(iOS 16.0, *)
     func makeNavigationStack() -> some View {
         injectDependencies(AppLoggerView.navigationStack())
     }
-    
+
     func injectDependencies(_ view: some View) -> some View {
         view
             .configuration(configuration)
@@ -93,7 +93,7 @@ final class Coordinator: NSObject {
 }
 
 extension Coordinator: UISheetPresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+    func presentationControllerDidDismiss(_: UIPresentationController) {
         // presentation has already ended, no need to send VC reference.
         dismiss(nil)
     }

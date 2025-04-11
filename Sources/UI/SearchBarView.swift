@@ -1,13 +1,13 @@
-import SwiftUI
 import Data
+import SwiftUI
 
 struct SearchBarView: View {
     @FocusState
     private var focus
-    
+
     @Environment(\.spacing)
     private var spacing
-    
+
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
 
@@ -47,7 +47,7 @@ struct SearchBarView: View {
         }
         .animation(.interactiveSpring, value: showDismiss)
     }
-    
+
     private var showDismiss: Bool {
         focus || !viewModel.searchQuerySubject.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
