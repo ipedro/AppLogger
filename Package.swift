@@ -69,5 +69,9 @@ let package = Package(
             ]
         ),
     ],
-    swiftLanguageModes: [.v5, .v6]
+    swiftLanguageModes: [
+        .v5,
+        // .v6 UNSUPPORTED until a bug in iOS 18 where SwiftUI.AsyncRenderer
+        // can cause a crash on lazy views is fixed. https://developer.apple.com/forums/thread/760645
+    ]
 )

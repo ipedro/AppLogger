@@ -36,7 +36,7 @@ struct LogEntryView: View {
             )
 
             if let userInfo {
-                LogEntryUserInfoRows(
+                LogEntryUserInfoView(
                     ids: userInfo
                 )
             }

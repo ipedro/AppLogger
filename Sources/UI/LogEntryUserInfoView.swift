@@ -2,7 +2,7 @@ import Data
 import Models
 import SwiftUI
 
-struct LogEntryUserInfoRows: View {
+struct LogEntryUserInfoView: View {
     let ids: [LogEntryUserInfoKey]
 
     @Environment(\.spacing)
