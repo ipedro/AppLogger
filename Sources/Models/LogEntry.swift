@@ -90,6 +90,28 @@ public extension LogEntry {
         self.content = content
         self.userInfo = LogEntryUserInfo(userInfo)
     }
+    
+    /// Creates a new instance of LogEntry with the given source, category, and content.
+    ///
+    /// - Parameters:
+    ///   - date: The date the log was sent.
+    ///   - category: The category or classification of the log entry.
+    ///   - source: A custom source type from which the log entry originates.
+    ///   - content: The detailed content of the log entry.
+    ///   - userInfo: An optional user info.
+    init<S>(
+        date: Date = Date(),
+        category: LogEntryCategory,
+        source: S.Type,
+        content: LogEntryContent,
+        userInfo: [String: Any]? = nil
+    ) where S: LogEntrySourceProtocol {
+        id = LogEntryID(date: date)
+        self.source = LogEntrySource(source)
+        self.category = category
+        self.content = content
+        self.userInfo = LogEntryUserInfo(userInfo)
+    }
 }
 
 package extension [LogEntry] {
