@@ -1,0 +1,20 @@
+name: CI
+on: push
+jobs:
+  swift-format:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run SwiftFormat
+      run: swiftformat .
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name 'CI'
+        git config --global user.email 'ip4dro@gmail.com'
+        git add .
+        if ! git diff --quiet --staged; then
+          git commit -m "Apply SwiftFormat"
+          git push origin main
+        else
+          echo "No changes to commit"
+        fi
