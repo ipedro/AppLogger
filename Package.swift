@@ -28,19 +28,19 @@ let package = Package(
         if buildingForDevelopment {
             products.append(
                 .library(
-                    name: "Models",
+                    name: "AppLoggerModels",
                     targets: ["Models"]
                 )
             )
             products.append(
                 .library(
-                    name: "Data",
+                    name: "AppLoggerData",
                     targets: ["Data"]
                 )
             )
             products.append(
                 .library(
-                    name: "UI",
+                    name: "AppLoggerUI",
                     targets: ["UI"]
                 )
             )

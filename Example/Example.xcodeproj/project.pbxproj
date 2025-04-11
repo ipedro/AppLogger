@@ -26,7 +26,7 @@
 		EB4B8A3C27D8E4E500EA709C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EB4B8A3F27D8E4E500EA709C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB4B8A4127D8E4E500EA709C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EB8688F627D8F26700DC44AB /* AppLogger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AppLogger; path = ../..; sourceTree = "<group>"; };
+		EB8688F627D8F26700DC44AB /* AppLogger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AppLogger; path = ..; sourceTree = "<group>"; };
 		EB8688FA27D8F9BD00DC44AB /* AppLoggerFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
