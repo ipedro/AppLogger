@@ -22,7 +22,6 @@ import SwiftUI
 import struct Models.Source
 
 struct LogEntryHeaderView: View {
-    let tint: Color
     let source: Source
     let category: String
     let createdAt: Date
@@ -32,25 +31,27 @@ struct LogEntryHeaderView: View {
 
     var body: some View {
         HStack(spacing: spacing / 2) {
-            Circle()
-                .fill(tint)
-                .frame(width: spacing, height: spacing)
-                .padding(.trailing, spacing / 2)
-            
             Text(category)
+                .foregroundStyle(.primary)
             
             Image(systemName: "chevron.forward")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
             
             LogEntrySourceView(data: source)
-                .foregroundStyle(tint)
+                .foregroundStyle(.tint)
             
             Spacer()
             
             Text(createdAt, style: .time)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+        }
+        .foregroundStyle(.secondary)
+        .overlay(alignment: .leading) {
+            Circle()
+                .fill(.tint)
+                .frame(width: spacing)
+                .offset(x: -spacing * 1.5)
         }
         .font(.footnote.bold())
     }
@@ -58,9 +59,9 @@ struct LogEntryHeaderView: View {
 
 #Preview {
     LogEntryHeaderView(
-        tint: .pink,
         source: "Source",
         category: "Category",
         createdAt: Date()
     )
+    .padding()
 }

@@ -25,7 +25,6 @@ import struct Models.Content
 struct LogEntryContentView: View {
     var category: Category
     var content: Content
-    var tint: Color
     
     @Environment(\.spacing)
     private var spacing
@@ -47,10 +46,10 @@ struct LogEntryContentView: View {
                     LinkText(data: message)
                 }
                 .font(.footnote)
-                .foregroundStyle(tint)
+                .foregroundStyle(.tint)
                 .padding(spacing * 1.5)
                 .background(
-                    tint.opacity(0.1),
+                    .tint.opacity(0.1),
                     in: RoundedRectangle(cornerRadius: spacing * 2)
                 )
             }
@@ -64,15 +63,13 @@ struct LogEntryContentView: View {
         content: Content(
             function: "content description",
             message: "Bla"
-        ),
-        tint: .accentColor
+        )
     )
 }
 
 #Preview {
     LogEntryContentView(
         category: .alert,
-        content: "content description",
-        tint: .accentColor
+        content: "content description"
     )
 }

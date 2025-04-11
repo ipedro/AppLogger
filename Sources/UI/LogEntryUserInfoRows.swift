@@ -26,7 +26,6 @@ import struct Models.UserInfoKey
 
 struct LogEntryUserInfoRows: View {
     var ids: [UserInfoKey]
-    var tint: Color? = .secondary
 
     @Environment(\.spacing)
     private var spacing
@@ -42,8 +41,7 @@ struct LogEntryUserInfoRows: View {
             ForEach(Array(ids.enumerated()), id: \.offset) { offset, id in
                 LogEntryUserInfoRow(
                     key: id.key,
-                    value: viewModel.entryUserInfoValue(id),
-                    tint: tint
+                    value: viewModel.entryUserInfoValue(id)
                 )
                 .background(backgroundColor(for: offset))
             }
@@ -69,8 +67,7 @@ struct LogEntryUserInfoRows: View {
         LogEntryUserInfoRows(
             ids: entry.userInfo?.storage.map {
                 UserInfoKey(id: entry.id, key: $0.key)
-            } ?? [],
-            tint: .blue
+            } ?? []
         )
         .padding()
     }

@@ -51,39 +51,24 @@ struct LogEntryView: View {
         
         VStack(alignment: .leading, spacing: spacing) {
             LogEntryHeaderView(
-                tint: tint,
                 source: source,
                 category: category.description,
                 createdAt: createdAt
             )
-            .padding(.trailing, spacing * 2)
             
             LogEntryContentView(
                 category: category,
-                content: content,
-                tint: tint
+                content: content
             )
-            .padding(.horizontal, spacing * 2)
             
             if let userInfo {
                 LogEntryUserInfoRows(
-                    ids: userInfo,
-                    tint: tint
+                    ids: userInfo
                 )
-                .padding(EdgeInsets(
-                    top: spacing,
-                    leading: spacing * 2,
-                    bottom: .zero,
-                    trailing: spacing * 2
-                ))
             }
         }
-        .padding(EdgeInsets(
-            top: spacing * 2,
-            leading: spacing,
-            bottom: spacing * 2,
-            trailing: .zero
-        ))
+        .tint(tint)
+        .padding(spacing * 2)
         .background(.background)
     }
 }

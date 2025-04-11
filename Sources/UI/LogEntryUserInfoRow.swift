@@ -23,7 +23,6 @@ import SwiftUI
 struct LogEntryUserInfoRow: View {
     let key: String
     let value: String
-    let tint: Color?
     
     @Environment(\.spacing)
     private var spacing
@@ -39,7 +38,7 @@ struct LogEntryUserInfoRow: View {
 
     private var valueText: some View {
         LinkText(data: value, alignment: .trailing)
-            .foregroundColor(tint)
+            .foregroundStyle(.tint)
             .font(.system(.caption, design: .monospaced))
     }
 
@@ -68,16 +67,14 @@ private extension View {
     VStack {
         LogEntryUserInfoRow(
             key: "Key",
-            value: "I'm a value",
-            tint: .blue
+            value: "I'm a value"
         )
         
         Divider()
         
         LogEntryUserInfoRow(
             key: "",
-            value: "String interpolations are string literals that evaluate any included expressions and convert the results to string form. String interpolations give you an easy way to build a string from multiple pieces. Wrap each expression in a string interpolation in parentheses, prefixed by a backslash.",
-            tint: .blue
+            value: "String interpolations are string literals that evaluate any included expressions and convert the results to string form. String interpolations give you an easy way to build a string from multiple pieces. Wrap each expression in a string interpolation in parentheses, prefixed by a backslash."
         )
     }
 }

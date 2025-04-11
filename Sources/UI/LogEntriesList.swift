@@ -104,6 +104,7 @@ package struct LogEntriesList: View {
     
     private func trailingNavigationBarItems() -> some View {
         DismissButton(action: viewModel.dismissAction)
+            .font(.title2)
     }
 }
 
