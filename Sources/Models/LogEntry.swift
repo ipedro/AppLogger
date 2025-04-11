@@ -77,13 +77,13 @@ public extension LogEntry {
     ///   - source: A custom source from which the log entry originates.
     ///   - content: The detailed content of the log entry.
     ///   - userInfo: An optional user info.
-    init(
+    init<S>(
         date: Date = Date(),
         category: LogEntryCategory,
-        source: some LogEntrySourceProtocol,
+        source: S,
         content: LogEntryContent,
         userInfo: [String: Any]? = nil
-    ) {
+    ) where S:LogEntrySourceProtocol {
         id = LogEntryID(date: date)
         self.source = LogEntrySource(source)
         self.category = category

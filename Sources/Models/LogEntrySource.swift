@@ -3,7 +3,7 @@ import SwiftUI
 /// A concrete implementation of a log source with emoji support.
 ///
 /// `LogEntrySource` provides a flexible way to identify where logs come from,
-/// with optional emoji for visual distinction and additional contextual information:
+/// with optional emoji for visual distinction and additional contextual information.
 ///
 /// ```swift
 /// // Basic source
@@ -19,11 +19,23 @@ import SwiftUI
 /// )
 /// ```
 public struct LogEntrySource: Hashable, Identifiable, Sendable {
+    /// A unique identifier derived from the log source name.
     public var id: String { name }
+    
+    /// An optional emoji to visually represent the source.
     public let emoji: Character?
+    
+    /// The cleaned name identifier for the log source.
     public let name: String
+    
+    /// Additional contextual information about the log source.
     public let info: LogEntrySourceInfo?
-
+    
+    /// Initializes a new instance of `LogEntrySource` with a name and optional info.
+    ///
+    /// - Parameters:
+    ///   - name: The name identifier for the log source.
+    ///   - info: Optional additional information about the log source. Default is `nil`.
     public init(
         _ name: String,
         _ info: LogEntrySourceInfo? = .none
@@ -32,7 +44,13 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
         self.info = info
         self.name = Self.cleanName(name)
     }
-
+    
+    /// Initializes a new instance of `LogEntrySource` with an emoji, name, and optional info.
+    ///
+    /// - Parameters:
+    ///   - emoji: An emoji character to represent the log source.
+    ///   - name: The name identifier for the log source.
+    ///   - info: Optional additional information about the log source. Default is `nil`.
     public init(
         _ emoji: Character,
         _ name: String,
@@ -42,13 +60,20 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
         self.info = info
         self.name = Self.cleanName(name)
     }
-
-    package init(_ source: some LogEntrySourceProtocol) {
-        emoji = source.logEntryEmoji
-        info = source.logEntryInfo
-        name = Self.cleanName(source.logEntryName)
+    
+    /// Initializes a new instance of `LogEntrySource` from a source conforming to `LogEntrySourceProtocol`.
+    ///
+    /// - Parameter source: An object conforming to `LogEntrySourceProtocol`.
+    package init<S>(_ source: S) where S: LogEntrySourceProtocol {
+        emoji = S.logEntryEmoji
+        info = S.logEntryInfo
+        name = Self.cleanName(S.logEntryName)
     }
-
+    
+    /// Returns a cleaned version of the provided name by removing a ".swift" suffix if present.
+    ///
+    /// - Parameter name: The original source name.
+    /// - Returns: A cleaned version of the name without a ".swift" suffix, if applicable.
     private static func cleanName(_ name: String) -> String {
         if name.hasSuffix(".swift") {
             name.replacingOccurrences(of: ".swift", with: "")

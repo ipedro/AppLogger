@@ -42,5 +42,5 @@ struct LogEntrySourceView: View {
 }
 
 private struct CustomSource: LogEntrySourceProtocol {
-    var logEntryEmoji: Character? { "👌" }
+    static var logEntryEmoji: Character? { "👌" }
 }

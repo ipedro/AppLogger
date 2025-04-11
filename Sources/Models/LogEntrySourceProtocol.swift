@@ -22,19 +22,22 @@ import UIKit
 /// }
 /// ```
 public protocol LogEntrySourceProtocol {
-    var logEntryEmoji: Character? { get }
-    var logEntryName: String { get }
-    var logEntryInfo: LogEntrySourceInfo? { get }
+    /// An optional custom emoji.
+    static var logEntryEmoji: Character? { get }
+    /// Name is automatically derived from type name, can be customized if needed.
+    static var logEntryName: String { get }
+    /// Extra context (optional).
+    static var logEntryInfo: LogEntrySourceInfo? { get }
 }
 
 public extension LogEntrySourceProtocol {
-    var logEntryEmoji: Character? { nil }
+    static var logEntryEmoji: Character? { nil }
 
-    var logEntryName: String {
+    static var logEntryName: String {
         let type = "\(type(of: self))"
         guard let sanitizedType = type.split(separator: "<").first else { return type }
         return String(sanitizedType)
     }
 
-    var logEntryInfo: LogEntrySourceInfo? { nil }
+    static var logEntryInfo: LogEntrySourceInfo? { nil }
 }

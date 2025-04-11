@@ -24,7 +24,6 @@ package extension Filter {
     ///
     /// `Kind` is implemented as an `OptionSet`, allowing multiple
     /// filter criteria to be combined using bitwise operations.
-    /// ```
     struct Kind: CustomStringConvertible, Hashable, OptionSet {
         package let rawValue: Int8
 
