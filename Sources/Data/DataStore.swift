@@ -86,8 +86,8 @@ package actor DataStore {
         }
         
         observer.updateValues(
-            allEntries: allEntries.sorted(),
             allCategories: allCategories.sorted(),
+            allEntries: allEntries.sorted(),
             allSources: allSources.sorted(),
             entryCategories: entryCategories,
             entryContents: entryContents,

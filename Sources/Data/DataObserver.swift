@@ -60,8 +60,8 @@ package final class DataObserver: @unchecked Sendable {
     private(set) var sourceColors = [LogEntrySource.ID: DynamicColor]()
     
     func updateValues(
-        allEntries: [LogEntryID],
         allCategories: [LogEntryCategory],
+        allEntries: [LogEntryID],
         allSources: [LogEntrySource],
         entryCategories: [LogEntryID: LogEntryCategory],
         entryContents: [LogEntryID: LogEntryContent],

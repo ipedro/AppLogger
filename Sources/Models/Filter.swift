@@ -1,5 +1,17 @@
 import Foundation
 
+package struct Filter: Hashable {
+    package let kind: Kind
+    package let query: String
+    package let displayName: String
+    
+    init(_ kind: Kind, query: String, displayName: String) {
+        self.query = query
+        self.kind = kind
+        self.displayName = displayName
+    }
+}
+
 extension Filter {
     package struct Kind: CustomStringConvertible, Hashable, OptionSet {
         package let rawValue: Int8
@@ -28,18 +40,6 @@ extension Filter {
             .content,
             .userInfo,
         ]
-    }
-}
-
-package struct Filter: Hashable {
-    package let kind: Kind
-    package let query: String
-    package let displayName: String
-    
-    init(_ kind: Kind, query: String, displayName: String) {
-        self.query = query
-        self.kind = kind
-        self.displayName = displayName
     }
 }
 
