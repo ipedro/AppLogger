@@ -18,11 +18,13 @@ struct LogEntryUserInfoRows: View {
         let _ = Self._debugPrintChanges()
         LazyVStack(alignment: .leading, spacing: .zero) {
             ForEach(Array(ids.enumerated()), id: \.element) { offset, id in
+                let backgroundColor = backgroundColor(for: offset)
+                
                 LogEntryUserInfoRow(
                     key: id.key,
                     value: viewModel.entryUserInfoValue(id)
                 )
-                .background(backgroundColor(for: offset))
+                .background(backgroundColor)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: spacing * 1.5))
