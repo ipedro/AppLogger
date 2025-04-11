@@ -1,6 +1,6 @@
 import SwiftUI
-import class Data.AppLoggerViewModel
-import class Data.DataObserver
+import Data
+import Models
 
 struct FiltersDrawer: View {
     
@@ -10,32 +10,58 @@ struct FiltersDrawer: View {
     @Environment(\.spacing)
     private var spacing
     
+    @State
+    private var activeFilters: Set<Filter> = []
+    
+    @State
+    private var categories: [Filter] = []
+    
+    @State
+    private var sources: [Filter] = []
+    
     var body: some View {
+        let _ = Self._debugPrintChanges()
         VStack(spacing: spacing) {
-            SearchBarView(searchQuery: $viewModel.searchQuery)
+            SearchBarView()
                 .padding(.horizontal, spacing * 2)
             
-            if !viewModel.categories.isEmpty {
+            if !categories.isEmpty {
                 FiltersRow(
                     title: "Categories",
-                    selection: $viewModel.activeFilters,
-                    data: viewModel.categories
+                    selection: $activeFilters,
+                    data: categories
                 )
-                .animation(.snappy, value: viewModel.categories)
+                .animation(.snappy, value: categories)
             }
-            if !viewModel.sources.isEmpty {
+            if !sources.isEmpty {
                 FiltersRow(
                     title: "Sources",
-                    selection: $viewModel.activeFilters,
-                    data: viewModel.sources
+                    selection: $activeFilters,
+                    data: sources
                 )
-                .animation(.snappy, value: viewModel.sources)
+                .animation(.snappy, value: sources)
             }
         }
         .font(.footnote)
         .padding(.vertical, spacing)
         .background(.background)
-        .safeAreaInset(edge: .bottom, spacing: .zero, content: Divider.init)
+        .safeAreaInset(
+            edge: .bottom,
+            spacing: .zero,
+            content: Divider.init
+        )
+        .onReceive(viewModel.activeFiltersSubject) {
+            activeFilters = $0
+        }
+        .onReceive(viewModel.categoriesSubject) {
+            categories = $0
+        }
+        .onReceive(viewModel.sourcesSubject) {
+            sources = $0
+        }
+        .onChange(of: activeFilters) {
+            viewModel.activeFiltersSubject.send($0)
+        }
     }
 }
 
@@ -44,11 +70,10 @@ struct FiltersDrawer: View {
         .environmentObject(
             AppLoggerViewModel(
                 dataObserver: DataObserver(
-//                    allCategories: ["test"],
-//                    allSources: ["test"]
+                    allCategories: ["test", "test2"],
+                    allSources: ["test"]
                 ),
-                dismissAction: {
-                }
+                dismissAction: {}
             )
         )
 }

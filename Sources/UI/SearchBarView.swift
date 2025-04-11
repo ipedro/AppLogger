@@ -1,16 +1,25 @@
 import SwiftUI
+import Data
 
 struct SearchBarView: View {
-    @Binding
-    var searchQuery: String
-    
     @FocusState
     private var focus
     
     @Environment(\.spacing)
     private var spacing
+    
+    @EnvironmentObject
+    private var viewModel: AppLoggerViewModel
+
+    private var searchQuery: Binding<String> {
+        Binding(
+            get: { viewModel.searchQuerySubject.value },
+            set: { viewModel.searchQuerySubject.send($0) }
+        )
+    }
 
     var body: some View {
+        let _ = Self._debugPrintChanges()
         HStack {
             HStack {
                 Image(systemName: "magnifyingglass")
@@ -18,7 +27,7 @@ struct SearchBarView: View {
 
                 TextField(
                     "Search logs",
-                    text: $searchQuery
+                    text: searchQuery
                 )
                 .autocorrectionDisabled()
                 .submitLabel(.search)
@@ -40,18 +49,21 @@ struct SearchBarView: View {
     }
     
     private var showDismiss: Bool {
-        focus || !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        focus || !viewModel.searchQuerySubject.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     private func clearText() {
-        searchQuery = String()
+        viewModel.searchQuerySubject.value = String()
         focus.toggle()
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
-    @Previewable @State
-    var query: String = "Query"
-    SearchBarView(searchQuery: $query)
+    SearchBarView()
+        .environmentObject(
+            AppLoggerViewModel(
+                dataObserver: DataObserver(),
+                dismissAction: {}
+            )
+        )
 }

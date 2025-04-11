@@ -18,11 +18,6 @@ extension LogEntryContent: ExpressibleByStringLiteral {
 }
 
 extension LogEntryContent: Filterable {
-    package static var filterQuery: KeyPath<LogEntryContent, String> {
-        \.function
-    }
-    
-    package static var filterableOptional: KeyPath<LogEntryContent, String?> {
-        \.message
-    }
+    package static var filterCriteria: KeyPath<LogEntryContent, String> { \.function }
+    package static var filterCriteriaOptional: KeyPath<LogEntryContent, String?>? { \.message }
 }

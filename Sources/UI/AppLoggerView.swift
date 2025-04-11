@@ -2,7 +2,20 @@ import Data
 import Models
 import SwiftUI
 
-package struct LogEntriesNavigation<Content>: View where Content: View {
+@available(iOS 16.0, *)
+package extension AppLoggerView where Content == NavigationStack<NavigationPath, LogEntriesList> {
+    static func navigationStack() -> Self {
+        Self(content: NavigationStack(root: LogEntriesList.init))
+    }
+}
+
+package extension AppLoggerView where Content == NavigationView<LogEntriesList> {
+    static func navigationView() -> Self {
+        Self(content: NavigationView(content: LogEntriesList.init))
+    }
+}
+
+package struct AppLoggerView<Content>: View where Content: View {
 
     @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
@@ -18,20 +31,11 @@ package struct LogEntriesNavigation<Content>: View where Content: View {
     
     private let content: Content
     
-    @available(iOS 16.0, *)
-    package static func makeStack() -> Self where Content == NavigationStack<NavigationPath, LogEntriesList> {
-        Self(content: NavigationStack(root: LogEntriesList.init))
-    }
-
-    package static func makeView() -> Self where Content == NavigationView<LogEntriesList> {
-        Self(content: NavigationView(content: LogEntriesList.init))
-    }
-    
     package var body: some View {
+        let _ = Self._debugPrintChanges()
         content
             .tint(accentColor)
             .colorScheme(preferredColorScheme ?? colorScheme)
-            .activitySheet($viewModel.activityItem)
     }
 }
 
@@ -54,7 +58,7 @@ package struct LogEntriesNavigation<Content>: View where Content: View {
         })
     )
     
-    LogEntriesNavigation.makeStack()
+    AppLoggerView.navigationStack()
         .environmentObject(
             AppLoggerViewModel(
                 dataObserver: dataObserver,

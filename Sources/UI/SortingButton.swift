@@ -1,16 +1,21 @@
+import Data
 import Models
 import SwiftUI
 
 struct SortingButton: View {
     var options = LogEntrySorting.allCases
     
-    @Binding
-    var selection: LogEntrySorting
+    @EnvironmentObject
+    private var viewModel: AppLoggerViewModel
+    
+    @State
+    private var selection: LogEntrySorting = .ascending
     
     @Environment(\.configuration.icons)
     private var icons
     
     var body: some View {
+        let _ = Self._debugPrintChanges()
         Menu {
             Picker("Sorting", selection: $selection) {
                 ForEach(options, id: \.rawValue) { option in
@@ -21,6 +26,12 @@ struct SortingButton: View {
             Image(systemName: icon)
         }
         .symbolRenderingMode(.hierarchical)
+        .onReceive(viewModel.entriesSortingSubject) {
+            selection = $0
+        }
+        .onChange(of: selection) {
+            viewModel.entriesSortingSubject.send($0)
+        }
     }
     
     private var icon: String {
@@ -37,8 +48,11 @@ struct SortingButton: View {
 
 @available(iOS 17.0, *)
 #Preview {
-    @Previewable @State
-    var selection: LogEntrySorting = .ascending
-    
-    SortingButton(selection: $selection)
+    SortingButton()
+        .environmentObject(
+            AppLoggerViewModel(
+                dataObserver: DataObserver(),
+                dismissAction: {}
+            )
+        )
 }

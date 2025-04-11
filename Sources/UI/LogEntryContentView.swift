@@ -9,6 +9,7 @@ struct LogEntryContentView: View {
     private var spacing
     
     var body: some View {
+        let _ = Self._debugPrintChanges()
         VStack(alignment: .leading, spacing: spacing) {
             Text(content.function)
                 .font(.callout.bold())

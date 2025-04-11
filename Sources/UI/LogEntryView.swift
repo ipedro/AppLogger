@@ -15,6 +15,7 @@ struct LogEntryView: View {
     private var viewModel: AppLoggerViewModel
 
     var body: some View {
+        let _ = Self._debugPrintChanges()
         let source = viewModel.entrySource(id)
         let category = viewModel.entryCategory(id)
         let createdAt = viewModel.entryCreatedAt(id)

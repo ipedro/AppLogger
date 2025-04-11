@@ -10,6 +10,7 @@ struct LogEntryHeaderView: View {
     private var spacing
 
     var body: some View {
+        let _ = Self._debugPrintChanges()
         HStack(spacing: spacing / 2) {
             Text(category)
                 .foregroundStyle(.primary)

@@ -1,8 +1,13 @@
 import SwiftUI
 import Models
 
-struct FilterView: View {
+struct FilterView: View, @preconcurrency Equatable {
+    static func == (lhs: FilterView, rhs: FilterView) -> Bool {
+        lhs.data == rhs.data && lhs.isOn == rhs.isOn
+    }
+    
     let data: Filter
+    
     @Binding var isOn: Bool
     
     @Environment(\.colorScheme)
@@ -14,6 +19,7 @@ struct FilterView: View {
     private let shape = Capsule()
     
     var body: some View {
+        let _ = Self._debugPrintChanges()
         Toggle(data.displayName, isOn: $isOn)
             .clipShape(shape)
             .toggleStyle(.button)

@@ -10,19 +10,32 @@ package struct LogEntriesList: View {
     @Environment(\.configuration)
     private var configuration
     
+    @State
+    private var entries: [LogEntryID] = []
+    
+    @State
+    private var searchQuery = ""
+    
+    @State
+    private var showFilters: Bool = false
+    
+    @State
+    private var activeFilterScope: [String] = []
+    
     package var body: some View {
+        let _ = Self._debugPrintChanges()
         ScrollView {
             LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(viewModel.entries, id: \.self) { id in
+                    ForEach(entries, id: \.self) { id in
                         LogEntryView(id: id)
                         
-                        if id != viewModel.entries.last {
+                        if id != entries.last {
                             Divider()
                         }
                     }
                 } header: {
-                    if viewModel.showFilters {
+                    if showFilters {
                         FiltersDrawer().transition(
                             .move(edge: .top)
                             .combined(with: .opacity)
@@ -31,18 +44,18 @@ package struct LogEntriesList: View {
                 }
             }
             .padding(.bottom, 50)
-            .animation(.snappy, value: viewModel.entries)
+            .animation(.snappy, value: entries)
         }
         .clipped()
         .ignoresSafeArea(.container, edges: .bottom)
         .background {
-            if viewModel.entries.isEmpty {
+            if entries.isEmpty {
                 Text(emptyReason)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.secondary)
                     .font(.callout)
                     .multilineTextAlignment(.center)
-                    .padding(.top, viewModel.showFilters ? 150 : 0)
+                    .padding(.top, showFilters ? 150 : 0)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -57,25 +70,37 @@ package struct LogEntriesList: View {
                 content: trailingNavigationBarItems
             )
         }
+        .onReceive(viewModel.entriesSubject) {
+            entries = $0
+        }
+        .onReceive(viewModel.showFilterDrawerSubject) {
+            showFilters = $0
+        }
+        .onReceive(viewModel.searchQuerySubject) {
+            searchQuery = $0
+        }
+        .onReceive(viewModel.activeFilterScopeSubject) {
+            activeFilterScope = $0
+        }
     }
     
     private var emptyReason: String {
-        if viewModel.searchQuery.isEmpty {
+        if searchQuery.isEmpty {
             configuration.emptyReasons.empty
         } else {
-            "\(configuration.emptyReasons.searchResults):\n\n\(viewModel.activeScope.joined(separator: ", "))"
+            configuration.emptyReasons.searchResults + ":\n\n\(activeFilterScope.joined(separator: ", "))"
         }
     }
     
     private func leadingNavigationBarItems() -> some View {
         HStack {
             FiltersDrawerToggle(
-                isOn: $viewModel.showFilters,
-                activeFilters: viewModel.activeScope.count
+                isOn: $showFilters,
+                activeFilters: activeFilterScope.count
             )
             
-            SortingButton(selection: $viewModel.sorting)
-                .disabled(viewModel.entries.isEmpty)
+            SortingButton()
+                .disabled(entries.isEmpty)
         }
     }
     
@@ -91,7 +116,9 @@ package struct LogEntriesList: View {
     var colorGenerator = DynamicColorGenerator<LogEntrySource>()
     
     let dataObserver = DataObserver(
+        allCategories: allEntries.map(\.category),
         allEntries: allEntries.map(\.id),
+        allSources: allEntries.map(\.source),
         entryCategories: allEntries.valuesByID(\.category),
         entryContents: allEntries.valuesByID(\.content),
         entrySources: allEntries.valuesByID(\.source),
@@ -109,6 +136,6 @@ package struct LogEntriesList: View {
     LogEntriesList()
         .environmentObject(viewModel)
         .onAppear {
-            viewModel.showFilters = true
+            viewModel.showFilterDrawerSubject.value = true
         }
 }

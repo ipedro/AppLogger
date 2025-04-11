@@ -3,154 +3,150 @@ import Foundation
 import Models
 import SwiftUI
 
+@MainActor
 package final class AppLoggerViewModel: ObservableObject {
-    @Published
-    package var searchQuery: String = ""
-    
-    @Published
-    package var showFilters: Bool {
-        willSet {
-            UserDefaults.standard.showFilters = newValue
-        }
-    }
-    
-    @Published
-    package var sorting: LogEntrySorting
-    
-    @Published
-    package var activityItem: ActivityItem?
-    
-    @Published
-    package var activeFilters: Set<Filter> = []
-    
-    package var activeScope: [String] {
-        var scope = activeFilters.sorted()
-        if !searchQuery.trimmed.isEmpty {
-            scope.append(searchQuery.trimmed.filter)
-        }
-        return scope.map(\.displayName)
-    }
-    
-    @Published
-    package var sources: [Filter] = []
-    
-    @Published
-    package var categories: [Filter] = []
-    
-    @Published
-    package var entries: [LogEntryID] = []
     
     package let dismissAction: @MainActor () -> Void
     
-    private let dataObserver: DataObserver
+    package let dataObserver: DataObserver
     
     private var cancellables = Set<AnyCancellable>()
     
-    package init(
-        dataObserver: DataObserver,
-        dismissAction: @escaping @MainActor () -> Void
-    ) {
+    // Subjects
+    
+    package let searchQuerySubject = CurrentValueSubject<String, Never>("")
+    
+    package let showFilterDrawerSubject = CurrentValueSubject<Bool, Never>(UserDefaults.standard.showFilters)
+    
+    package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(UserDefaults.standard.sorting)
+    
+    package let activeFiltersSubject = CurrentValueSubject<Set<Filter>, Never>([])
+    
+    package var sourcesSubject = CurrentValueSubject<[Filter], Never>([])
+
+    package var categoriesSubject = CurrentValueSubject<[Filter], Never>([])
+    
+    package var entriesSubject = CurrentValueSubject<[LogEntryID], Never>([])
+    
+    package var activeFilterScopeSubject = CurrentValueSubject<[String], Never>([])
+    
+    package init(dataObserver: DataObserver, dismissAction: @escaping @MainActor () -> Void) {
         self.dataObserver = dataObserver
         self.dismissAction = dismissAction
-        self.sorting = UserDefaults.standard.sorting
-        self.showFilters = UserDefaults.standard.showFilters
         
-        setupListeners()
+        setupPublishers()
     }
-    
-    package func sourceColor(_ source: LogEntrySource, for colorScheme: ColorScheme) -> Color {
+}
+
+package extension AppLoggerViewModel {
+    func sourceColor(_ source: LogEntrySource, for colorScheme: ColorScheme) -> Color {
         dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
     }
     
-    package func entrySource(_ id: LogEntryID) -> LogEntrySource {
+    func entrySource(_ id: LogEntryID) -> LogEntrySource {
         dataObserver.entrySources[id]!
     }
     
-    package func entryCategory(_ id: LogEntryID) -> LogEntryCategory {
+    func entryCategory(_ id: LogEntryID) -> LogEntryCategory {
         dataObserver.entryCategories[id]!
     }
     
-    package func entryContent(_ id: LogEntryID) -> LogEntryContent {
+    func entryContent(_ id: LogEntryID) -> LogEntryContent {
         dataObserver.entryContents[id]!
     }
     
-    package func entryUserInfoKeys(_ id: LogEntryID) -> [LogEntryUserInfoKey]? {
+    func entryUserInfoKeys(_ id: LogEntryID) -> [LogEntryUserInfoKey]? {
         dataObserver.entryUserInfoKeys[id]
     }
     
-    package func entryUserInfoValue(_ id: LogEntryUserInfoKey) -> String {
+    func entryUserInfoValue(_ id: LogEntryUserInfoKey) -> String {
         dataObserver.entryUserInfoValues[id]!
     }
     
-    package func entryCreatedAt(_ id: LogEntryID) -> Date {
+    func entryCreatedAt(_ id: LogEntryID) -> Date {
         id.createdAt
     }
-    
 }
 
 private extension AppLoggerViewModel {
-    func setupListeners() {
+    func setupPublishers() {
+        // Categories pipeline
         Publishers.CombineLatest(
-            dataObserver.allCategories.throttleOnMain(for: 0.15).map { Set($0.map(\.filter)) },
-            $activeFilters
+            dataObserver.allCategories.throttleOnMain(for: 0.15),
+            activeFiltersSubject
         )
+        .map { allCategories, activeFilters in
+            Set(allCategories.map(\.filter)).sort(by: activeFilters)
+        }
         .receive(on: RunLoop.main)
-        .sink { [unowned self] sources, filters in
-            self.categories = sortFilters(sources, by: filters)
+        .sink { [unowned self] in
+            categoriesSubject.send($0)
         }
         .store(in: &cancellables)
         
+        // Sources pipeline
         Publishers.CombineLatest(
-            dataObserver.allSources.throttleOnMain(for: 0.15).map { Set($0.map(\.filter)) },
-            $activeFilters
+            dataObserver.allSources.throttleOnMain(for: 0.15),
+            activeFiltersSubject
         )
+        .map { allSources, activeFilters in
+            Set(allSources.map(\.filter)).sort(by: activeFilters)
+        }
         .receive(on: RunLoop.main)
-        .sink { [unowned self] sources, filters in
-            self.sources = sortFilters(sources, by: filters)
+        .sink { [unowned self] in
+            sourcesSubject.send($0)
         }
         .store(in: &cancellables)
         
+        // Active Filter Scope pipeline
+        Publishers.CombineLatest(
+            activeFiltersSubject,
+            searchQuerySubject
+        )
+        .map { filter, query in
+            var scope = filter.sorted()
+            let trimmedQuery = query.trimmed
+            if !trimmedQuery.isEmpty {
+                scope.append(trimmedQuery.filter)
+            }
+            return scope.map(\.displayName)
+        }
+        .sink { [unowned self] in
+            activeFilterScopeSubject.send($0)
+        }
+        .store(in: &cancellables)
+        
+        // Entries pipeline
         Publishers.CombineLatest4(
             dataObserver.allEntries.throttleOnMain(for: 0.15),
-            $searchQuery.debounceOnMain(for: 0.3).map(\.trimmed),
-            $activeFilters,
-            $sorting
+            searchQuerySubject.debounceOnMain(for: 0.3).map(\.trimmed),
+            activeFiltersSubject,
+            entriesSortingSubject
         )
         .receive(on: RunLoop.main)
-        .map { [unowned self] allEntries, query, filters, sort in
-            UserDefaults.standard.sorting = sort
-
-            var result = filterEntries(allEntries, with: filters)
+        .map { [unowned self] entries, query, filters, sorting in
+            UserDefaults.standard.sorting = sorting
+            var result = filterEntries(entries, with: filters)
             if !query.isEmpty {
                 result = filterEntries(result, with: [query.filter])
             }
-            result = sortEntries(result, by: sort)
-            return result
+            return result.sort(by: sorting)
         }
-        .sink { [unowned self] newValue in
-            entries = newValue
+        .sink { [unowned self] in
+            entriesSubject.send($0)
         }
         .store(in: &cancellables)
-    }
-    
-    func sortEntries(_ entries: [LogEntryID], by sorting: LogEntrySorting) -> [LogEntryID] {
-        switch sorting {
-        case .ascending: entries
-        case .descending: entries.reversed()
-        }
-    }
-    
-    func sortFilters(_ filters: Set<Filter>, by selection: Set<Filter>) -> [Filter] {
-        return filters.sorted { lhs, rhs in
-            let lhsActive = selection.contains(lhs)
-            let rhsActive = selection.contains(rhs)
-            if lhsActive != rhsActive {
-                return lhsActive && !rhsActive
+        
+        // Persisting showFilters to UserDefaults
+        showFilterDrawerSubject
+            .sink {
+                UserDefaults.standard.showFilters = $0
             }
-            return lhs < rhs
-        }
+            .store(in: &cancellables)
     }
-    
+}
+
+private extension AppLoggerViewModel {
     func filterEntries(_ entries: [LogEntryID], with filters: Set<Filter>) -> [LogEntryID] {
         var result = entries
         

@@ -11,8 +11,10 @@ struct FiltersRow: View {
     
     @Environment(\.spacing)
     private var spacing
-
-    var body: some View {ScrollView(.horizontal, showsIndicators: false) {
+    
+    var body: some View {
+        let _ = Self._debugPrintChanges()
+        ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: spacing, pinnedViews: .sectionHeaders) {
                 Section {
                     ForEach(data, id: \.self) { filter in
@@ -28,6 +30,7 @@ struct FiltersRow: View {
                                 }
                             }
                         )
+                        .equatable()
                     }
                 } header: {
                     Text(title)

@@ -18,6 +18,7 @@ struct LogEntrySourceView: View {
     }
     
     var body: some View {
+        let _ = Self._debugPrintChanges()
         Text(label)
     }
 }

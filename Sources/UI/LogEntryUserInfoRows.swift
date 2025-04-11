@@ -15,8 +15,9 @@ struct LogEntryUserInfoRows: View {
     private var viewModel: AppLoggerViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            ForEach(Array(ids.enumerated()), id: \.offset) { offset, id in
+        let _ = Self._debugPrintChanges()
+        LazyVStack(alignment: .leading, spacing: .zero) {
+            ForEach(Array(ids.enumerated()), id: \.element) { offset, id in
                 LogEntryUserInfoRow(
                     key: id.key,
                     value: viewModel.entryUserInfoValue(id)

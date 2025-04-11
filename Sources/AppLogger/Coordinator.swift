@@ -77,12 +77,12 @@ final class Coordinator: NSObject {
     }
     
     func makeNavigationView() -> some View {
-        injectDependencies(LogEntriesNavigation.makeView())
+        injectDependencies(AppLoggerView.navigationView())
     }
     
     @available(iOS 16.0, *)
     func makeNavigationStack() -> some View {
-        injectDependencies(LogEntriesNavigation.makeStack())
+        injectDependencies(AppLoggerView.navigationStack())
     }
     
     func injectDependencies(_ view: some View) -> some View {

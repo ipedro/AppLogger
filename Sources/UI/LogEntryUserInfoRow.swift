@@ -8,6 +8,7 @@ struct LogEntryUserInfoRow: View {
     private var spacing
 
     var body: some View {
+        let _ = Self._debugPrintChanges()
         HStack(alignment: .top, spacing: spacing) {
             keyText
             Spacer(minLength: spacing)

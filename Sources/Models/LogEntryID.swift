@@ -17,3 +17,12 @@ public struct LogEntryID: Hashable, Comparable, Sendable {
         Date(timeIntervalSince1970: timestamp)
     }
 }
+
+package extension Collection<LogEntryID> {
+    func sort(by strategy: LogEntrySorting) -> [LogEntryID] {
+        switch strategy {
+        case .ascending: Array(self)
+        case .descending: reversed()
+        }
+    }
+}

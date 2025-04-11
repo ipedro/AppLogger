@@ -57,7 +57,8 @@ let package = Package(
         ),
         .target(
             name: "UI",
-            dependencies: ["Data"]
+            dependencies: ["Data"],
+            swiftSettings: buildingForDevelopment ? [.define("DEBUG_VIEWS")] : []
         ),
         .target(
             name: "AppLogger",

@@ -56,10 +56,25 @@ extension Filter: ExpressibleByStringLiteral {
         self.kind = .all
     }
 }
+
+package extension Collection where Element == Filter {
+    func sort(by selection: Set<Filter>) -> [Filter] {
+        sorted { lhs, rhs in
+            let lhsActive = selection.contains(lhs)
+            let rhsActive = selection.contains(rhs)
+            
+            if lhsActive != rhsActive {
+                return lhsActive && !rhsActive
+            }
+            return lhs < rhs
+        }
+    }
+}
+
 // MARK: - Filterable
 
 package protocol Filterable {
-    static var filterQuery: KeyPath<Self, String> { get }
+    static var filterCriteria: KeyPath<Self, String> { get }
     static var filterCriteriaOptional: KeyPath<Self, String?>? { get }
 }
 
@@ -74,7 +89,7 @@ package extension FilterConvertible {
     var filter: Filter {
         Filter(
             Self.filterKind,
-            query: self[keyPath: Self.filterQuery],
+            query: self[keyPath: Self.filterCriteria],
             displayName: self[keyPath: Self.filterDisplayName]
         )
     }
@@ -85,23 +100,20 @@ package extension FilterConvertible {
 extension String: FilterConvertible {
     package static var filterKind: Filter.Kind { .all }
     package static var filterDisplayName: KeyPath<String, String> { \.self }
-    package static var filterQuery: KeyPath<String, String> { \.self }
+    package static var filterCriteria: KeyPath<String, String> { \.self }
+    package static var filterCriteriaOptional: KeyPath<String, String?>? { nil }
 }
 
 
 package extension Filterable {
-    static var filterCriteriaOptional: KeyPath<Self, String?>? { nil }
-    
     func matches(_ filter: Filter) -> Bool {
-        let value = self[keyPath: Self.filterQuery]
+        let value = self[keyPath: Self.filterCriteria]
         if value.localizedCaseInsensitiveContains(filter.query) {
-            //print("Filter \(filter.kind):", filter.query, "–", "Match:", value)
             return true
         }
         
         if let keyPath = Self.filterCriteriaOptional, let optionalValue = self[keyPath: keyPath] {
             if optionalValue.localizedCaseInsensitiveContains(filter.query) {
-                //print("Filter \(filter.kind):", filter.query, "–", "Match:", optionalValue)
                 return true
             }
         }

@@ -9,6 +9,7 @@ struct FiltersDrawerToggle: View {
     private var icons
     
     var body: some View {
+        let _ = Self._debugPrintChanges()
         Button {
             withAnimation(.snappy) {
                 isOn.toggle()
