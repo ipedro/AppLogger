@@ -25,48 +25,40 @@ import struct Data.DynamicColorGenerator
 import enum Models.Mock
 import struct Models.Source
 
-package struct LogEntriesNavigationContent: View {
-    @Environment(\.configuration.navigationTitle)
-    private var navigationTitle
+package struct LogEntriesNavigation<Content>: View where Content: View {
 
+    @Environment(\.configuration.colorScheme)
+    private var preferredColorScheme
+    
+    @Environment(\.colorScheme)
+    private var colorScheme
+
+    @Environment(\.configuration.accentColor)
+    private var accentColor
+    
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
-    package init() {}
+    private let content: Content
+    
+    @available(iOS 16.0, *)
+    package static func makeStack() -> Self where Content == NavigationStack<NavigationPath, LogEntriesList> {
+        Self(content: NavigationStack(root: LogEntriesList.init))
+    }
+
+    package static func makeView() -> Self where Content == NavigationView<LogEntriesList> {
+        Self(content: NavigationView(content: LogEntriesList.init))
+    }
     
     package var body: some View {
-        LogEntriesList()
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(navigationTitle)
-            .toolbar {
-                ToolbarItem(
-                    placement: .topBarLeading,
-                    content: leadingNavigationBarItems
-                )
-                ToolbarItem(
-                    placement: .topBarTrailing,
-                    content: trailingNavigationBarItems
-                )
-            }
-    }
-    
-    private func leadingNavigationBarItems() -> some View {
-        HStack {
-            FiltersDrawerToggle(
-                isOn: $viewModel.showFilters,
-                activeFilters: viewModel.activeScope.count
-            )
-            
-            SortingButton(selection: $viewModel.sorting)
-                .disabled(viewModel.entries.isEmpty)
-        }
-    }
-    
-    private func trailingNavigationBarItems() -> some View {
-        DismissButton(action: viewModel.dismissAction)
+        content
+            .tint(accentColor)
+            .colorScheme(preferredColorScheme ?? colorScheme)
+            .activitySheet($viewModel.activityItem)
     }
 }
 
+@available(iOS 16.0, *)
 #Preview {
     let allEntries = Mock.allCases.map { $0.entry() }
     
@@ -85,11 +77,12 @@ package struct LogEntriesNavigationContent: View {
         })
     )
     
-    LogEntriesNavigationContent()
+    LogEntriesNavigation.makeStack()
         .environmentObject(
             AppLoggerViewModel(
                 dataObserver: dataObserver,
                 dismissAction: { print("dismiss") }
             )
         )
+        .configuration(.init(accentColor: .red))
 }

@@ -30,8 +30,7 @@ import class UIKit.UIWindow
 import class UIKit.UIWindowScene
 import protocol SwiftUI.View
 import protocol UIKit.UISheetPresentationControllerDelegate
-import struct UI.LogEntriesNavigationView
-import struct UI.LogEntriesNavigationStack
+import struct UI.LogEntriesNavigation
 
 @MainActor
 final class Coordinator: NSObject {
@@ -75,6 +74,7 @@ final class Coordinator: NSObject {
         }
         
         let viewController = makeViewController()
+        print(type(of: viewController))
         self.viewController = viewController
         
         if let sheetPresentation = viewController.sheetPresentationController {
@@ -107,14 +107,14 @@ final class Coordinator: NSObject {
     }
     
     func makeNavigationView() -> some View {
-        LogEntriesNavigationView()
+        LogEntriesNavigation.makeView()
             .configuration(configuration)
             .environmentObject(viewModel)
     }
     
     @available(iOS 16.0, *)
     func makeNavigationStack() -> some View {
-        LogEntriesNavigationStack()
+        LogEntriesNavigation.makeStack()
             .configuration(configuration)
             .environmentObject(viewModel)
     }

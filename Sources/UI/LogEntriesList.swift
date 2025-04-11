@@ -25,23 +25,15 @@ import struct Data.DynamicColorGenerator
 import enum Models.Mock
 import struct Models.Source
 
-struct LogEntriesList: View {
+package struct LogEntriesList: View {
     
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
-    @Environment(\.configuration.emptyReasons)
-    private var emptyReasons
+    @Environment(\.configuration)
+    private var configuration
     
-    private var emptyReason: String {
-        if viewModel.searchQuery.isEmpty {
-            emptyReasons.empty
-        } else {
-            "\(emptyReasons.searchResults):\n\n\(viewModel.activeScope.joined(separator: ", "))"
-        }
-    }
-    
-    var body: some View {
+    package var body: some View {
         ScrollView {
             LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
                 Section {
@@ -76,6 +68,42 @@ struct LogEntriesList: View {
                     .padding(.top, viewModel.showFilters ? 150 : 0)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(configuration.navigationTitle)
+        .toolbar {
+            ToolbarItem(
+                placement: .topBarLeading,
+                content: leadingNavigationBarItems
+            )
+            ToolbarItem(
+                placement: .topBarTrailing,
+                content: trailingNavigationBarItems
+            )
+        }
+    }
+    
+    private var emptyReason: String {
+        if viewModel.searchQuery.isEmpty {
+            configuration.emptyReasons.empty
+        } else {
+            "\(configuration.emptyReasons.searchResults):\n\n\(viewModel.activeScope.joined(separator: ", "))"
+        }
+    }
+    
+    private func leadingNavigationBarItems() -> some View {
+        HStack {
+            FiltersDrawerToggle(
+                isOn: $viewModel.showFilters,
+                activeFilters: viewModel.activeScope.count
+            )
+            
+            SortingButton(selection: $viewModel.sorting)
+                .disabled(viewModel.entries.isEmpty)
+        }
+    }
+    
+    private func trailingNavigationBarItems() -> some View {
+        DismissButton(action: viewModel.dismissAction)
     }
 }
 
