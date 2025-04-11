@@ -3,61 +3,18 @@ import Models
 import SwiftUI
 
 struct LogEntryUserInfoRows: View {
-    var ids: [LogEntryUserInfoKey]
+    let ids: [LogEntryUserInfoKey]
 
     @Environment(\.spacing)
     private var spacing
 
-    @Environment(\.colorScheme)
-    private var colorScheme
-
-    @EnvironmentObject
-    private var viewModel: VisualLoggerViewModel
-
     var body: some View {
         let _ = Self._debugPrintChanges()
-        VStack(alignment: .leading, spacing: .zero) {
-            ForEach(Array(ids.enumerated()), id: \.element) { offset, id in
-                let backgroundColor = backgroundColor(for: offset)
-
-                LogEntryUserInfoRow(
-                    key: id.key,
-                    value: viewModel.entryUserInfoValue(id)
-                )
-                .background(backgroundColor)
+        LazyVStack(spacing: .zero) {
+            ForEach(Array(ids.enumerated()), id: \.element) { @Sendable offset, id in
+                LogEntryUserInfoRow(offset: offset, id: id)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: spacing * 1.5))
     }
-
-    private func backgroundColor(for index: Int) -> Color {
-        if index.isMultiple(of: 2) {
-            Color(uiColor: .systemGray5)
-        } else if colorScheme == .dark {
-            Color(uiColor: .systemGray4)
-        } else {
-            Color(uiColor: .systemGray6)
-        }
-    }
-}
-
-#Preview {
-    let entry = LogEntryMock.socialLogin.entry()
-
-    ScrollView {
-        LogEntryUserInfoRows(
-            ids: entry.userInfo?.storage.map {
-                LogEntryUserInfoKey(id: entry.id, key: $0.key)
-            } ?? []
-        )
-        .padding()
-    }
-    .environmentObject(
-        VisualLoggerViewModel(
-            dataObserver: DataObserver(
-                entryUserInfos: [entry.id: entry.userInfo]
-            ),
-            dismissAction: {}
-        )
-    )
 }

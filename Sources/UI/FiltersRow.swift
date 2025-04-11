@@ -17,7 +17,7 @@ struct FiltersRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: spacing, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(data, id: \.self) { filter in
+                    ForEach(data, id: \.self) { @Sendable filter in
                         FilterView(
                             data: filter,
                             isOn: Binding {

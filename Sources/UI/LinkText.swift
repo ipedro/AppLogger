@@ -5,7 +5,6 @@ struct LinkText: View {
     var alignment: TextAlignment = .leading
 
     var body: some View {
-        let _ = Self._debugPrintChanges()
         Group {
             if let link = URL(string: data), link.scheme != .none {
                 Text(data)

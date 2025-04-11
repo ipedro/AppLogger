@@ -59,7 +59,7 @@ package extension VisualLoggerViewModel {
     }
 
     func entryUserInfoValue(_ id: LogEntryUserInfoKey) -> String {
-        dataObserver.entryUserInfoValues[id]!
+        dataObserver.entryUserInfoValues[id, default: "–"]
     }
 
     func entryCreatedAt(_ id: LogEntryID) -> Date {

@@ -23,13 +23,14 @@ package struct LogEntriesList: View {
 
     package var body: some View {
         let _ = Self._debugPrintChanges()
+        let data = entries
         ScrollView {
             LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(entries, id: \.self) { id in
+                    ForEach(data, id: \.self) { @Sendable id in
                         LogEntryView(id: id)
 
-                        if id != entries.last {
+                        if id != data.last {
                             Divider()
                         }
                     }
@@ -43,12 +44,12 @@ package struct LogEntriesList: View {
                 }
             }
             .padding(.bottom, 50)
-            .animation(.snappy, value: entries)
+            .animation(.snappy, value: data)
         }
         .clipped()
         .ignoresSafeArea(.container, edges: .bottom)
         .background {
-            if entries.isEmpty {
+            if data.isEmpty {
                 Text(emptyReason)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.secondary)

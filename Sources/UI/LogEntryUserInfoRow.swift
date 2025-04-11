@@ -1,20 +1,45 @@
+import Data
+import Models
 import SwiftUI
 
 struct LogEntryUserInfoRow: View {
-    let key: String
-    let value: String
+    let offset: Int
+    let id: LogEntryUserInfoKey
+
+    var value: String {
+        viewModel.entryUserInfoValue(id)
+    }
 
     @Environment(\.spacing)
     private var spacing
+    
+    @Environment(\.colorScheme)
+    private var colorScheme
+    
+    @EnvironmentObject
+    private var viewModel: VisualLoggerViewModel
 
     var body: some View {
         let _ = Self._debugPrintChanges()
         HStack(alignment: .top, spacing: spacing) {
-            keyText
-            Spacer(minLength: spacing)
+            if !id.key.isEmpty {
+                keyText
+                Spacer(minLength: spacing)
+            }
             valueText
         }
         .padding(spacing)
+        .background(backgroundColor)
+    }
+    
+    private var backgroundColor: Color {
+        if offset.isMultiple(of: 2) {
+            Color(uiColor: .systemGray5)
+        } else if colorScheme == .dark {
+            Color(uiColor: .systemGray4)
+        } else {
+            Color(uiColor: .systemGray6)
+        }
     }
 
     private var valueText: some View {
@@ -24,38 +49,10 @@ struct LogEntryUserInfoRow: View {
     }
 
     private var keyText: some View {
-        Text("\(key):")
+        Text("\(id.key):")
             .font(.caption)
             .italic()
             .foregroundColor(.secondary)
             .textSelection(.enabled)
-            .isHidden(key.isEmpty)
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func isHidden(_ hidden: Bool) -> some View {
-        if hidden {
-            EmptyView()
-        } else {
-            self
-        }
-    }
-}
-
-#Preview {
-    VStack {
-        LogEntryUserInfoRow(
-            key: "Key",
-            value: "I'm a value"
-        )
-
-        Divider()
-
-        LogEntryUserInfoRow(
-            key: "",
-            value: "String interpolations are string literals that evaluate any included expressions and convert the results to string form. String interpolations give you an easy way to build a string from multiple pieces. Wrap each expression in a string interpolation in parentheses, prefixed by a backslash."
-        )
     }
 }
