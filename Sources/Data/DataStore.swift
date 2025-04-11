@@ -32,33 +32,33 @@ import struct Models.UserInfoKey
 package actor DataStore {
     package init() {}
     
-    private(set) var sourceColorGenerator = DynamicColorGenerator<Source>()
+    weak private var observer: DataObserver?
+    
+    private var sourceColorGenerator = DynamicColorGenerator<Source>()
     
     /// A reactive subject that holds an array of log entry IDs.
-    private(set) var allEntries = Set<ID>()
+    private var allEntries = Set<ID>()
     
     /// An array holding all log entry categories present in the store.
-    private(set) var allCategories = Set<Category>()
+    private var allCategories = Set<Category>()
     
     /// An array holding all log entry sources present in the store.
-    private(set) var allSources = Set<Source>()
+    private var allSources = Set<Source>()
     
     /// A dictionary mapping log entry IDs to their corresponding category.
-    private(set) var entryCategories = [ID: Category]()
+    private var entryCategories = [ID: Category]()
     
     /// A dictionary mapping log entry IDs to their corresponding content.
-    private(set) var entryContents = [ID: Content]()
+    private var entryContents = [ID: Content]()
     
     /// A dictionary mapping log entry IDs to their corresponding source.
-    private(set) var entrySources = [ID: Source]()
+    private var entrySources = [ID: Source]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
-    private(set) var entryUserInfoKeys = [ID: [UserInfoKey]]()
+    private var entryUserInfoKeys = [ID: [UserInfoKey]]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
-    private(set) var entryUserInfoValues = [UserInfoKey: String]()
-    
-    weak private var observer: DataObserver?
+    private var entryUserInfoValues = [UserInfoKey: String]()
     
     package func makeObserver() -> DataObserver {
         let observer = DataObserver()
@@ -88,10 +88,9 @@ package actor DataStore {
         }
         
         allCategories.insert(logEntry.category)
+        allSources.insert(logEntry.source)
         
-        if allSources.insert(logEntry.source).inserted {
-            sourceColorGenerator.generateColor(for: logEntry.source)
-        }
+        sourceColorGenerator.generateColorIfNeeded(for: logEntry.source)
         
         entryCategories[id] = logEntry.category
         entryContents[id] = logEntry.content

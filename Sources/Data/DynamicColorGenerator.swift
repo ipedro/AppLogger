@@ -30,16 +30,14 @@ package struct DynamicColorGenerator<Element> where Element: Identifiable {
     package init() {}
     
     package mutating func color(for element: Element) -> DynamicColor {
-        if let color = assignedColors[element.id] {
-            return color
-        }
-        
-        let newColor = generateColor(for: element)
-        return newColor
+        generateColorIfNeeded(for: element)
     }
     
     @discardableResult
-    mutating func generateColor(for element: Element) -> DynamicColor {
+    mutating func generateColorIfNeeded(for element: Element) -> DynamicColor {
+        if let color = assignedColors[element.id] {
+            return color
+        }
         if unassignedColors.isEmpty {
             unassignedColors = DynamicColor.makeColors(count: .random(in: 4...8)).shuffled()
         }

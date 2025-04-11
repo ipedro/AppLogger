@@ -107,14 +107,16 @@ final class Coordinator: NSObject {
     }
     
     func makeNavigationView() -> some View {
-        LogEntriesNavigation.makeView()
-            .configuration(configuration)
-            .environmentObject(viewModel)
+        injectDependencies(LogEntriesNavigation.makeView())
     }
     
     @available(iOS 16.0, *)
     func makeNavigationStack() -> some View {
-        LogEntriesNavigation.makeStack()
+        injectDependencies(LogEntriesNavigation.makeStack())
+    }
+    
+    func injectDependencies(_ view: some View) -> some View {
+        view
             .configuration(configuration)
             .environmentObject(viewModel)
     }
