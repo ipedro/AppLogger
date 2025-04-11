@@ -15,7 +15,7 @@ package final class AppLoggerViewModel: ObservableObject {
     }
     
     @Published
-    package var sorting: LogEntry.Sorting
+    package var sorting: LogEntrySorting
     
     @Published
     package var activityItem: ActivityItem?
@@ -38,7 +38,7 @@ package final class AppLoggerViewModel: ObservableObject {
     package var categories: [Filter] = []
     
     @Published
-    package var entries: [LogEntry.ID] = []
+    package var entries: [LogEntryID] = []
     
     package let dismissAction: @MainActor () -> Void
     
@@ -58,31 +58,31 @@ package final class AppLoggerViewModel: ObservableObject {
         setupListeners()
     }
     
-    package func sourceColor(_ source: LogEntry.Source, for colorScheme: ColorScheme) -> Color {
+    package func sourceColor(_ source: LogEntrySource, for colorScheme: ColorScheme) -> Color {
         dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
     }
     
-    package func entrySource(_ id: LogEntry.ID) -> LogEntry.Source {
+    package func entrySource(_ id: LogEntryID) -> LogEntrySource {
         dataObserver.entrySources[id]!
     }
     
-    package func entryCategory(_ id: LogEntry.ID) -> LogEntry.Category {
+    package func entryCategory(_ id: LogEntryID) -> LogEntryCategory {
         dataObserver.entryCategories[id]!
     }
     
-    package func entryContent(_ id: LogEntry.ID) -> LogEntry.Content {
+    package func entryContent(_ id: LogEntryID) -> LogEntryContent {
         dataObserver.entryContents[id]!
     }
     
-    package func entryUserInfoKeys(_ id: LogEntry.ID) -> [LogEntry.UserInfoKey]? {
+    package func entryUserInfoKeys(_ id: LogEntryID) -> [LogEntryUserInfoKey]? {
         dataObserver.entryUserInfoKeys[id]
     }
     
-    package func entryUserInfoValue(_ id: LogEntry.UserInfoKey) -> String {
+    package func entryUserInfoValue(_ id: LogEntryUserInfoKey) -> String {
         dataObserver.entryUserInfoValues[id]!
     }
     
-    package func entryCreatedAt(_ id: LogEntry.ID) -> Date {
+    package func entryCreatedAt(_ id: LogEntryID) -> Date {
         id.createdAt
     }
     
@@ -91,33 +91,32 @@ package final class AppLoggerViewModel: ObservableObject {
 private extension AppLoggerViewModel {
     func setupListeners() {
         Publishers.CombineLatest(
-            dataObserver.allCategories.debounceOnMain(for: 0.1).map { Set($0.map(\.filter)) },
+            dataObserver.allCategories.throttleOnMain(for: 0.15).map { Set($0.map(\.filter)) },
             $activeFilters
         )
-        .receive(on: DispatchQueue.main)
+        .receive(on: RunLoop.main)
         .sink { [unowned self] sources, filters in
             self.categories = sortFilters(sources, by: filters)
         }
         .store(in: &cancellables)
         
         Publishers.CombineLatest(
-            dataObserver.allSources.debounceOnMain(for: 0.1).map { Set($0.map(\.filter)) },
+            dataObserver.allSources.throttleOnMain(for: 0.15).map { Set($0.map(\.filter)) },
             $activeFilters
         )
-        .receive(on: DispatchQueue.main)
+        .receive(on: RunLoop.main)
         .sink { [unowned self] sources, filters in
             self.sources = sortFilters(sources, by: filters)
         }
         .store(in: &cancellables)
         
-        
         Publishers.CombineLatest4(
-            dataObserver.allEntries.debounceOnMain(for: 0.2),
+            dataObserver.allEntries.throttleOnMain(for: 0.15),
             $searchQuery.debounceOnMain(for: 0.3).map(\.trimmed),
             $activeFilters,
             $sorting
         )
-        .receive(on: DispatchQueue.main)
+        .receive(on: RunLoop.main)
         .map { [unowned self] allEntries, query, filters, sort in
             UserDefaults.standard.sorting = sort
 
@@ -134,7 +133,7 @@ private extension AppLoggerViewModel {
         .store(in: &cancellables)
     }
     
-    func sortEntries(_ entries: [LogEntry.ID], by sorting: LogEntry.Sorting) -> [LogEntry.ID] {
+    func sortEntries(_ entries: [LogEntryID], by sorting: LogEntrySorting) -> [LogEntryID] {
         switch sorting {
         case .ascending: entries
         case .descending: entries.reversed()
@@ -152,7 +151,7 @@ private extension AppLoggerViewModel {
         }
     }
     
-    func filterEntries(_ entries: [LogEntry.ID], with filters: Set<Filter>) -> [LogEntry.ID] {
+    func filterEntries(_ entries: [LogEntryID], with filters: Set<Filter>) -> [LogEntryID] {
         var result = entries
         
         if !filters.isEmpty {
@@ -164,16 +163,16 @@ private extension AppLoggerViewModel {
         return result
     }
     
-    func filterEntry(_ id: LogEntry.ID, with filters: Set<Filter>) -> Bool {
-        var source: LogEntry.Source {
+    func filterEntry(_ id: LogEntryID, with filters: Set<Filter>) -> Bool {
+        var source: LogEntrySource {
             dataObserver.entrySources[id]!
         }
         
-        var category: LogEntry.Category {
+        var category: LogEntryCategory {
             dataObserver.entryCategories[id]!
         }
         
-        var content: LogEntry.Content {
+        var content: LogEntryContent {
             dataObserver.entryContents[id]!
         }
         
@@ -209,10 +208,17 @@ private extension AppLoggerViewModel {
 
 private extension Publisher {
     func debounceOnMain(
-        for dueTime: DispatchQueue.SchedulerTimeType.Stride,
-        options: DispatchQueue.SchedulerOptions? = nil
-    ) -> Publishers.Debounce<Self, DispatchQueue> {
-        debounce(for: dueTime, scheduler: DispatchQueue.main, options: options)
+        for dueTime: RunLoop.SchedulerTimeType.Stride,
+        options: RunLoop.SchedulerOptions? = nil
+    ) -> Publishers.Debounce<Self, RunLoop> {
+        debounce(for: dueTime, scheduler: RunLoop.main, options: options)
+    }
+    
+    func throttleOnMain(
+        for dueTime: RunLoop.SchedulerTimeType.Stride,
+        latest: Bool = true
+    ) -> Publishers.Throttle<Self, RunLoop> {
+        throttle(for: dueTime, scheduler: RunLoop.main, latest: latest)
     }
 }
 
@@ -223,10 +229,10 @@ private extension String {
 }
 
 private extension UserDefaults {
-    var sorting: LogEntry.Sorting {
+    var sorting: LogEntrySorting {
         get {
             let rawValue = integer(forKey: "AppLogger.sorting")
-            return LogEntry.Sorting(rawValue: rawValue) ?? .descending
+            return LogEntrySorting(rawValue: rawValue) ?? .descending
         }
         set {
             set(newValue.rawValue, forKey: "AppLogger.sorting")

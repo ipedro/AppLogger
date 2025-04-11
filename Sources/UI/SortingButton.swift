@@ -2,10 +2,10 @@ import Models
 import SwiftUI
 
 struct SortingButton: View {
-    var options = LogEntry.Sorting.allCases
+    var options = LogEntrySorting.allCases
     
     @Binding
-    var selection: LogEntry.Sorting
+    var selection: LogEntrySorting
     
     @Environment(\.configuration.icons)
     private var icons
@@ -27,7 +27,7 @@ struct SortingButton: View {
         icon(selection)
     }
     
-    private func icon(_ sorting: LogEntry.Sorting) -> String {
+    private func icon(_ sorting: LogEntrySorting) -> String {
         switch sorting {
         case .ascending: icons.sortAscending
         case .descending: icons.sortDescending
@@ -38,7 +38,7 @@ struct SortingButton: View {
 @available(iOS 17.0, *)
 #Preview {
     @Previewable @State
-    var selection: LogEntry.Sorting = .ascending
+    var selection: LogEntrySorting = .ascending
     
     SortingButton(selection: $selection)
 }

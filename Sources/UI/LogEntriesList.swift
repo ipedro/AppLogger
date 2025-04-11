@@ -86,9 +86,9 @@ package struct LogEntriesList: View {
 }
 
 #Preview {
-    let allEntries = LogEntry.Mock.allCases.map { $0.entry() }
+    let allEntries = LogEntryMock.allCases.map { $0.entry() }
     
-    var colorGenerator = DynamicColorGenerator<LogEntry.Source>()
+    var colorGenerator = DynamicColorGenerator<LogEntrySource>()
     
     let dataObserver = DataObserver(
         allEntries: allEntries.map(\.id),

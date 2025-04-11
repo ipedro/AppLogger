@@ -2,8 +2,8 @@ import Models
 import SwiftUI
 
 struct LogEntryContentView: View {
-    var category: LogEntry.Category
-    var content: LogEntry.Content
+    var category: LogEntryCategory
+    var content: LogEntryContent
     
     @Environment(\.spacing)
     private var spacing
@@ -39,7 +39,7 @@ struct LogEntryContentView: View {
 #Preview {
     LogEntryContentView(
         category: .alert,
-        content: LogEntry.Content(
+        content: LogEntryContent(
             function: "content description",
             message: "Bla"
         )

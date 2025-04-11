@@ -4,14 +4,14 @@ import SwiftUI
 
 package final class DataObserver: @unchecked Sendable {
     package init(
-        allCategories: [LogEntry.Category] = [],
-        allEntries: [LogEntry.ID] = [],
-        allSources: [LogEntry.Source] = [],
-        entryCategories: [LogEntry.ID : LogEntry.Category] = [:],
-        entryContents: [LogEntry.ID : LogEntry.Content] = [:],
-        entrySources: [LogEntry.ID : LogEntry.Source] = [:],
-        entryUserInfos: [LogEntry.ID: LogEntry.UserInfo?] = [:],
-        sourceColors: [LogEntry.Source.ID: DynamicColor] = [:]
+        allCategories: [LogEntryCategory] = [],
+        allEntries: [LogEntryID] = [],
+        allSources: [LogEntrySource] = [],
+        entryCategories: [LogEntryID : LogEntryCategory] = [:],
+        entryContents: [LogEntryID : LogEntryContent] = [:],
+        entrySources: [LogEntryID : LogEntrySource] = [:],
+        entryUserInfos: [LogEntryID: LogEntryUserInfo?] = [:],
+        sourceColors: [LogEntrySource.ID: DynamicColor] = [:],
     ) {
         self.allCategories = CurrentValueSubject(allCategories)
         self.allEntries = CurrentValueSubject(allEntries)
@@ -33,29 +33,55 @@ package final class DataObserver: @unchecked Sendable {
     }
     
     /// A published array of log entry IDs from the data store.
-    package let allEntries: CurrentValueSubject<[LogEntry.ID], Never>
+    let allEntries: CurrentValueSubject<[LogEntryID], Never>
     
     /// An array holding all log entry categories present in the store.
-    package internal(set) var allCategories: CurrentValueSubject<[LogEntry.Category], Never>
+    let allCategories: CurrentValueSubject<[LogEntryCategory], Never>
     
     /// An array holding all log entry sources present in the store.
-    package internal(set) var allSources: CurrentValueSubject<[LogEntry.Source], Never>
+    let allSources: CurrentValueSubject<[LogEntrySource], Never>
     
     /// A dictionary mapping log entry IDs to their corresponding category.
-    package internal(set) var entryCategories: [LogEntry.ID: LogEntry.Category]
+    private(set) var entryCategories: [LogEntryID: LogEntryCategory]
     
     /// A dictionary mapping log entry IDs to their corresponding content.
-    package internal(set) var entryContents: [LogEntry.ID: LogEntry.Content]
+    private(set) var entryContents: [LogEntryID: LogEntryContent]
     
     /// A dictionary mapping log entry IDs to their corresponding source.
-    package internal(set) var entrySources: [LogEntry.ID: LogEntry.Source]
+    private(set) var entrySources: [LogEntryID: LogEntrySource]
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
-    package internal(set) var entryUserInfoKeys = [LogEntry.ID: [LogEntry.UserInfoKey]]()
+    private(set) var entryUserInfoKeys = [LogEntryID: [LogEntryUserInfoKey]]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
-    package internal(set) var entryUserInfoValues = [LogEntry.UserInfoKey: String]()
+    private(set) var entryUserInfoValues = [LogEntryUserInfoKey: String]()
     
     /// A dictionary mapping log source IDs to their corresponding color.
-    package internal(set) var sourceColors = [LogEntry.Source.ID: DynamicColor]()
+    private(set) var sourceColors = [LogEntrySource.ID: DynamicColor]()
+    
+    func updateValues(
+        allEntries: [LogEntryID],
+        allCategories: [LogEntryCategory],
+        allSources: [LogEntrySource],
+        entryCategories: [LogEntryID: LogEntryCategory],
+        entryContents: [LogEntryID: LogEntryContent],
+        entrySources: [LogEntryID: LogEntrySource],
+        entryUserInfoKeys: [LogEntryID: [LogEntryUserInfoKey]],
+        entryUserInfoValues: [LogEntryUserInfoKey: String],
+        sourceColors: [LogEntrySource.ID: DynamicColor]
+    ) {
+        defer {
+            // push update to subscribers as last step
+            self.allEntries.send(allEntries)
+            self.allSources.send(allSources)
+            self.allCategories.send(allCategories)
+        }
+        
+        self.entryCategories = entryCategories
+        self.entryContents = entryContents
+        self.entrySources = entrySources
+        self.entryUserInfoKeys = entryUserInfoKeys
+        self.entryUserInfoValues = entryUserInfoValues
+        self.sourceColors = sourceColors
+    }
 }

@@ -37,9 +37,9 @@ package struct LogEntriesNavigation<Content>: View where Content: View {
 
 @available(iOS 16.0, *)
 #Preview {
-    let allEntries = LogEntry.Mock.allCases.map { $0.entry() }
+    let allEntries = LogEntryMock.allCases.map { $0.entry() }
     
-    var colorGenerator = DynamicColorGenerator<LogEntry.Source>()
+    var colorGenerator = DynamicColorGenerator<LogEntrySource>()
     
     let dataObserver = DataObserver(
         allCategories: Set(allEntries.map(\.category)).sorted(),

@@ -2,7 +2,7 @@ import Models
 import SwiftUI
 
 struct LogEntrySourceView: View {
-    let data: LogEntry.Source
+    let data: LogEntrySource
 
     private var label: String {
         switch data.info {
@@ -25,21 +25,21 @@ struct LogEntrySourceView: View {
 #Preview {
     VStack {
         LogEntrySourceView(
-            data: LogEntry.Source("📄", "File.swift", .file(line: 12))
+            data: LogEntrySource("📄", "File.swift", .file(line: 12))
         )
         
         LogEntrySourceView(
-            data: LogEntry.Source("MySDK", .sdk(version: "1.2.3"))
+            data: LogEntrySource("MySDK", .sdk(version: "1.2.3"))
         )
         
         LogEntrySourceView(
             data: "Some source"
         )
         
-        LogEntrySourceView(data: LogEntry.Source(CustomSource()))
+        LogEntrySourceView(data: LogEntrySource(CustomSource()))
     }
 }
 
-private struct CustomSource: LogEntrySource {
+private struct CustomSource: LogEntrySourceProtocol {
     var logEntryEmoji: Character? { "👌" }
 }

@@ -3,7 +3,7 @@ import Models
 import SwiftUI
 
 struct LogEntryUserInfoRows: View {
-    var ids: [LogEntry.UserInfoKey]
+    var ids: [LogEntryUserInfoKey]
 
     @Environment(\.spacing)
     private var spacing
@@ -39,12 +39,12 @@ struct LogEntryUserInfoRows: View {
 }
 
 #Preview {
-    let entry = LogEntry.Mock.socialLogin.entry()
+    let entry = LogEntryMock.socialLogin.entry()
     
     ScrollView {
         LogEntryUserInfoRows(
             ids: entry.userInfo?.storage.map {
-                LogEntry.UserInfoKey(id: entry.id, key: $0.key)
+                LogEntryUserInfoKey(id: entry.id, key: $0.key)
             } ?? []
         )
         .padding()

@@ -3,7 +3,7 @@ import Models
 import SwiftUI
 
 struct LogEntryView: View {
-    let id: LogEntry.ID
+    let id: LogEntryID
     
     @Environment(\.colorScheme)
     private var colorScheme
@@ -48,7 +48,7 @@ struct LogEntryView: View {
 
 #if DEBUG
 extension LogEntryView {
-    init(mock: LogEntry.Mock) {
+    init(mock: LogEntryMock) {
         let entry = mock.entry()
         self.id = entry.id
     }
@@ -56,7 +56,7 @@ extension LogEntryView {
 #endif
 
 #Preview {
-    let entry = LogEntry.Mock.socialLogin.entry()
+    let entry = LogEntryMock.socialLogin.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)
@@ -76,7 +76,7 @@ extension LogEntryView {
 }
 
 #Preview {
-    let entry = LogEntry.Mock.googleAnalytics.entry()
+    let entry = LogEntryMock.googleAnalytics.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)

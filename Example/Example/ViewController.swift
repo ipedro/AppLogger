@@ -2,6 +2,7 @@ import UIKit
 import AppLogger
 
 class ViewController: UIViewController {
+    private var errorCount = 0
     
     private lazy var presentButton = UIButton(
         configuration: .bordered(),
@@ -48,11 +49,12 @@ class ViewController: UIViewController {
         configuration: .bordered(),
         primaryAction: UIAction(title: "Log Error", handler: { action in
             // Log a small string message along with the action title.
-            log.error("Error occurred", userInfo: [
+            log.error("Error #\(self.errorCount) occurred", userInfo: [
                 "code": 123,
                 "domain": "example.com",
                 "reason": "Something went wrong"
             ])
+            self.errorCount += 1
         })
     )
     

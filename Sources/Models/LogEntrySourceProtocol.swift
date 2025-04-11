@@ -1,13 +1,13 @@
 import Foundation
 import UIKit
 
-public protocol LogEntrySource {
+public protocol LogEntrySourceProtocol {
     var logEntryEmoji: Character? { get }
     var logEntryName: String { get }
-    var logEntryInfo: LogEntry.SourceInfo? { get }
+    var logEntryInfo: LogEntrySourceInfo? { get }
 }
 
-public extension LogEntrySource {
+public extension LogEntrySourceProtocol {
     var logEntryEmoji: Character? { nil }
     
     var logEntryName: String {
@@ -16,5 +16,5 @@ public extension LogEntrySource {
         return String(sanitizedType)
     }
     
-    var logEntryInfo: LogEntry.SourceInfo? { nil }
+    var logEntryInfo: LogEntrySourceInfo? { nil }
 }

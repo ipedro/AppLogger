@@ -2,7 +2,7 @@ import Models
 import SwiftUI
 
 struct LogEntryHeaderView: View {
-    let source: LogEntry.Source
+    let source: LogEntrySource
     let category: String
     let createdAt: Date
     

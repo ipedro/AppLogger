@@ -7,31 +7,31 @@ package actor DataStore {
     
     weak private var observer: DataObserver?
     
-    private var sourceColorGenerator = DynamicColorGenerator<LogEntry.Source>()
+    private var sourceColorGenerator = DynamicColorGenerator<LogEntrySource>()
     
     /// A reactive subject that holds an array of log entry IDs.
-    private var allEntries = Set<LogEntry.ID>()
+    private var allEntries = Set<LogEntryID>()
     
     /// An array holding all log entry categories present in the store.
-    private var allCategories = Set<LogEntry.Category>()
+    private var allCategories = Set<LogEntryCategory>()
     
     /// An array holding all log entry sources present in the store.
-    private var allSources = Set<LogEntry.Source>()
+    private var allSources = Set<LogEntrySource>()
     
     /// A dictionary mapping log entry IDs to their corresponding category.
-    private var entryCategories = [LogEntry.ID: LogEntry.Category]()
+    private var entryCategories = [LogEntryID: LogEntryCategory]()
     
     /// A dictionary mapping log entry IDs to their corresponding content.
-    private var entryContents = [LogEntry.ID: LogEntry.Content]()
+    private var entryContents = [LogEntryID: LogEntryContent]()
     
     /// A dictionary mapping log entry IDs to their corresponding source.
-    private var entrySources = [LogEntry.ID: LogEntry.Source]()
+    private var entrySources = [LogEntryID: LogEntrySource]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
-    private var entryUserInfoKeys = [LogEntry.ID: [LogEntry.UserInfoKey]]()
+    private var entryUserInfoKeys = [LogEntryID: [LogEntryUserInfoKey]]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
-    private var entryUserInfoValues = [LogEntry.UserInfoKey: String]()
+    private var entryUserInfoValues = [LogEntryUserInfoKey: String]()
     
     package func makeObserver() -> DataObserver {
         let observer = DataObserver()
@@ -85,29 +85,27 @@ package actor DataStore {
             return
         }
         
-        defer {
-            // push update to subscribers as last step
-            observer.allEntries.send(allEntries.sorted())
-            observer.allSources.send(allSources.sorted())
-            observer.allCategories.send(allCategories.sorted())
-        }
-        
-        observer.entryCategories = entryCategories
-        observer.entryContents = entryContents
-        observer.entrySources = entrySources
-        observer.entryUserInfoKeys = entryUserInfoKeys
-        observer.entryUserInfoValues = entryUserInfoValues
-        observer.sourceColors = sourceColorGenerator.assignedColors
+        observer.updateValues(
+            allEntries: allEntries.sorted(),
+            allCategories: allCategories.sorted(),
+            allSources: allSources.sorted(),
+            entryCategories: entryCategories,
+            entryContents: entryContents,
+            entrySources: entrySources,
+            entryUserInfoKeys: entryUserInfoKeys,
+            entryUserInfoValues: entryUserInfoValues,
+            sourceColors: sourceColorGenerator.assignedColors
+        )
     }
 }
 
-extension LogEntry.UserInfo {
-    func denormalize(id logID: LogEntry.ID) -> (keys: [LogEntry.UserInfoKey], values: [LogEntry.UserInfoKey: String]) {
-        var keys = [LogEntry.UserInfoKey]()
-        var values = [LogEntry.UserInfoKey: String]()
+extension LogEntryUserInfo {
+    func denormalize(id logID: LogEntryID) -> (keys: [LogEntryUserInfoKey], values: [LogEntryUserInfoKey: String]) {
+        var keys = [LogEntryUserInfoKey]()
+        var values = [LogEntryUserInfoKey: String]()
         
         for (key, value) in storage {
-            let infoID = LogEntry.UserInfoKey(id: logID, key: key)
+            let infoID = LogEntryUserInfoKey(id: logID, key: key)
             keys.append(infoID)
             values[infoID] = value
         }

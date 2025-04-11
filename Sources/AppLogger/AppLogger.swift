@@ -11,10 +11,10 @@ public actor AppLogger {
     /// Adds a log entry to the DataStore.
     ///
     /// - Parameter logEntry: The log entry to add.
-    /// - Returns: A Boolean indicating whether the log entry was successfully added. Returns false if the log entry's ID already exists.
-    @discardableResult
-    public func addLogEntry(_ log: LogEntry) async -> Bool {
-        await dataStore.addLogEntry(log)
+    nonisolated public func addLogEntry(_ log: LogEntry) {
+        Task {
+            await dataStore.addLogEntry(log)
+        }
     }
     
     public func present(
