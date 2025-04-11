@@ -25,7 +25,7 @@ jobs:
 
     - name: Concatenate files
       run: |
-        find Development -type f -name '*.swift' | sort | xargs cat > AppLogger.swift
+        find Sources -type f -name '*.swift' | sort | xargs cat > AppLogger.swift
 
     - name: Remove SwiftLint commands
       run: |
