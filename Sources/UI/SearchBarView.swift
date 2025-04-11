@@ -9,7 +9,7 @@ struct SearchBarView: View {
     private var spacing
 
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     private var searchQuery: Binding<String> {
         Binding(
@@ -61,7 +61,7 @@ struct SearchBarView: View {
 #Preview {
     SearchBarView()
         .environmentObject(
-            AppLoggerViewModel(
+            VisualLoggerViewModel(
                 dataObserver: DataObserver(),
                 dismissAction: {}
             )

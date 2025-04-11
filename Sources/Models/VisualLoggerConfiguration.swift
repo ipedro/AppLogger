@@ -3,7 +3,7 @@ import SwiftUI
 /// A configuration structure for customizing the appearance and behavior of the app's logging interface.
 ///
 /// This struct allows you to define properties such as accent colors, color schemes, empty reason messages, icons, and navigation titles.
-public struct AppLoggerConfiguration: Sendable {
+public struct VisualLoggerConfiguration: Sendable {
     /// The accent color used throughout the logging interface.
     public var accentColor: Color
 
@@ -42,7 +42,7 @@ public struct AppLoggerConfiguration: Sendable {
     }
 }
 
-public extension AppLoggerConfiguration {
+public extension VisualLoggerConfiguration {
     /// Structure defining custom messages for empty states in the logging interface.
     struct EmptyReasons: Sendable {
         /// The message displayed when there are no log entries.
@@ -113,11 +113,11 @@ public extension AppLoggerConfiguration {
 }
 
 struct ConfigurationKey: EnvironmentKey {
-    static let defaultValue: AppLoggerConfiguration = .init()
+    static let defaultValue: VisualLoggerConfiguration = .init()
 }
 
 package extension EnvironmentValues {
-    var configuration: AppLoggerConfiguration {
+    var configuration: VisualLoggerConfiguration {
         get { self[ConfigurationKey.self] }
         set { self[ConfigurationKey.self] = newValue }
     }
@@ -125,7 +125,7 @@ package extension EnvironmentValues {
 
 package extension View {
     /// Applies a configuration to a SwiftUI view hierarchy.
-    func configuration(_ configuration: AppLoggerConfiguration) -> some View {
+    func configuration(_ configuration: VisualLoggerConfiguration) -> some View {
         environment(\.configuration, configuration)
     }
 }

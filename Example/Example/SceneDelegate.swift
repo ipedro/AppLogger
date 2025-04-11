@@ -1,4 +1,4 @@
-import AppLogger
+import VisualLogger
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

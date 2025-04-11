@@ -3,19 +3,19 @@ import Models
 import SwiftUI
 
 @available(iOS 16.0, *)
-package extension AppLoggerView where Content == NavigationStack<NavigationPath, LogEntriesList> {
+package extension VisualLoggerView where Content == NavigationStack<NavigationPath, LogEntriesList> {
     static func navigationStack() -> Self {
         Self(content: NavigationStack(root: LogEntriesList.init))
     }
 }
 
-package extension AppLoggerView where Content == NavigationView<LogEntriesList> {
+package extension VisualLoggerView where Content == NavigationView<LogEntriesList> {
     static func navigationView() -> Self {
         Self(content: NavigationView(content: LogEntriesList.init))
     }
 }
 
-package struct AppLoggerView<Content>: View where Content: View {
+package struct VisualLoggerView<Content>: View where Content: View {
     @Environment(\.configuration.colorScheme)
     private var preferredColorScheme
 
@@ -26,7 +26,7 @@ package struct AppLoggerView<Content>: View where Content: View {
     private var accentColor
 
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     private let content: Content
 
@@ -57,9 +57,9 @@ package struct AppLoggerView<Content>: View where Content: View {
         }
     )
 
-    AppLoggerView.navigationStack()
+    VisualLoggerView.navigationStack()
         .environmentObject(
-            AppLoggerViewModel(
+            VisualLoggerViewModel(
                 dataObserver: dataObserver,
                 dismissAction: { print("dismiss") }
             )

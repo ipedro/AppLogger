@@ -4,7 +4,7 @@ import Models
 import SwiftUI
 
 @MainActor
-package final class AppLoggerViewModel: ObservableObject {
+package final class VisualLoggerViewModel: ObservableObject {
     package let dismissAction: @MainActor () -> Void
 
     package let dataObserver: DataObserver
@@ -37,7 +37,7 @@ package final class AppLoggerViewModel: ObservableObject {
     }
 }
 
-package extension AppLoggerViewModel {
+package extension VisualLoggerViewModel {
     func sourceColor(_ source: LogEntrySource, for colorScheme: ColorScheme) -> Color {
         dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
     }
@@ -67,7 +67,7 @@ package extension AppLoggerViewModel {
     }
 }
 
-private extension AppLoggerViewModel {
+private extension VisualLoggerViewModel {
     func setupPublishers() {
         // Categories pipeline
         Publishers.CombineLatest(
@@ -145,7 +145,7 @@ private extension AppLoggerViewModel {
     }
 }
 
-private extension AppLoggerViewModel {
+private extension VisualLoggerViewModel {
     func filterEntries(_ entries: [LogEntryID], with filters: Set<Filter>) -> [LogEntryID] {
         var result = entries
 
@@ -226,20 +226,20 @@ private extension String {
 private extension UserDefaults {
     var sorting: LogEntrySorting {
         get {
-            let rawValue = integer(forKey: "AppLogger.sorting")
+            let rawValue = integer(forKey: "VisualLogger.sorting")
             return LogEntrySorting(rawValue: rawValue) ?? .descending
         }
         set {
-            set(newValue.rawValue, forKey: "AppLogger.sorting")
+            set(newValue.rawValue, forKey: "VisualLogger.sorting")
         }
     }
 
     var showFilters: Bool {
         get {
-            bool(forKey: "AppLogger.showFilters")
+            bool(forKey: "VisualLogger.showFilters")
         }
         set {
-            set(newValue, forKey: "AppLogger.showFilters")
+            set(newValue, forKey: "VisualLogger.showFilters")
         }
     }
 }

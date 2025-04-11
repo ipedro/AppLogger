@@ -4,7 +4,7 @@ import SwiftUI
 
 struct FiltersDrawer: View {
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     @Environment(\.spacing)
     private var spacing
@@ -67,7 +67,7 @@ struct FiltersDrawer: View {
 #Preview {
     FiltersDrawer()
         .environmentObject(
-            AppLoggerViewModel(
+            VisualLoggerViewModel(
                 dataObserver: DataObserver(
                     allCategories: ["test", "test2"],
                     allSources: ["test"]

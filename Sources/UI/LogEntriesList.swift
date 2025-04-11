@@ -4,7 +4,7 @@ import SwiftUI
 
 package struct LogEntriesList: View {
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     @Environment(\.configuration)
     private var configuration
@@ -127,7 +127,7 @@ package struct LogEntriesList: View {
         }
     )
 
-    let viewModel = AppLoggerViewModel(
+    let viewModel = VisualLoggerViewModel(
         dataObserver: dataObserver,
         dismissAction: {}
     )

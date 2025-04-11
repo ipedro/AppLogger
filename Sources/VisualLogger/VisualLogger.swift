@@ -2,15 +2,15 @@ import Data
 import UIKit
 
 /// A centralized logging actor for handling asynchronous log entry management and UI presentation.
-public actor AppLogger {
+public actor VisualLogger {
     /// Underlying datastore that records log entries.
     private let dataStore = DataStore()
 
     /// The current active coordinator responsible for presenting the log interface.
     private var coordinator: Coordinator?
 
-    /// Shared instance of `AppLogger` for global accessibility.
-    public static let current = AppLogger()
+    /// Shared instance of `VisualLogger` for global accessibility.
+    public static let current = VisualLogger()
 
     /// Adds a log entry to the underlying data store.
     ///
@@ -34,14 +34,14 @@ public actor AppLogger {
     ///
     /// - Parameters:
     ///   - animated: A Boolean value indicating whether the presentation should be animated. Defaults to `true`.
-    ///   - configuration: An `AppLoggerConfiguration` instance that provides custom presentation settings.
-    ///     Defaults to a new instance of `AppLoggerConfiguration`.
+    ///   - configuration: An `VisualLoggerConfiguration` instance that provides custom presentation settings.
+    ///     Defaults to a new instance of `VisualLoggerConfiguration`.
     ///   - completion: An optional closure executed after the presentation completes.
     ///
     /// - Warning: If a coordinator is already active, the method exits without re-presenting the UI.
     public func present(
         animated: Bool = true,
-        configuration: AppLoggerConfiguration = .init(),
+        configuration: VisualLoggerConfiguration = .init(),
         completion: (@Sendable () -> Void)? = nil
     ) async {
         guard coordinator == nil else {

@@ -10,7 +10,7 @@ let git = Context.gitInformation
 let buildingForDevelopment = (git?.currentTag == nil)
 
 let package = Package(
-    name: "AppLogger",
+    name: "swiftui-visual-logger",
     platforms: [
         .iOS(.v15),
     ],
@@ -18,9 +18,9 @@ let package = Package(
         var products = [Product]()
         products.append(
             .library(
-                name: "AppLogger",
+                name: "VisualLogger",
                 targets: [
-                    "AppLogger",
+                    "VisualLogger",
                 ]
             )
         )
@@ -28,19 +28,19 @@ let package = Package(
         if buildingForDevelopment {
             products.append(
                 .library(
-                    name: "AppLoggerModels",
+                    name: "VisualLoggerModels",
                     targets: ["Models"]
                 )
             )
             products.append(
                 .library(
-                    name: "AppLoggerData",
+                    name: "VisualLoggerData",
                     targets: ["Data"]
                 )
             )
             products.append(
                 .library(
-                    name: "AppLoggerUI",
+                    name: "VisualLoggerUI",
                     targets: ["UI"]
                 )
             )
@@ -61,19 +61,13 @@ let package = Package(
             swiftSettings: buildingForDevelopment ? [.define("DEBUG_VIEWS")] : []
         ),
         .target(
-            name: "AppLogger",
+            name: "VisualLogger",
             dependencies: [
                 "UI",
                 "Data",
                 "Models",
             ]
-        ),
-        .testTarget(
-            name: "AppLoggerTests",
-            dependencies: [
-                "AppLogger",
-            ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v5, .v6]
 )

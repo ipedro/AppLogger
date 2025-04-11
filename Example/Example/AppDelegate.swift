@@ -1,4 +1,4 @@
-import AppLogger
+import VisualLogger
 import UIKit
 import XCGLogger
 
@@ -8,7 +8,7 @@ let log = XCGLogger.default
 class AppDelegate: UIResponder, UIApplicationDelegate {
     override init() {
         super.init()
-        log.formatters = [AppLoggerFormatter()]
+        log.formatters = [VisualLoggerFormatter()]
         log.setup(
             level: .verbose,
             showLogIdentifier: false,

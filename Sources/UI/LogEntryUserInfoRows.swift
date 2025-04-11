@@ -12,7 +12,7 @@ struct LogEntryUserInfoRows: View {
     private var colorScheme
 
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     var body: some View {
         let _ = Self._debugPrintChanges()
@@ -51,7 +51,7 @@ struct LogEntryUserInfoRows: View {
         .padding()
     }
     .environmentObject(
-        AppLoggerViewModel(
+        VisualLoggerViewModel(
             dataObserver: DataObserver(
                 entryUserInfos: [entry.id: entry.userInfo]
             ),

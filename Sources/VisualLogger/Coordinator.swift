@@ -10,7 +10,7 @@ final class Coordinator: NSObject {
     private let dataObserver: DataObserver
 
     /// Custom configuration for the logging interface presentation.
-    private let configuration: AppLoggerConfiguration
+    private let configuration: VisualLoggerConfiguration
 
     /// Closure for handling dismissal of the presented view controller.
     private let dismiss: (UIViewController?) -> Void
@@ -26,7 +26,7 @@ final class Coordinator: NSObject {
     ///   - dismiss: A closure that handles view controller dismissal.
     init(
         dataObserver: DataObserver,
-        configuration: AppLoggerConfiguration,
+        configuration: VisualLoggerConfiguration,
         dismiss: @escaping (_ viewController: UIViewController?) -> Void
     ) {
         self.dataObserver = dataObserver
@@ -43,7 +43,7 @@ final class Coordinator: NSObject {
             .first
     }
 
-    private lazy var viewModel = AppLoggerViewModel(
+    private lazy var viewModel = VisualLoggerViewModel(
         dataObserver: dataObserver,
         dismissAction: dismissAction
     )
@@ -109,7 +109,7 @@ final class Coordinator: NSObject {
     ///
     /// - Returns: A SwiftUI view representing the navigation view.
     func makeNavigationView() -> some View {
-        injectDependencies(AppLoggerView.navigationView())
+        injectDependencies(VisualLoggerView.navigationView())
     }
 
     /// Constructs and returns a SwiftUI view using a navigation stack (iOS 16.0+).
@@ -117,7 +117,7 @@ final class Coordinator: NSObject {
     /// - Returns: A SwiftUI view representing the navigation stack.
     @available(iOS 16.0, *)
     func makeNavigationStack() -> some View {
-        injectDependencies(AppLoggerView.navigationStack())
+        injectDependencies(VisualLoggerView.navigationStack())
     }
 
     /// Injects the necessary dependencies into the provided SwiftUI view.

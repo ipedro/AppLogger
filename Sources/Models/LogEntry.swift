@@ -2,7 +2,7 @@ import Foundation
 
 /// A comprehensive log entry that captures detailed information about a logging event.
 ///
-/// `LogEntry` serves as the fundamental building block of the AppLogger system,
+/// `LogEntry` serves as the fundamental building block of the VisualLogger system,
 /// encapsulating all the metadata and content needed for effective logging:
 ///
 /// ```swift

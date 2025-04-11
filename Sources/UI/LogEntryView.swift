@@ -12,7 +12,7 @@ struct LogEntryView: View {
     private var spacing
 
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     var body: some View {
         let _ = Self._debugPrintChanges()
@@ -62,7 +62,7 @@ struct LogEntryView: View {
     ScrollView {
         LogEntryView(id: entry.id)
             .environmentObject(
-                AppLoggerViewModel(
+                VisualLoggerViewModel(
                     dataObserver: DataObserver(
                         entryCategories: [entry.id: entry.category],
                         entryContents: [entry.id: entry.content],
@@ -82,7 +82,7 @@ struct LogEntryView: View {
     ScrollView {
         LogEntryView(id: entry.id)
             .environmentObject(
-                AppLoggerViewModel(
+                VisualLoggerViewModel(
                     dataObserver: DataObserver(
                         entryCategories: [entry.id: entry.category],
                         entryContents: [entry.id: entry.content],

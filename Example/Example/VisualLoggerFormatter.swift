@@ -1,12 +1,12 @@
-import AppLogger
+import VisualLogger
 import Foundation
 import UIKit
 import XCGLogger
 
-struct AppLoggerFormatter: LogFormatterProtocol {
+struct VisualLoggerFormatter: LogFormatterProtocol {
     func format(logDetails: inout LogDetails, message: inout String) -> String {
         let logDetails = logDetails
-        AppLogger.current.addLogEntry(
+        VisualLogger.current.addLogEntry(
             LogEntry(
                 date: logDetails.date,
                 category: LogEntryCategory(logDetails.level.description),
@@ -31,6 +31,6 @@ struct AppLoggerFormatter: LogFormatterProtocol {
     }
 
     var debugDescription: String {
-        "AppLoggerFormatter"
+        "VisualLoggerFormatter"
     }
 }

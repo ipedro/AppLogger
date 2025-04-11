@@ -1,4 +1,4 @@
-import AppLogger
+import VisualLogger
 import UIKit
 
 class ViewController: UIViewController {
@@ -7,7 +7,7 @@ class ViewController: UIViewController {
     private lazy var presentButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Logger", handler: { action in
-            Task { await AppLogger.current.present() }
+            Task { await VisualLogger.current.present() }
             // Log only the action title instead of the entire action object.
             log.info(action.title, userInfo: [
                 "discoverabilityTitle": action.discoverabilityTitle,
@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     private lazy var presentLightButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Light Logger", handler: { action in
-            Task { await AppLogger.current.present(configuration: .init(colorScheme: .light)) }
+            Task { await VisualLogger.current.present(configuration: .init(colorScheme: .light)) }
             // Log only the action title instead of the entire action object.
             log.info(action.title, userInfo: [
                 "discoverabilityTitle": action.discoverabilityTitle,
@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     private lazy var presentDarkButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
-            Task { await AppLogger.current.present(configuration: .init(colorScheme: .dark)) }
+            Task { await VisualLogger.current.present(configuration: .init(colorScheme: .dark)) }
             log.info(action.title, userInfo: [
                 "discoverabilityTitle": action.discoverabilityTitle,
                 "identifier": action.identifier.rawValue,

@@ -6,7 +6,7 @@ struct SortingButton: View {
     var options = LogEntrySorting.allCases
 
     @EnvironmentObject
-    private var viewModel: AppLoggerViewModel
+    private var viewModel: VisualLoggerViewModel
 
     @State
     private var selection: LogEntrySorting = .ascending
@@ -50,7 +50,7 @@ struct SortingButton: View {
 #Preview {
     SortingButton()
         .environmentObject(
-            AppLoggerViewModel(
+            VisualLoggerViewModel(
                 dataObserver: DataObserver(),
                 dismissAction: {}
             )

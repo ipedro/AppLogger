@@ -2,7 +2,7 @@ import Foundation
 
 /// A type that represents a filtering criteria for log entries.
 ///
-/// Filters are the foundation of log searching and organization in AppLogger.
+/// Filters are the foundation of log searching and organization in VisualLogger.
 /// Each filter combines three key components:
 /// - A specific type of filter (defined by `Kind`)
 /// - The actual search query

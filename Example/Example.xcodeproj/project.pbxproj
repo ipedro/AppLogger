@@ -14,8 +14,8 @@
 		EB4B8A4027D8E4E500EA709C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB4B8A3E27D8E4E500EA709C /* LaunchScreen.storyboard */; };
 		EB8688F227D8EEED00DC44AB /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = EB8688F127D8EEED00DC44AB /* ObjcExceptionBridging */; };
 		EB8688F427D8EEED00DC44AB /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = EB8688F327D8EEED00DC44AB /* XCGLogger */; };
-		EB8688F927D8F28A00DC44AB /* AppLogger in Frameworks */ = {isa = PBXBuildFile; productRef = EB8688F827D8F28A00DC44AB /* AppLogger */; };
-		EB8688FB27D8F9BD00DC44AB /* AppLoggerFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8688FA27D8F9BD00DC44AB /* AppLoggerFormatter.swift */; };
+		EB8688F927D8F28A00DC44AB /* VisualLogger in Frameworks */ = {isa = PBXBuildFile; productRef = EB8688F827D8F28A00DC44AB /* VisualLogger */; };
+		EB8688FB27D8F9BD00DC44AB /* VisualLoggerFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8688FA27D8F9BD00DC44AB /* VisualLoggerFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,8 +26,8 @@
 		EB4B8A3C27D8E4E500EA709C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EB4B8A3F27D8E4E500EA709C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB4B8A4127D8E4E500EA709C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EB8688F627D8F26700DC44AB /* AppLogger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AppLogger; path = ..; sourceTree = "<group>"; };
-		EB8688FA27D8F9BD00DC44AB /* AppLoggerFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerFormatter.swift; sourceTree = "<group>"; };
+		EB8688F627D8F26700DC44AB /* VisualLogger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = VisualLogger; path = ..; sourceTree = "<group>"; };
+		EB8688FA27D8F9BD00DC44AB /* VisualLoggerFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualLoggerFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB8688F927D8F28A00DC44AB /* AppLogger in Frameworks */,
+				EB8688F927D8F28A00DC44AB /* VisualLogger in Frameworks */,
 				EB8688F227D8EEED00DC44AB /* ObjcExceptionBridging in Frameworks */,
 				EB8688F427D8EEED00DC44AB /* XCGLogger in Frameworks */,
 			);
@@ -66,7 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				EB4B8A3327D8E4E200EA709C /* AppDelegate.swift */,
-				EB8688FA27D8F9BD00DC44AB /* AppLoggerFormatter.swift */,
+				EB8688FA27D8F9BD00DC44AB /* VisualLoggerFormatter.swift */,
 				EB4B8A3527D8E4E200EA709C /* SceneDelegate.swift */,
 				EB4B8A3727D8E4E200EA709C /* ViewController.swift */,
 				EB4B8A3C27D8E4E500EA709C /* Assets.xcassets */,
@@ -79,7 +79,7 @@
 		EB8688F527D8F26700DC44AB /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				EB8688F627D8F26700DC44AB /* AppLogger */,
+				EB8688F627D8F26700DC44AB /* VisualLogger */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -110,7 +110,7 @@
 			packageProductDependencies = (
 				EB8688F127D8EEED00DC44AB /* ObjcExceptionBridging */,
 				EB8688F327D8EEED00DC44AB /* XCGLogger */,
-				EB8688F827D8F28A00DC44AB /* AppLogger */,
+				EB8688F827D8F28A00DC44AB /* VisualLogger */,
 			);
 			productName = Example;
 			productReference = EB4B8A3027D8E4E200EA709C /* Example.app */;
@@ -170,7 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB4B8A3827D8E4E200EA709C /* ViewController.swift in Sources */,
-				EB8688FB27D8F9BD00DC44AB /* AppLoggerFormatter.swift in Sources */,
+				EB8688FB27D8F9BD00DC44AB /* VisualLoggerFormatter.swift in Sources */,
 				EB4B8A3427D8E4E200EA709C /* AppDelegate.swift in Sources */,
 				EB4B8A3627D8E4E200EA709C /* SceneDelegate.swift in Sources */,
 			);
@@ -327,7 +327,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.AppLogger.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.VisualLogger.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -354,7 +354,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.AppLogger.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.VisualLogger.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -407,9 +407,9 @@
 			package = EB8688F027D8EEED00DC44AB /* XCRemoteSwiftPackageReference "XCGLogger" */;
 			productName = XCGLogger;
 		};
-		EB8688F827D8F28A00DC44AB /* AppLogger */ = {
+		EB8688F827D8F28A00DC44AB /* VisualLogger */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AppLogger;
+			productName = VisualLogger;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

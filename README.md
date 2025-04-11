@@ -1,8 +1,8 @@
-# AppLogger
-AppLogger is a logging helper library.
+# VisualLogger
+VisualLogger is a logging helper library.
 
 ### Requirements:
-* iOS 14+
-* Xcode 13.2.1
+* iOS 15+
+* Xcode 16+
 
 ![Example App](Documentation/example.gif)
