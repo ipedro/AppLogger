@@ -1,5 +1,23 @@
 import SwiftUI
 
+/// A concrete implementation of a log source with emoji support.
+///
+/// `LogEntrySource` provides a flexible way to identify where logs come from,
+/// with optional emoji for visual distinction and additional contextual information:
+///
+/// ```swift
+/// // Basic source
+/// let basicSource = LogEntrySource("NetworkManager")
+///
+/// // Source with emoji
+/// let networkSource = LogEntrySource("🌐", "APIClient")
+///
+/// // Source with additional info
+/// let sdkSource = LogEntrySource(
+///     "📱", "FacebookSDK",
+///     .sdk(version: "1.2.3")
+/// )
+/// ```
 public struct LogEntrySource: Hashable, Identifiable, Sendable {
     public var id: String { name }
     public let emoji: Character?

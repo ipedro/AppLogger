@@ -1,6 +1,7 @@
 import Foundation
 
-public struct LogEntryID: Hashable, Comparable, Sendable {
+/// A unique identifier for log entries with built-in temporal ordering.
+package struct LogEntryID: Hashable, Comparable, Sendable {
     private let rawValue = UUID()
     package let timestamp: TimeInterval
 
@@ -8,7 +9,7 @@ public struct LogEntryID: Hashable, Comparable, Sendable {
         timestamp = date.timeIntervalSince1970
     }
 
-    public static func < (lhs: LogEntryID, rhs: LogEntryID) -> Bool {
+    package static func < (lhs: LogEntryID, rhs: LogEntryID) -> Bool {
         lhs.timestamp < rhs.timestamp
     }
 

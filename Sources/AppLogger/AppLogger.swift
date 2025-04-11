@@ -1,22 +1,47 @@
 import Data
 import UIKit
 
+/// A centralized logging actor for handling asynchronous log entry management and UI presentation.
 public actor AppLogger {
+    /// Underlying datastore that records log entries.
     private let dataStore = DataStore()
 
+    /// The current active coordinator responsible for presenting the log interface.
     private var coordinator: Coordinator?
 
+    /// Shared instance of `AppLogger` for global accessibility.
     public static let current = AppLogger()
 
-    /// Adds a log entry to the DataStore.
+    /// Asynchronously adds a log entry to the underlying data store.
     ///
-    /// - Parameter logEntry: The log entry to add.
+    /// This method offloads the logging operation to a background task, ensuring that the
+    /// user interface remains responsive. It uses Swift concurrency to perform asynchronous
+    /// writes without blocking the main thread.
+    ///
+    /// - Parameter log: A `LogEntry` instance representing the event or message to be logged.
+    ///
+    /// - Important: Ensure that the provided `LogEntry` conforms to the expected format to prevent
+    ///   any data inconsistency issues.
     public nonisolated func addLogEntry(_ log: LogEntry) {
         Task {
             await dataStore.addLogEntry(log)
         }
     }
 
+    /// Presents the logging interface modally.
+    ///
+    /// Before initiating presentation, this method checks that no coordinator is already active.
+    /// It then creates a data observer from the data store and configures a new `Coordinator` instance
+    /// to manage the logging UI. The asynchronous presentation allows for a smooth and dynamic
+    /// user experience.
+    ///
+    /// - Parameters:
+    ///   - animated: A Boolean value indicating whether the presentation should be animated. Defaults to `true`.
+    ///   - configuration: An `AppLoggerConfiguration` instance that provides custom presentation settings.
+    ///     Defaults to a new instance of `AppLoggerConfiguration`.
+    ///   - completion: An optional closure executed after the presentation completes.
+    ///
+    /// - Warning: If a coordinator is already active, the method exits without re-presenting the UI.
     public func present(
         animated: Bool = true,
         configuration: AppLoggerConfiguration = .init(),
@@ -42,6 +67,12 @@ public actor AppLogger {
         )
     }
 
+    /// Dismisses the current logging interface.
+    ///
+    /// This helper method resets the active coordinator and, if a view controller is provided,
+    /// dismisses it on the main actor to ensure proper UI thread management.
+    ///
+    /// - Parameter viewController: The `UIViewController` instance to dismiss. If `nil`, only the coordinator state is reset.
     private func dismiss(viewController: UIViewController?) {
         coordinator = nil
         if let viewController {

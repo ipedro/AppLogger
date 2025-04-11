@@ -1,3 +1,25 @@
+/// A flexible container for additional metadata associated with a log entry.
+///
+/// `LogEntryUserInfo` provides a type-safe way to attach arbitrary information
+/// to log entries while maintaining a consistent string-based storage format:
+///
+/// ```swift
+/// // Simple string info
+/// let simpleInfo = LogEntryUserInfo("Network timeout")
+///
+/// // Dictionary info
+/// let dictInfo = LogEntryUserInfo([
+///     "statusCode": 404,
+///     "endpoint": "/users",
+///     "method": "GET"
+/// ])
+///
+/// // Mixed type info
+/// let mixedInfo: LogEntryUserInfo = [
+///     "retryCount": 3,
+///     "lastError": NSError(domain: "NetworkError", code: 500)
+/// ]
+/// ```
 public struct LogEntryUserInfo: Sendable {
     package let storage: [(key: String, value: String)]
 

@@ -1,5 +1,12 @@
 import Foundation
 
+/// A type that represents a filtering criteria for log entries.
+///
+/// Filters are the foundation of log searching and organization in AppLogger.
+/// Each filter combines three key components:
+/// - A specific type of filter (defined by `Kind`)
+/// - The actual search query
+/// - A human-readable display name
 package struct Filter: Hashable {
     package let kind: Kind
     package let query: String
@@ -13,7 +20,12 @@ package struct Filter: Hashable {
 }
 
 package extension Filter {
-    package struct Kind: CustomStringConvertible, Hashable, OptionSet {
+    /// Represents the different aspects of a log entry that can be filtered.
+    ///
+    /// `Kind` is implemented as an `OptionSet`, allowing multiple
+    /// filter criteria to be combined using bitwise operations.
+    /// ```
+    struct Kind: CustomStringConvertible, Hashable, OptionSet {
         package let rawValue: Int8
 
         package var description: String {
@@ -73,6 +85,19 @@ package extension Collection where Element == Filter {
 
 // MARK: - Filterable
 
+/// A protocol that defines how a type can be filtered based on string criteria.
+///
+/// Types conforming to `Filterable` must specify which of their properties
+/// should be used for filtering operations.
+///
+/// ## Discussion
+/// The protocol provides two key paths:
+/// - `filterCriteria`: The main property to filter on (required)
+/// - `filterCriteriaOptional`: A secondary, optional property to filter on
+///
+/// This dual-property approach allows for flexible filtering strategies,
+/// particularly useful when dealing with types that have multiple
+/// searchable fields.
 package protocol Filterable {
     static var filterCriteria: KeyPath<Self, String> { get }
     static var filterCriteriaOptional: KeyPath<Self, String?>? { get }
@@ -80,6 +105,15 @@ package protocol Filterable {
 
 // MARK: - Filter Convertible
 
+/// A protocol that extends `Filterable` to provide automatic conversion
+/// to `Filter` instances.
+///
+/// ## Discussion
+/// `FilterConvertible` streamlines the process of creating filters from
+/// domain objects. By conforming to this protocol, types can specify:
+/// - How they should be displayed in filter UI
+/// - What kind of filter they represent
+/// - Which properties should be considered for filtering
 package protocol FilterConvertible: Filterable {
     static var filterDisplayName: KeyPath<Self, String> { get }
     static var filterKind: Filter.Kind { get }

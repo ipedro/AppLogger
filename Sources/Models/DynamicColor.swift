@@ -1,6 +1,12 @@
 import SwiftUI
 import UIKit
 
+/// A color type that automatically adapts to light and dark color schemes
+/// while maintaining visual harmony across appearances.
+///
+/// `DynamicColor` manages color variations for different UI appearances by storing
+/// specialized color components for each `ColorScheme`. This ensures your app's colors
+/// remain visually pleasing regardless of the user's preferred appearance.
 package struct DynamicColor: Sendable {
     private let data: [ColorScheme: Components]
 
@@ -8,14 +14,28 @@ package struct DynamicColor: Sendable {
         data = value
     }
 
+    /// Retrieves color components for the specified color scheme.
+    ///
+    /// - Parameter colorScheme: The color scheme to get components for (`.light` or `.dark`)
+    /// - Returns: Color components tuned for the specified appearance, or `nil` if not available
     package subscript(colorScheme: ColorScheme) -> Components? {
         data[colorScheme]
     }
 
+    /// Provides a human-readable description of the color components for debugging.
+    ///
+    /// - Parameter colorScheme: The color scheme to describe
+    /// - Returns: A multi-line string containing HSB values
     package func description(with colorScheme: ColorScheme) -> String {
         data[colorScheme]!.description
     }
 
+    /// Represents the individual components of a color using the HSB color space.
+    ///
+    /// HSB (Hue, Saturation, Brightness) provides an intuitive way to work with colors:
+    /// - Hue: The base color (0-1, where 0 and 1 are red, 0.33 is green, 0.66 is blue)
+    /// - Saturation: The intensity of the color (0 = grayscale, 1 = full color)
+    /// - Brightness: The lightness of the color (0 = black, 1 = full brightness)
     package struct Components: Sendable, CustomStringConvertible {
         let hue: CGFloat
         let saturation: CGFloat

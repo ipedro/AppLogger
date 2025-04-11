@@ -1,7 +1,14 @@
-public enum LogEntrySorting: Int, CustomStringConvertible, CaseIterable, Identifiable {
-    case ascending, descending
+/// Defines the order in which log entries should be displayed.
+///
+/// `LogEntrySorting` provides a simple way to control the chronological order
+/// of log entries in the UI.
+package enum LogEntrySorting: Int, CustomStringConvertible, CaseIterable, Identifiable {
+    /// Shows oldest logs first
+    case ascending
+    /// Shows newest logs first
+    case descending
 
-    public var description: String {
+    package var description: String {
         switch self {
         case .ascending:
             "New Logs Last"
@@ -10,12 +17,7 @@ public enum LogEntrySorting: Int, CustomStringConvertible, CaseIterable, Identif
         }
     }
 
-    public var id: RawValue {
+    package var id: RawValue {
         rawValue
-    }
-
-    /// Toggle between sorting orders.
-    mutating func toggle() {
-        self = self == .ascending ? .descending : .ascending
     }
 }

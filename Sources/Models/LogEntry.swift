@@ -1,26 +1,47 @@
 import Foundation
 
-/// This file defines the LogEntry struct, which represents a log entry in the application.
+/// A comprehensive log entry that captures detailed information about a logging event.
 ///
-/// A log entry that encapsulates the details for a single log event, including its source, category, and content.
-public struct LogEntry: Identifiable, Sendable {
+/// `LogEntry` serves as the fundamental building block of the AppLogger system,
+/// encapsulating all the metadata and content needed for effective logging:
+///
+/// ```swift
+/// // Create a basic log entry
+/// let entry = LogEntry(
+///     category: .warning,
+///     source: "NetworkManager",
+///     content: "Connection timeout"
+/// )
+///
+/// // Create a detailed log entry
+/// let detailedEntry = LogEntry(
+///     category: .error,
+///     source: LogEntrySource("🌐", "APIClient"),
+///     content: LogEntryContent(
+///         function: "fetchUser(id:)",
+///         message: "Invalid response"
+///     ),
+///     userInfo: ["statusCode": 404]
+/// )
+/// ```
+public struct LogEntry: Sendable {
     /// A unique identifier for the log entry.
-    public let id: LogEntryID
+    package let id: LogEntryID
 
     /// The source from which the log entry originates.
-    public let source: LogEntrySource
+    package let source: LogEntrySource
 
     /// The category that describes the type or nature of the log entry.
-    public let category: LogEntryCategory
+    package let category: LogEntryCategory
 
     /// The actual content or message of the log entry.
-    public let content: LogEntryContent
+    package let content: LogEntryContent
 
     /// Additional information like a dictionary.
-    public let userInfo: LogEntryUserInfo?
+    package let userInfo: LogEntryUserInfo?
 
     /// The date the log was created.
-    public var createdAt: Date {
+    package var createdAt: Date {
         id.createdAt
     }
 }
