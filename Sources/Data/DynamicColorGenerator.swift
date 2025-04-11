@@ -22,21 +22,24 @@ import SwiftUI
 import struct Models.DynamicColor
 import struct Models.Source
 
-package typealias SourceColorStore = ColorStore<Source>
-
-@MainActor
-package final class ColorStore<Element>: ObservableObject where Element: Identifiable {
+package struct DynamicColorGenerator<Element> where Element: Identifiable {
     private var unassignedColors = [DynamicColor]()
     
-    private var assignedColors: [Element.ID: DynamicColor] = [:]
+    private(set) var assignedColors: [Element.ID: DynamicColor] = [:]
     
     package init() {}
     
-    package func color(for element: Element) -> DynamicColor {
+    package mutating func color(for element: Element) -> DynamicColor {
         if let color = assignedColors[element.id] {
             return color
         }
         
+        let newColor = generateColor(for: element)
+        return newColor
+    }
+    
+    @discardableResult
+    mutating func generateColor(for element: Element) -> DynamicColor {
         if unassignedColors.isEmpty {
             unassignedColors = DynamicColor.makeColors(count: .random(in: 4...8)).shuffled()
         }
@@ -54,7 +57,7 @@ private struct PreviewItem: Identifiable {
 @available(iOS 17, *)
 #Preview {
     @Previewable @State
-    var colorStore = ColorStore<PreviewItem>()
+    var generator = DynamicColorGenerator<PreviewItem>()
     
     let items = (0..<1000).map(PreviewItem.init(id:))
     
@@ -63,10 +66,10 @@ private struct PreviewItem: Identifiable {
             ForEach(items) { item in
                 HStack(spacing: .zero) {
                     ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
-                        colorStore.color(for: item).resolve(with: colorScheme)
+                        (generator.color(for: item)[colorScheme]?.color() ?? .secondary)
                             .frame(height: 80)
                             .overlay {
-                                Text(colorStore.color(for: item).description(with: colorScheme))
+                                Text(generator.color(for: item).description(with: colorScheme))
                                     .font(.caption2.monospaced().bold())
                                     .foregroundStyle(colorScheme == .dark ? .black : .white)
                             }

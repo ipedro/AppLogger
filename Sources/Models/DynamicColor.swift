@@ -28,24 +28,24 @@ package struct DynamicColor: Sendable {
         data = value
     }
     
-    package func resolve(with colorScheme: ColorScheme) -> Color {
-        data[colorScheme]?.color() ?? .secondary
+    package subscript(colorScheme: ColorScheme) -> Components? {
+        data[colorScheme]
     }
     
     package func description(with colorScheme: ColorScheme) -> String {
         data[colorScheme]!.description
     }
     
-    struct Components: CustomStringConvertible {
+    package struct Components: Sendable, CustomStringConvertible {
         let hue: CGFloat
         let saturation: CGFloat
         let brightness: CGFloat
         
-        var description: String {
+        package var description: String {
             "H: \(hue)\nS: \(saturation)\nB: \(brightness)"
         }
         
-        func color() -> Color {
+        package func color() -> Color {
             Color(
                 uiColor: UIColor(
                     hue: hue,
@@ -101,7 +101,7 @@ package struct DynamicColor: Sendable {
         ForEach(Array(colors.enumerated()), id: \.offset) { offset, color in
             HStack(spacing: .zero) {
                 ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
-                    color.resolve(with: colorScheme).overlay {
+                    color[colorScheme]!.color().overlay {
                         Text(color.description(with: colorScheme))
                             .font(.caption2.monospaced().bold())
                             .foregroundStyle(colorScheme == .dark ? .black : .white)

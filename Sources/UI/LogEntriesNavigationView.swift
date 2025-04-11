@@ -20,8 +20,8 @@
 
 import SwiftUI
 import class Data.AppLoggerViewModel
-import class Data.SourceColorStore
 import class Data.DataObserver
+import struct Data.DynamicColorGenerator
 import enum Models.Mock
 import struct Models.Source
 
@@ -32,10 +32,7 @@ package struct LogEntriesNavigationView: View {
     
     @Environment(\.colorScheme)
     private var colorScheme
-    
-    @Environment(\.configuration.navigationTitle)
-    private var navigationTitle
-    
+
     @Environment(\.configuration.accentColor)
     private var accentColor
     
@@ -46,44 +43,18 @@ package struct LogEntriesNavigationView: View {
     
     package var body: some View {
         NavigationView {
-            LogEntriesList()
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(navigationTitle)
-                .toolbar {
-                    ToolbarItem(
-                        placement: .topBarLeading,
-                        content: leadingNavigationBarItems
-                    )
-                    ToolbarItem(
-                        placement: .topBarTrailing,
-                        content: trailingNavigationBarItems
-                    )
-                }
+            LogEntriesNavigationContent()
         }
         .tint(accentColor)
         .colorScheme(preferredColorScheme ?? colorScheme)
         .activitySheet($viewModel.activityItem)
     }
-    
-    private func leadingNavigationBarItems() -> some View {
-        HStack {
-            FiltersDrawerToggle(
-                isOn: $viewModel.showFilters,
-                activeFilters: viewModel.activeScope.count
-            )
-            
-            SortingButton(selection: $viewModel.sorting)
-                .disabled(viewModel.entries.isEmpty)
-        }
-    }
-    
-    private func trailingNavigationBarItems() -> some View {
-        DismissButton(action: viewModel.dismissAction)
-    }
 }
 
 #Preview {
     let allEntries = Mock.allCases.map { $0.entry() }
+    
+    var colorGenerator = DynamicColorGenerator<Source>()
     
     let dataObserver = DataObserver(
         allCategories: Set(allEntries.map(\.category)).sorted(),
@@ -92,7 +63,10 @@ package struct LogEntriesNavigationView: View {
         entryCategories: allEntries.valuesByID(\.category),
         entryContents: allEntries.valuesByID(\.content),
         entrySources: allEntries.valuesByID(\.source),
-        entryUserInfos: allEntries.valuesByID(\.userInfo)
+        entryUserInfos: allEntries.valuesByID(\.userInfo),
+        sourceColors: allEntries.map(\.source).reduce(into: [:], { partialResult, source in
+            partialResult[source.id] = colorGenerator.color(for: source)
+        })
     )
     
     LogEntriesNavigationView()
@@ -102,7 +76,5 @@ package struct LogEntriesNavigationView: View {
                 dismissAction: { print("dismiss") }
             )
         )
-        .environmentObject(SourceColorStore())
-        .environmentObject(dataObserver)
         .configuration(.init(accentColor: .red))
 }

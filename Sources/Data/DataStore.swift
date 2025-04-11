@@ -20,6 +20,7 @@
 
 import struct Models.Category
 import struct Models.Content
+import struct Models.DynamicColor
 import struct Models.ID
 import struct Models.LogEntry
 import struct Models.Source
@@ -31,29 +32,31 @@ import struct Models.UserInfoKey
 package actor DataStore {
     package init() {}
     
+    private(set) var sourceColorGenerator = DynamicColorGenerator<Source>()
+    
     /// A reactive subject that holds an array of log entry IDs.
-    package private(set) var allEntries = Set<ID>()
+    private(set) var allEntries = Set<ID>()
     
     /// An array holding all log entry categories present in the store.
-    package private(set) var allCategories = Set<Category>()
+    private(set) var allCategories = Set<Category>()
     
     /// An array holding all log entry sources present in the store.
-    package private(set) var allSources = Set<Source>()
+    private(set) var allSources = Set<Source>()
     
     /// A dictionary mapping log entry IDs to their corresponding category.
-    package private(set) var entryCategories = [ID: Category]()
+    private(set) var entryCategories = [ID: Category]()
     
     /// A dictionary mapping log entry IDs to their corresponding content.
-    package private(set) var entryContents = [ID: Content]()
+    private(set) var entryContents = [ID: Content]()
     
     /// A dictionary mapping log entry IDs to their corresponding source.
-    package private(set) var entrySources = [ID: Source]()
+    private(set) var entrySources = [ID: Source]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
-    package private(set) var entryUserInfoKeys = [ID: [UserInfoKey]]()
+    private(set) var entryUserInfoKeys = [ID: [UserInfoKey]]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
-    package private(set) var entryUserInfoValues = [UserInfoKey: String]()
+    private(set) var entryUserInfoValues = [UserInfoKey: String]()
     
     weak private var observer: DataObserver?
     
@@ -85,7 +88,10 @@ package actor DataStore {
         }
         
         allCategories.insert(logEntry.category)
-        allSources.insert(logEntry.source)
+        
+        if allSources.insert(logEntry.source).inserted {
+            sourceColorGenerator.generateColor(for: logEntry.source)
+        }
         
         entryCategories[id] = logEntry.category
         entryContents[id] = logEntry.content
@@ -119,6 +125,7 @@ package actor DataStore {
         observer.entrySources = entrySources
         observer.entryUserInfoKeys = entryUserInfoKeys
         observer.entryUserInfoValues = entryUserInfoValues
+        observer.sourceColors = sourceColorGenerator.assignedColors
     }
 }
 

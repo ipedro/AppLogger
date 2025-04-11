@@ -22,12 +22,13 @@ import class Combine.CurrentValueSubject
 import protocol SwiftUI.ObservableObject
 import struct Models.Category
 import struct Models.Content
+import struct Models.DynamicColor
 import struct Models.ID
 import struct Models.Source
 import struct Models.UserInfo
 import struct Models.UserInfoKey
 
-package final class DataObserver: ObservableObject, @unchecked Sendable {
+package final class DataObserver: @unchecked Sendable {
     package init(
         allCategories: [Category] = [],
         allEntries: [ID] = [],
@@ -35,7 +36,8 @@ package final class DataObserver: ObservableObject, @unchecked Sendable {
         entryCategories: [ID : Category] = [:],
         entryContents: [ID : Content] = [:],
         entrySources: [ID : Source] = [:],
-        entryUserInfos: [ID: UserInfo?] = [:]
+        entryUserInfos: [ID: UserInfo?] = [:],
+        sourceColors: [Source.ID: DynamicColor] = [:]
     ) {
         self.allCategories = CurrentValueSubject(allCategories)
         self.allEntries = CurrentValueSubject(allEntries)
@@ -43,6 +45,7 @@ package final class DataObserver: ObservableObject, @unchecked Sendable {
         self.entryCategories = entryCategories
         self.entryContents = entryContents
         self.entrySources = entrySources
+        self.sourceColors = sourceColors
         
         for (id, userInfo) in entryUserInfos {
             guard let (keys, values) = userInfo?.denormalize(id: id) else {
@@ -78,4 +81,7 @@ package final class DataObserver: ObservableObject, @unchecked Sendable {
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
     package internal(set) var entryUserInfoValues = [UserInfoKey: String]()
+    
+    /// A dictionary mapping log source IDs to their corresponding color.
+    package internal(set) var sourceColors = [Source.ID: DynamicColor]()
 }

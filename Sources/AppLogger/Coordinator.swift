@@ -19,7 +19,6 @@
 //  SOFTWARE.
 
 import class Data.AppLoggerViewModel
-import class Data.SourceColorStore
 import class Data.DataObserver
 import class ObjectiveC.NSObject
 import class SwiftUI.UIHostingController
@@ -32,14 +31,13 @@ import class UIKit.UIWindowScene
 import protocol SwiftUI.View
 import protocol UIKit.UISheetPresentationControllerDelegate
 import struct UI.LogEntriesNavigationView
+import struct UI.LogEntriesNavigationStack
 
 @MainActor
 final class Coordinator: NSObject {
     private let dataObserver: DataObserver
     
     private let configuration: AppLoggerConfiguration
-    
-    private static let colorStore = SourceColorStore()
     
     private let dismiss: (UIViewController?) -> Void
     
@@ -100,15 +98,25 @@ final class Coordinator: NSObject {
     }
     
     func makeViewController() -> UIViewController {
-        UIHostingController(rootView: makeView())
+        if #available(iOS 16.0, *) {
+            UIHostingController(rootView: makeNavigationStack())
+        } else {
+            // Fallback on earlier versions
+            UIHostingController(rootView: makeNavigationView())
+        }
     }
     
-    func makeView() -> some View {
+    func makeNavigationView() -> some View {
         LogEntriesNavigationView()
             .configuration(configuration)
             .environmentObject(viewModel)
-            .environmentObject(dataObserver)
-            .environmentObject(Self.colorStore)
+    }
+    
+    @available(iOS 16.0, *)
+    func makeNavigationStack() -> some View {
+        LogEntriesNavigationStack()
+            .configuration(configuration)
+            .environmentObject(viewModel)
     }
 }
 

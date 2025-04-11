@@ -19,9 +19,10 @@
 //  SOFTWARE.
 
 import SwiftUI
-import struct Models.UserInfoKey
-import enum Models.Mock
+import class Data.AppLoggerViewModel
 import class Data.DataObserver
+import enum Models.Mock
+import struct Models.UserInfoKey
 
 struct LogEntryUserInfoRows: View {
     var ids: [UserInfoKey]
@@ -34,14 +35,14 @@ struct LogEntryUserInfoRows: View {
     private var colorScheme
     
     @EnvironmentObject
-    private var data: DataObserver
+    private var viewModel: AppLoggerViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
             ForEach(Array(ids.enumerated()), id: \.offset) { offset, id in
                 LogEntryUserInfoRow(
                     key: id.key,
-                    value: data.entryUserInfoValues[id]!,
+                    value: viewModel.entryUserInfoValue(id),
                     tint: tint
                 )
                 .background(backgroundColor(for: offset))
@@ -74,8 +75,11 @@ struct LogEntryUserInfoRows: View {
         .padding()
     }
     .environmentObject(
-        DataObserver(
-            entryUserInfos: [entry.id: entry.userInfo]
+        AppLoggerViewModel(
+            dataObserver: DataObserver(
+                entryUserInfos: [entry.id: entry.userInfo]
+            ),
+            dismissAction: {}
         )
     )
 }

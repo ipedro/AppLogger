@@ -19,27 +19,18 @@
 //  SOFTWARE.
 
 import SwiftUI
-import class Data.SourceColorStore
+import class Data.AppLoggerViewModel
 import class Data.DataObserver
 import enum Models.Mock
 import struct Models.Category
 import struct Models.Content
+import struct Models.DynamicColor
 import struct Models.ID
 import struct Models.Source
 import struct Models.UserInfoKey
 
 struct LogEntryView: View {
     let id: ID
-    
-    private var source: Source { data.entrySources[id]! }
-    
-    private var category: Category { data.entryCategories[id]! }
-    
-    private var content: Content { data.entryContents[id]! }
-    
-    private var userInfo: [UserInfoKey]? { data.entryUserInfoKeys[id] }
-    
-    private var createdAt: Date { id.createdAt }
     
     @Environment(\.colorScheme)
     private var colorScheme
@@ -48,15 +39,15 @@ struct LogEntryView: View {
     private var spacing
     
     @EnvironmentObject
-    private var colorStore: SourceColorStore
-    
-    @EnvironmentObject
-    private var data: DataObserver
+    private var viewModel: AppLoggerViewModel
 
     var body: some View {
-        let tint = colorStore
-            .color(for: source)
-            .resolve(with: colorScheme)
+        let source = viewModel.entrySource(id)
+        let category = viewModel.entryCategory(id)
+        let createdAt = viewModel.entryCreatedAt(id)
+        let content = viewModel.entryContent(id)
+        let userInfo = viewModel.entryUserInfoKeys(id)
+        let tint = viewModel.sourceColor(source, for: colorScheme)
         
         VStack(alignment: .leading, spacing: spacing) {
             LogEntryHeaderView(
@@ -111,27 +102,38 @@ extension LogEntryView {
     
     ScrollView {
         LogEntryView(id: entry.id)
-            .environmentObject(SourceColorStore())
-            .environmentObject(DataObserver(
-                entryCategories: [entry.id: entry.category],
-                entryContents: [entry.id: entry.content],
-                entrySources: [entry.id: entry.source],
-                entryUserInfos: [entry.id: entry.userInfo]
-            ))
+            .environmentObject(
+                AppLoggerViewModel(
+                    dataObserver: DataObserver(
+                        entryCategories: [entry.id: entry.category],
+                        entryContents: [entry.id: entry.content],
+                        entrySources: [entry.id: entry.source],
+                        entryUserInfos: [entry.id: entry.userInfo],
+                        sourceColors: [entry.source.id: .makeColors().randomElement()!]
+                    ),
+                    dismissAction: {}
+                )
+            )
     }
 }
+
 #Preview {
     let entry = Mock.googleAnalytics.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)
-            .environmentObject(SourceColorStore())
-            .environmentObject(DataObserver(
-                entryCategories: [entry.id: entry.category],
-                entryContents: [entry.id: entry.content],
-                entrySources: [entry.id: entry.source],
-                entryUserInfos: [entry.id: entry.userInfo]
-            ))
+            .environmentObject(
+                AppLoggerViewModel(
+                    dataObserver: DataObserver(
+                        entryCategories: [entry.id: entry.category],
+                        entryContents: [entry.id: entry.content],
+                        entrySources: [entry.id: entry.source],
+                        entryUserInfos: [entry.id: entry.userInfo],
+                        sourceColors: [entry.source.id: .makeColors().randomElement()!]
+                    ),
+                    dismissAction: {}
+                )
+            )
     }
     .background(.red)
 }

@@ -23,16 +23,21 @@ import class Foundation.DispatchQueue
 import class Foundation.UserDefaults
 import enum Combine.Publishers
 import enum Models.Sorting
+import enum SwiftUI.ColorScheme
 import protocol Combine.ObservableObject
 import protocol Combine.Publisher
 import protocol Models.Filterable
 import struct Combine.Published
+import struct Foundation.Date
 import struct Models.ActivityItem
 import struct Models.Category
 import struct Models.Content
+import struct Models.DynamicColor
 import struct Models.Filter
 import struct Models.ID
 import struct Models.Source
+import struct Models.UserInfoKey
+import struct SwiftUI.Color
 
 package final class AppLoggerViewModel: ObservableObject {
     @Published
@@ -88,6 +93,35 @@ package final class AppLoggerViewModel: ObservableObject {
         
         setupListeners()
     }
+    
+    package func sourceColor(_ source: Source, for colorScheme: ColorScheme) -> Color {
+        dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
+    }
+    
+    package func entrySource(_ id: ID) -> Source {
+        dataObserver.entrySources[id]!
+    }
+    
+    package func entryCategory(_ id: ID) -> Category {
+        dataObserver.entryCategories[id]!
+    }
+    
+    package func entryContent(_ id: ID) -> Content {
+        dataObserver.entryContents[id]!
+    }
+    
+    package func entryUserInfoKeys(_ id: ID) -> [UserInfoKey]? {
+        dataObserver.entryUserInfoKeys[id]
+    }
+    
+    package func entryUserInfoValue(_ id: UserInfoKey) -> String {
+        dataObserver.entryUserInfoValues[id]!
+    }
+    
+    package func entryCreatedAt(_ id: ID) -> Date {
+        id.createdAt
+    }
+    
 }
 
 private extension AppLoggerViewModel {

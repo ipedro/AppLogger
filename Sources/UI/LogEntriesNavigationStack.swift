@@ -25,67 +25,43 @@ import struct Data.DynamicColorGenerator
 import enum Models.Mock
 import struct Models.Source
 
-struct LogEntriesList: View {
+@available(iOS 16.0, *)
+package struct LogEntriesNavigationStack: View {
+
+    @Environment(\.configuration.colorScheme)
+    private var preferredColorScheme
+    
+    @Environment(\.colorScheme)
+    private var colorScheme
+
+    @Environment(\.configuration.accentColor)
+    private var accentColor
     
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
-    @Environment(\.configuration.emptyReasons)
-    private var emptyReasons
+    package init() {}
     
-    private var emptyReason: String {
-        if viewModel.searchQuery.isEmpty {
-            emptyReasons.empty
-        } else {
-            "\(emptyReasons.searchResults):\n\n\(viewModel.activeScope.joined(separator: ", "))"
+    package var body: some View {
+        NavigationStack {
+            LogEntriesNavigationContent()
         }
-    }
-    
-    var body: some View {
-        ScrollView {
-            LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
-                Section {
-                    ForEach(viewModel.entries, id: \.self) { id in
-                        LogEntryView(id: id)
-                        
-                        if id != viewModel.entries.last {
-                            Divider()
-                        }
-                    }
-                } header: {
-                    if viewModel.showFilters {
-                        FiltersDrawer().transition(
-                            .move(edge: .top)
-                            .combined(with: .opacity)
-                        )
-                    }
-                }
-            }
-            .padding(.bottom, 50)
-            .animation(.snappy, value: viewModel.entries)
-        }
-        .clipped()
-        .ignoresSafeArea(.container, edges: .bottom)
-        .background {
-            if viewModel.entries.isEmpty {
-                Text(emptyReason)
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(.secondary)
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, viewModel.showFilters ? 150 : 0)
-            }
-        }
+        .tint(accentColor)
+        .colorScheme(preferredColorScheme ?? colorScheme)
+        .activitySheet($viewModel.activityItem)
     }
 }
 
+@available(iOS 16.0, *)
 #Preview {
     let allEntries = Mock.allCases.map { $0.entry() }
     
     var colorGenerator = DynamicColorGenerator<Source>()
     
     let dataObserver = DataObserver(
+        allCategories: Set(allEntries.map(\.category)).sorted(),
         allEntries: allEntries.map(\.id),
+        allSources: allEntries.map(\.source),
         entryCategories: allEntries.valuesByID(\.category),
         entryContents: allEntries.valuesByID(\.content),
         entrySources: allEntries.valuesByID(\.source),
@@ -95,14 +71,12 @@ struct LogEntriesList: View {
         })
     )
     
-    let viewModel = AppLoggerViewModel(
-        dataObserver: dataObserver,
-        dismissAction: {}
-    )
-    
-    LogEntriesList()
-        .environmentObject(viewModel)
-        .onAppear {
-            viewModel.showFilters = true
-        }
+    LogEntriesNavigationStack()
+        .environmentObject(
+            AppLoggerViewModel(
+                dataObserver: dataObserver,
+                dismissAction: { print("dismiss") }
+            )
+        )
+        .configuration(.init(accentColor: .red))
 }

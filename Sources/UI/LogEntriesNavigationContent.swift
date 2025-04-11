@@ -25,57 +25,45 @@ import struct Data.DynamicColorGenerator
 import enum Models.Mock
 import struct Models.Source
 
-struct LogEntriesList: View {
-    
+package struct LogEntriesNavigationContent: View {
+    @Environment(\.configuration.navigationTitle)
+    private var navigationTitle
+
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
-    @Environment(\.configuration.emptyReasons)
-    private var emptyReasons
+    package init() {}
     
-    private var emptyReason: String {
-        if viewModel.searchQuery.isEmpty {
-            emptyReasons.empty
-        } else {
-            "\(emptyReasons.searchResults):\n\n\(viewModel.activeScope.joined(separator: ", "))"
+    package var body: some View {
+        LogEntriesList()
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(navigationTitle)
+            .toolbar {
+                ToolbarItem(
+                    placement: .topBarLeading,
+                    content: leadingNavigationBarItems
+                )
+                ToolbarItem(
+                    placement: .topBarTrailing,
+                    content: trailingNavigationBarItems
+                )
+            }
+    }
+    
+    private func leadingNavigationBarItems() -> some View {
+        HStack {
+            FiltersDrawerToggle(
+                isOn: $viewModel.showFilters,
+                activeFilters: viewModel.activeScope.count
+            )
+            
+            SortingButton(selection: $viewModel.sorting)
+                .disabled(viewModel.entries.isEmpty)
         }
     }
     
-    var body: some View {
-        ScrollView {
-            LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
-                Section {
-                    ForEach(viewModel.entries, id: \.self) { id in
-                        LogEntryView(id: id)
-                        
-                        if id != viewModel.entries.last {
-                            Divider()
-                        }
-                    }
-                } header: {
-                    if viewModel.showFilters {
-                        FiltersDrawer().transition(
-                            .move(edge: .top)
-                            .combined(with: .opacity)
-                        )
-                    }
-                }
-            }
-            .padding(.bottom, 50)
-            .animation(.snappy, value: viewModel.entries)
-        }
-        .clipped()
-        .ignoresSafeArea(.container, edges: .bottom)
-        .background {
-            if viewModel.entries.isEmpty {
-                Text(emptyReason)
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(.secondary)
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, viewModel.showFilters ? 150 : 0)
-            }
-        }
+    private func trailingNavigationBarItems() -> some View {
+        DismissButton(action: viewModel.dismissAction)
     }
 }
 
@@ -85,7 +73,9 @@ struct LogEntriesList: View {
     var colorGenerator = DynamicColorGenerator<Source>()
     
     let dataObserver = DataObserver(
+        allCategories: Set(allEntries.map(\.category)).sorted(),
         allEntries: allEntries.map(\.id),
+        allSources: allEntries.map(\.source),
         entryCategories: allEntries.valuesByID(\.category),
         entryContents: allEntries.valuesByID(\.content),
         entrySources: allEntries.valuesByID(\.source),
@@ -95,14 +85,11 @@ struct LogEntriesList: View {
         })
     )
     
-    let viewModel = AppLoggerViewModel(
-        dataObserver: dataObserver,
-        dismissAction: {}
-    )
-    
-    LogEntriesList()
-        .environmentObject(viewModel)
-        .onAppear {
-            viewModel.showFilters = true
-        }
+    LogEntriesNavigationContent()
+        .environmentObject(
+            AppLoggerViewModel(
+                dataObserver: dataObserver,
+                dismissAction: { print("dismiss") }
+            )
+        )
 }
