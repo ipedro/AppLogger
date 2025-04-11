@@ -19,7 +19,7 @@ struct LogEntryUserInfoRows: View {
         LazyVStack(alignment: .leading, spacing: .zero) {
             ForEach(Array(ids.enumerated()), id: \.element) { offset, id in
                 let backgroundColor = backgroundColor(for: offset)
-                
+
                 LogEntryUserInfoRow(
                     key: id.key,
                     value: viewModel.entryUserInfoValue(id)
