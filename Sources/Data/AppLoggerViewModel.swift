@@ -1,43 +1,7 @@
-//  Copyright (c) 2025 Pedro Almeida
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in all
-//  copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//  SOFTWARE.
-
-import class Combine.AnyCancellable
-import class Foundation.DispatchQueue
-import class Foundation.UserDefaults
-import enum Combine.Publishers
-import enum Models.Sorting
-import enum SwiftUI.ColorScheme
-import protocol Combine.ObservableObject
-import protocol Combine.Publisher
-import protocol Models.Filterable
-import struct Combine.Published
-import struct Foundation.Date
-import struct Models.ActivityItem
-import struct Models.Category
-import struct Models.Content
-import struct Models.DynamicColor
-import struct Models.Filter
-import struct Models.ID
-import struct Models.Source
-import struct Models.UserInfoKey
-import struct SwiftUI.Color
+import Combine
+import Foundation
+import Models
+import SwiftUI
 
 package final class AppLoggerViewModel: ObservableObject {
     @Published
@@ -51,7 +15,7 @@ package final class AppLoggerViewModel: ObservableObject {
     }
     
     @Published
-    package var sorting: Sorting
+    package var sorting: LogEntry.Sorting
     
     @Published
     package var activityItem: ActivityItem?
@@ -74,7 +38,7 @@ package final class AppLoggerViewModel: ObservableObject {
     package var categories: [Filter] = []
     
     @Published
-    package var entries: [ID] = []
+    package var entries: [LogEntry.ID] = []
     
     package let dismissAction: @MainActor () -> Void
     
@@ -94,31 +58,31 @@ package final class AppLoggerViewModel: ObservableObject {
         setupListeners()
     }
     
-    package func sourceColor(_ source: Source, for colorScheme: ColorScheme) -> Color {
+    package func sourceColor(_ source: LogEntry.Source, for colorScheme: ColorScheme) -> Color {
         dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
     }
     
-    package func entrySource(_ id: ID) -> Source {
+    package func entrySource(_ id: LogEntry.ID) -> LogEntry.Source {
         dataObserver.entrySources[id]!
     }
     
-    package func entryCategory(_ id: ID) -> Category {
+    package func entryCategory(_ id: LogEntry.ID) -> LogEntry.Category {
         dataObserver.entryCategories[id]!
     }
     
-    package func entryContent(_ id: ID) -> Content {
+    package func entryContent(_ id: LogEntry.ID) -> LogEntry.Content {
         dataObserver.entryContents[id]!
     }
     
-    package func entryUserInfoKeys(_ id: ID) -> [UserInfoKey]? {
+    package func entryUserInfoKeys(_ id: LogEntry.ID) -> [LogEntry.UserInfoKey]? {
         dataObserver.entryUserInfoKeys[id]
     }
     
-    package func entryUserInfoValue(_ id: UserInfoKey) -> String {
+    package func entryUserInfoValue(_ id: LogEntry.UserInfoKey) -> String {
         dataObserver.entryUserInfoValues[id]!
     }
     
-    package func entryCreatedAt(_ id: ID) -> Date {
+    package func entryCreatedAt(_ id: LogEntry.ID) -> Date {
         id.createdAt
     }
     
@@ -170,7 +134,7 @@ private extension AppLoggerViewModel {
         .store(in: &cancellables)
     }
     
-    func sortEntries(_ entries: [ID], by sorting: Sorting) -> [ID] {
+    func sortEntries(_ entries: [LogEntry.ID], by sorting: LogEntry.Sorting) -> [LogEntry.ID] {
         switch sorting {
         case .ascending: entries
         case .descending: entries.reversed()
@@ -188,7 +152,7 @@ private extension AppLoggerViewModel {
         }
     }
     
-    func filterEntries(_ entries: [ID], with filters: Set<Filter>) -> [ID] {
+    func filterEntries(_ entries: [LogEntry.ID], with filters: Set<Filter>) -> [LogEntry.ID] {
         var result = entries
         
         if !filters.isEmpty {
@@ -200,16 +164,16 @@ private extension AppLoggerViewModel {
         return result
     }
     
-    func filterEntry(_ id: ID, with filters: Set<Filter>) -> Bool {
-        var source: Source {
+    func filterEntry(_ id: LogEntry.ID, with filters: Set<Filter>) -> Bool {
+        var source: LogEntry.Source {
             dataObserver.entrySources[id]!
         }
         
-        var category: Category {
+        var category: LogEntry.Category {
             dataObserver.entryCategories[id]!
         }
         
-        var content: Content {
+        var content: LogEntry.Content {
             dataObserver.entryContents[id]!
         }
         
@@ -259,10 +223,10 @@ private extension String {
 }
 
 private extension UserDefaults {
-    var sorting: Sorting {
+    var sorting: LogEntry.Sorting {
         get {
             let rawValue = integer(forKey: "AppLogger.sorting")
-            return Sorting(rawValue: rawValue) ?? .descending
+            return LogEntry.Sorting(rawValue: rawValue) ?? .descending
         }
         set {
             set(newValue.rawValue, forKey: "AppLogger.sorting")

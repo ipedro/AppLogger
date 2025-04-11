@@ -1,43 +1,17 @@
-//  Copyright (c) 2025 Pedro Almeida
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in all
-//  copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//  SOFTWARE.
-
-import class Combine.CurrentValueSubject
-import protocol SwiftUI.ObservableObject
-import struct Models.Category
-import struct Models.Content
-import struct Models.DynamicColor
-import struct Models.ID
-import struct Models.Source
-import struct Models.UserInfo
-import struct Models.UserInfoKey
+import Combine
+import Models
+import SwiftUI
 
 package final class DataObserver: @unchecked Sendable {
     package init(
-        allCategories: [Category] = [],
-        allEntries: [ID] = [],
-        allSources: [Source] = [],
-        entryCategories: [ID : Category] = [:],
-        entryContents: [ID : Content] = [:],
-        entrySources: [ID : Source] = [:],
-        entryUserInfos: [ID: UserInfo?] = [:],
-        sourceColors: [Source.ID: DynamicColor] = [:]
+        allCategories: [LogEntry.Category] = [],
+        allEntries: [LogEntry.ID] = [],
+        allSources: [LogEntry.Source] = [],
+        entryCategories: [LogEntry.ID : LogEntry.Category] = [:],
+        entryContents: [LogEntry.ID : LogEntry.Content] = [:],
+        entrySources: [LogEntry.ID : LogEntry.Source] = [:],
+        entryUserInfos: [LogEntry.ID: LogEntry.UserInfo?] = [:],
+        sourceColors: [LogEntry.Source.ID: DynamicColor] = [:]
     ) {
         self.allCategories = CurrentValueSubject(allCategories)
         self.allEntries = CurrentValueSubject(allEntries)
@@ -59,29 +33,29 @@ package final class DataObserver: @unchecked Sendable {
     }
     
     /// A published array of log entry IDs from the data store.
-    package let allEntries: CurrentValueSubject<[ID], Never>
+    package let allEntries: CurrentValueSubject<[LogEntry.ID], Never>
     
     /// An array holding all log entry categories present in the store.
-    package internal(set) var allCategories: CurrentValueSubject<[Category], Never>
+    package internal(set) var allCategories: CurrentValueSubject<[LogEntry.Category], Never>
     
     /// An array holding all log entry sources present in the store.
-    package internal(set) var allSources: CurrentValueSubject<[Source], Never>
+    package internal(set) var allSources: CurrentValueSubject<[LogEntry.Source], Never>
     
     /// A dictionary mapping log entry IDs to their corresponding category.
-    package internal(set) var entryCategories: [ID: Category]
+    package internal(set) var entryCategories: [LogEntry.ID: LogEntry.Category]
     
     /// A dictionary mapping log entry IDs to their corresponding content.
-    package internal(set) var entryContents: [ID: Content]
+    package internal(set) var entryContents: [LogEntry.ID: LogEntry.Content]
     
     /// A dictionary mapping log entry IDs to their corresponding source.
-    package internal(set) var entrySources: [ID: Source]
+    package internal(set) var entrySources: [LogEntry.ID: LogEntry.Source]
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
-    package internal(set) var entryUserInfoKeys = [ID: [UserInfoKey]]()
+    package internal(set) var entryUserInfoKeys = [LogEntry.ID: [LogEntry.UserInfoKey]]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
-    package internal(set) var entryUserInfoValues = [UserInfoKey: String]()
+    package internal(set) var entryUserInfoValues = [LogEntry.UserInfoKey: String]()
     
     /// A dictionary mapping log source IDs to their corresponding color.
-    package internal(set) var sourceColors = [Source.ID: DynamicColor]()
+    package internal(set) var sourceColors = [LogEntry.Source.ID: DynamicColor]()
 }

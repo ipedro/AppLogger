@@ -1,36 +1,9 @@
-//  Copyright (c) 2022 Pedro Almeida
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in all
-//  copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//  SOFTWARE.
-
+import Data
+import Models
 import SwiftUI
-import class Data.AppLoggerViewModel
-import class Data.DataObserver
-import enum Models.Mock
-import struct Models.Category
-import struct Models.Content
-import struct Models.DynamicColor
-import struct Models.ID
-import struct Models.Source
-import struct Models.UserInfoKey
 
 struct LogEntryView: View {
-    let id: ID
+    let id: LogEntry.ID
     
     @Environment(\.colorScheme)
     private var colorScheme
@@ -75,7 +48,7 @@ struct LogEntryView: View {
 
 #if DEBUG
 extension LogEntryView {
-    init(mock: Mock) {
+    init(mock: LogEntry.Mock) {
         let entry = mock.entry()
         self.id = entry.id
     }
@@ -83,7 +56,7 @@ extension LogEntryView {
 #endif
 
 #Preview {
-    let entry = Mock.socialLogin.entry()
+    let entry = LogEntry.Mock.socialLogin.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)
@@ -103,7 +76,7 @@ extension LogEntryView {
 }
 
 #Preview {
-    let entry = Mock.googleAnalytics.entry()
+    let entry = LogEntry.Mock.googleAnalytics.entry()
     
     ScrollView {
         LogEntryView(id: entry.id)

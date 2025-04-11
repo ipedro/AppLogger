@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Models.ActivityItem
+import Models
 
 extension View {
     /// Presents an activity sheet when the associated `ActivityItem` is present

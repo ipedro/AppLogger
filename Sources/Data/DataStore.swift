@@ -1,31 +1,4 @@
-//  Copyright (c) 2025 Pedro Almeida
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in all
-//  copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//  SOFTWARE.
-
-import struct Models.Category
-import struct Models.Content
-import struct Models.DynamicColor
-import struct Models.ID
-import struct Models.LogEntry
-import struct Models.Source
-import struct Models.UserInfo
-import struct Models.UserInfoKey
+import Models
 
 /// An actor that handles asynchronous storage and management of log entries.
 /// It indexes log entries by their unique IDs and tracks associated metadata such as categories, sources, and content.
@@ -34,31 +7,31 @@ package actor DataStore {
     
     weak private var observer: DataObserver?
     
-    private var sourceColorGenerator = DynamicColorGenerator<Source>()
+    private var sourceColorGenerator = DynamicColorGenerator<LogEntry.Source>()
     
     /// A reactive subject that holds an array of log entry IDs.
-    private var allEntries = Set<ID>()
+    private var allEntries = Set<LogEntry.ID>()
     
     /// An array holding all log entry categories present in the store.
-    private var allCategories = Set<Category>()
+    private var allCategories = Set<LogEntry.Category>()
     
     /// An array holding all log entry sources present in the store.
-    private var allSources = Set<Source>()
+    private var allSources = Set<LogEntry.Source>()
     
     /// A dictionary mapping log entry IDs to their corresponding category.
-    private var entryCategories = [ID: Category]()
+    private var entryCategories = [LogEntry.ID: LogEntry.Category]()
     
     /// A dictionary mapping log entry IDs to their corresponding content.
-    private var entryContents = [ID: Content]()
+    private var entryContents = [LogEntry.ID: LogEntry.Content]()
     
     /// A dictionary mapping log entry IDs to their corresponding source.
-    private var entrySources = [ID: Source]()
+    private var entrySources = [LogEntry.ID: LogEntry.Source]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
-    private var entryUserInfoKeys = [ID: [UserInfoKey]]()
+    private var entryUserInfoKeys = [LogEntry.ID: [LogEntry.UserInfoKey]]()
     
     /// A dictionary mapping log entry IDs to their corresponding userInfo values.
-    private var entryUserInfoValues = [UserInfoKey: String]()
+    private var entryUserInfoValues = [LogEntry.UserInfoKey: String]()
     
     package func makeObserver() -> DataObserver {
         let observer = DataObserver()
@@ -128,13 +101,13 @@ package actor DataStore {
     }
 }
 
-extension UserInfo {
-    func denormalize(id logID: ID) -> (keys: [UserInfoKey], values: [UserInfoKey: String]) {
-        var keys = [UserInfoKey]()
-        var values = [UserInfoKey: String]()
+extension LogEntry.UserInfo {
+    func denormalize(id logID: LogEntry.ID) -> (keys: [LogEntry.UserInfoKey], values: [LogEntry.UserInfoKey: String]) {
+        var keys = [LogEntry.UserInfoKey]()
+        var values = [LogEntry.UserInfoKey: String]()
         
         for (key, value) in storage {
-            let infoID = UserInfoKey(id: logID, key: key)
+            let infoID = LogEntry.UserInfoKey(id: logID, key: key)
             keys.append(infoID)
             values[infoID] = value
         }
