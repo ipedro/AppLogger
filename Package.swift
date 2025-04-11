@@ -67,7 +67,7 @@ let package = Package(
                 "Data",
                 "Models",
             ]
-        )
+        ),
     ],
     swiftLanguageModes: [.v5, .v6]
 )

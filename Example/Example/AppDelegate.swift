@@ -1,5 +1,5 @@
-import VisualLogger
 import UIKit
+import VisualLogger
 import XCGLogger
 
 let log = XCGLogger.default

@@ -69,7 +69,7 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
         info = S.logEntryInfo
         name = Self.cleanName(S.logEntryName)
     }
-    
+
     /// Initializes a new instance of `LogEntrySource` from a source conforming to `LogEntrySourceProtocol`.
     ///
     /// - Parameter source: A type conforming to `LogEntrySourceProtocol`.

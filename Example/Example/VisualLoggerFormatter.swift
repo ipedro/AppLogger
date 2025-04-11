@@ -1,6 +1,6 @@
-import VisualLogger
 import Foundation
 import UIKit
+import VisualLogger
 import XCGLogger
 
 struct VisualLoggerFormatter: LogFormatterProtocol {

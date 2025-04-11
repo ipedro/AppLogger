@@ -1,5 +1,5 @@
-import VisualLogger
 import UIKit
+import VisualLogger
 
 class ViewController: UIViewController {
     private var errorCount = 0

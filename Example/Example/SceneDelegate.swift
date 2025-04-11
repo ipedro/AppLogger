@@ -1,5 +1,5 @@
-import VisualLogger
 import UIKit
+import VisualLogger
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?

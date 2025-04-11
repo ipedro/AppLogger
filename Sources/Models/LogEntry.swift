@@ -90,7 +90,7 @@ public extension LogEntry {
         self.content = content
         self.userInfo = LogEntryUserInfo(userInfo)
     }
-    
+
     /// Creates a new instance of LogEntry with the given source, category, and content.
     ///
     /// - Parameters:
