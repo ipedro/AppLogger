@@ -27,10 +27,13 @@ struct FiltersDrawer: View {
     @EnvironmentObject
     private var viewModel: AppLoggerViewModel
     
+    @Environment(\.spacing)
+    private var spacing
+    
     var body: some View {
-        VStack(spacing: .zero) {
+        VStack(spacing: spacing) {
             SearchBarView(searchQuery: $viewModel.searchQuery)
-                .padding(.horizontal)
+                .padding(.horizontal, spacing * 2)
             
             if !viewModel.categories.isEmpty {
                 FiltersRow(
@@ -49,8 +52,10 @@ struct FiltersDrawer: View {
                 .animation(.snappy, value: viewModel.sources)
             }
         }
+        .font(.footnote)
+        .padding(.vertical, spacing)
         .background(.background)
-        .safeAreaInset(edge: .bottom, content: Divider.init)
+        .safeAreaInset(edge: .bottom, spacing: .zero, content: Divider.init)
     }
 }
 
@@ -58,8 +63,12 @@ struct FiltersDrawer: View {
     FiltersDrawer()
         .environmentObject(
             AppLoggerViewModel(
-                dataObserver: DataObserver(),
-                dismissAction: {}
+                dataObserver: DataObserver(
+//                    allCategories: ["test"],
+//                    allSources: ["test"]
+                ),
+                dismissAction: {
+                }
             )
         )
 }

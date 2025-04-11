@@ -30,7 +30,7 @@ struct LogEntryContentView: View {
     private var spacing
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: spacing) {
             Text(content.function)
                 .font(.callout.bold())
                 .minimumScaleFactor(0.85)
@@ -38,7 +38,7 @@ struct LogEntryContentView: View {
                 .multilineTextAlignment(.leading)
             
             if let message = content.message, !message.isEmpty {
-                HStack(alignment: .top) {
+                HStack(alignment: .top, spacing: spacing) {
                     if let icon = category.emoji {
                         Text(String(icon))
                     }
@@ -47,10 +47,10 @@ struct LogEntryContentView: View {
                 }
                 .font(.footnote)
                 .foregroundStyle(.tint)
-                .padding(spacing * 1.5)
+                .padding(spacing)
                 .background(
                     .tint.opacity(0.1),
-                    in: RoundedRectangle(cornerRadius: spacing * 2)
+                    in: RoundedRectangle(cornerRadius: spacing * 1.5)
                 )
             }
         }

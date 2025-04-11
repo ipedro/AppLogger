@@ -37,7 +37,6 @@ struct FilterView: View {
         Toggle(data.displayName, isOn: $isOn)
             .clipShape(shape)
             .toggleStyle(.button)
-            .font(.footnote)
             .buttonStyle(.borderedProminent)
             .background(accentColor.opacity(0.08), in: shape)
     }

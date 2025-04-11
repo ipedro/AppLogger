@@ -92,7 +92,10 @@ extension LogEntry {
             LogEntry(
                 category: Category("👔", "Social Media"),
                 source: Source("Facebook", .sdk(version: "12.2.1")),
-                content: "Any Social Login",
+                content: Content(
+                    function: "Any Social Login",
+                    message: "User logged in"
+                ),
                 userInfo: [
                     "custom_event": "1",
                     "environment": "dev",

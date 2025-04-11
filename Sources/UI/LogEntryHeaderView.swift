@@ -37,6 +37,7 @@ struct LogEntryHeaderView: View {
             Image(systemName: "chevron.forward")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
             
             LogEntrySourceView(data: source)
                 .foregroundStyle(.tint)
@@ -44,20 +45,20 @@ struct LogEntryHeaderView: View {
             Spacer()
             
             Text(createdAt, style: .time)
-                .font(.caption)
         }
         .foregroundStyle(.secondary)
         .overlay(alignment: .leading) {
             Circle()
                 .fill(.tint)
-                .frame(width: spacing)
-                .offset(x: -spacing * 1.5)
+                .frame(width: spacing * 0.75)
+                .offset(x: -spacing * 1.25)
         }
-        .font(.footnote.bold())
+        .font(.footnote)
     }
 }
 
-#Preview {
+@available(iOS 17, *)
+#Preview(traits: .sizeThatFitsLayout) {
     LogEntryHeaderView(
         source: "Source",
         category: "Category",

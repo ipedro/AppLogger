@@ -51,7 +51,6 @@ struct FiltersRow: View {
                     }
                 } header: {
                     Text(title)
-                        .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(EdgeInsets(
                             top: spacing,
@@ -63,7 +62,6 @@ struct FiltersRow: View {
                 }
             }
             .padding(.trailing, spacing * 2)
-            .padding(.vertical, spacing)
         }
         .fixedSize(horizontal: false, vertical: true)
     }

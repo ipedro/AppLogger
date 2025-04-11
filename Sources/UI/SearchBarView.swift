@@ -57,7 +57,6 @@ struct SearchBarView: View {
             .clipShape(Capsule())
         }
         .animation(.interactiveSpring, value: showDismiss)
-        .padding(.vertical, spacing)
     }
     
     private var showDismiss: Bool {
