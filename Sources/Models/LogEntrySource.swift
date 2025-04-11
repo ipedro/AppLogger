@@ -21,16 +21,16 @@ import SwiftUI
 public struct LogEntrySource: Hashable, Identifiable, Sendable {
     /// A unique identifier derived from the log source name.
     public var id: String { name }
-    
+
     /// An optional emoji to visually represent the source.
     public let emoji: Character?
-    
+
     /// The cleaned name identifier for the log source.
     public let name: String
-    
+
     /// Additional contextual information about the log source.
     public let info: LogEntrySourceInfo?
-    
+
     /// Initializes a new instance of `LogEntrySource` with a name and optional info.
     ///
     /// - Parameters:
@@ -44,7 +44,7 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
         self.info = info
         self.name = Self.cleanName(name)
     }
-    
+
     /// Initializes a new instance of `LogEntrySource` with an emoji, name, and optional info.
     ///
     /// - Parameters:
@@ -60,16 +60,16 @@ public struct LogEntrySource: Hashable, Identifiable, Sendable {
         self.info = info
         self.name = Self.cleanName(name)
     }
-    
+
     /// Initializes a new instance of `LogEntrySource` from a source conforming to `LogEntrySourceProtocol`.
     ///
     /// - Parameter source: An object conforming to `LogEntrySourceProtocol`.
-    package init<S>(_ source: S) where S: LogEntrySourceProtocol {
+    package init<S>(_: S) where S: LogEntrySourceProtocol {
         emoji = S.logEntryEmoji
         info = S.logEntryInfo
         name = Self.cleanName(S.logEntryName)
     }
-    
+
     /// Returns a cleaned version of the provided name by removing a ".swift" suffix if present.
     ///
     /// - Parameter name: The original source name.

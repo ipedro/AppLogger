@@ -22,10 +22,10 @@ import Foundation
 public enum LogEntrySourceInfo: Hashable, Sendable {
     /// Indicates the log originated from a specific line in a source file
     case file(line: Int)
-    
+
     /// Indicates the log came from an SDK with a specific version
     case sdk(version: String)
-    
+
     /// Indicates the log is associated with a specific error code
     case error(code: Int)
 }

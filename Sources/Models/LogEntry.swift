@@ -83,7 +83,7 @@ public extension LogEntry {
         source: S,
         content: LogEntryContent,
         userInfo: [String: Any]? = nil
-    ) where S:LogEntrySourceProtocol {
+    ) where S: LogEntrySourceProtocol {
         id = LogEntryID(date: date)
         self.source = LogEntrySource(source)
         self.category = category

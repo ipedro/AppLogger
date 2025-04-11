@@ -47,7 +47,7 @@ final class Coordinator: NSObject {
         dataObserver: dataObserver,
         dismissAction: dismissAction
     )
-    
+
     /// Presents the logging interface modally.
     ///
     /// This method creates and presents the appropriate view controller based on the current iOS version.
@@ -83,14 +83,14 @@ final class Coordinator: NSObject {
             completion: completion
         )
     }
-    
+
     /// Handles the dismissal of the presented view controller.
     ///
     /// This method is invoked by the view model to trigger the dismissal action.
     private func dismissAction() {
         dismiss(viewController)
     }
-    
+
     /// Creates and returns the view controller for presenting the logging interface.
     ///
     /// This method selects the appropriate SwiftUI view presentation based on the iOS version.
@@ -104,14 +104,14 @@ final class Coordinator: NSObject {
             UIHostingController(rootView: makeNavigationView())
         }
     }
-    
+
     /// Constructs and returns a SwiftUI view for navigation, supporting older iOS versions.
     ///
     /// - Returns: A SwiftUI view representing the navigation view.
     func makeNavigationView() -> some View {
         injectDependencies(AppLoggerView.navigationView())
     }
-    
+
     /// Constructs and returns a SwiftUI view using a navigation stack (iOS 16.0+).
     ///
     /// - Returns: A SwiftUI view representing the navigation stack.
@@ -119,7 +119,7 @@ final class Coordinator: NSObject {
     func makeNavigationStack() -> some View {
         injectDependencies(AppLoggerView.navigationStack())
     }
-    
+
     /// Injects the necessary dependencies into the provided SwiftUI view.
     ///
     /// - Parameter view: A SwiftUI view that requires dependency injection.
@@ -136,7 +136,7 @@ extension Coordinator: UISheetPresentationControllerDelegate {
     /// Notifies the delegate when the presentation controller has dismissed the view.
     ///
     /// - Parameter _: The presentation controller that was dismissed.
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+    func presentationControllerDidDismiss(_: UIPresentationController) {
         // Presentation has ended; clear the view controller reference.
         dismiss(nil)
     }

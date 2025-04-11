@@ -15,7 +15,7 @@
 public struct LogEntryContent: Sendable {
     /// The function or method name where the log was created.
     public let function: String
-    
+
     /// Optional additional context or message.
     public let message: String?
 

@@ -6,16 +6,16 @@ import SwiftUI
 public struct AppLoggerConfiguration: Sendable {
     /// The accent color used throughout the logging interface.
     public var accentColor: Color
-    
+
     /// The color scheme for the interface, or `nil` to use the system default.
     public var colorScheme: ColorScheme?
-    
+
     /// Messages to display when the log is empty or search results return no matches.
     public var emptyReasons: EmptyReasons = .init()
-    
+
     /// The icons used throughout the logging interface.
     public var icons: Icons = .init()
-    
+
     /// The title displayed in the navigation bar of the logging interface.
     public var navigationTitle: String
 
@@ -47,7 +47,7 @@ public extension AppLoggerConfiguration {
     struct EmptyReasons: Sendable {
         /// The message displayed when there are no log entries.
         public var empty: String
-        
+
         /// The message displayed when a search returns no matching results.
         public var searchResults: String
 
@@ -69,22 +69,22 @@ public extension AppLoggerConfiguration {
     struct Icons: Sendable {
         /// The icon for dismissing the log interface.
         public var dismiss: String
-        
+
         /// The icon for exporting log entries.
         public var export: String
-        
+
         /// The icon for turning filters off.
         public var filtersOff: String
-        
+
         /// The icon for turning filters on.
         public var filtersOn: String
-        
+
         /// The icon for sorting in ascending order.
         public var sortAscending: String
-        
+
         /// The icon for sorting in descending order.
         public var sortDescending: String
-        
+
         /// Initializes custom icons for actions.
         ///
         /// - Parameters:
