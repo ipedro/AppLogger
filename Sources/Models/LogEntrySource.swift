@@ -115,7 +115,7 @@ extension LogEntrySource: CustomStringConvertible {
 }
 
 extension LogEntrySource: FilterConvertible {
-    package static var filterKind: LogFilter.Kind { .source }
+    package static var filterKind: LogFilterKind { .source }
     package static var filterDisplayName: KeyPath<LogEntrySource, String> { \.description }
     package static var filterCriteria: KeyPath<LogEntrySource, String> { \.name }
     package static var filterCriteriaOptional: KeyPath<LogEntrySource, String?>? { nil }

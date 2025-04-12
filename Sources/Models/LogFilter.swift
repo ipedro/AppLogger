@@ -8,49 +8,14 @@ import Foundation
 /// - The actual search query
 /// - A human-readable display name
 package struct LogFilter: Hashable, Sendable {
-    package let kind: Kind
+    package let kind: LogFilterKind
     package let query: String
     package let displayName: String
 
-    init(_ kind: Kind, query: String, displayName: String) {
+    init(_ kind: LogFilterKind, query: String, displayName: String) {
         self.query = query
         self.kind = kind
         self.displayName = displayName
-    }
-}
-
-package extension LogFilter {
-    /// Represents the different aspects of a log entry that can be filtered.
-    ///
-    /// `Kind` is implemented as an `OptionSet`, allowing multiple
-    /// filter criteria to be combined using bitwise operations.
-    struct Kind: Sendable, CustomStringConvertible, Hashable, OptionSet {
-        package let rawValue: Int8
-
-        package var description: String {
-            var components = [String]()
-            if contains(.source) { components.append("source") }
-            if contains(.category) { components.append("category") }
-            if contains(.content) { components.append("content") }
-            if contains(.userInfo) { components.append("userInfo") }
-            return components.joined(separator: ", ")
-        }
-
-        package init(rawValue: Int8) {
-            self.rawValue = rawValue
-        }
-
-        package static let source = Kind(rawValue: 1 << 0)
-        package static let category = Kind(rawValue: 1 << 1)
-        package static let content = Kind(rawValue: 1 << 2)
-        package static let userInfo = Kind(rawValue: 1 << 3)
-
-        package static let all: Kind = [
-            .source,
-            .category,
-            .content,
-            .userInfo,
-        ]
     }
 }
 
@@ -115,7 +80,7 @@ package protocol Filterable {
 /// - Which properties should be considered for filtering
 package protocol FilterConvertible: Filterable {
     static var filterDisplayName: KeyPath<Self, String> { get }
-    static var filterKind: LogFilter.Kind { get }
+    static var filterKind: LogFilterKind { get }
 }
 
 package extension FilterConvertible {
@@ -131,8 +96,9 @@ package extension FilterConvertible {
 // MARK: - Helpers
 
 extension String: FilterConvertible {
-    package static var filterKind: LogFilter.Kind { .all }
-    package static var filterDisplayName: KeyPath<String, String> { \.self }
+    private var inQuotes: String { "\"\(self)\"" }
+    package static var filterKind: LogFilterKind { .all }
+    package static var filterDisplayName: KeyPath<String, String> { \.inQuotes }
     package static var filterCriteria: KeyPath<String, String> { \.self }
     package static var filterCriteriaOptional: KeyPath<String, String?>? { nil }
 }
