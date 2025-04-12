@@ -39,7 +39,7 @@ package struct LogEntriesList: View {
                     FiltersDrawer()
                         .compositingGroup()
                         .opacity(showFilters ? 1 : 0)
-                        .frame(height: showFilters ? nil : 1, alignment: .top)
+                        .frame(height: showFilters ? nil : 10, alignment: .top)
                         .clipped()
                 }
             }
