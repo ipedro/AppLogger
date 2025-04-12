@@ -5,34 +5,37 @@ import SwiftUI
 
 @MainActor
 package final class VisualLoggerViewModel: ObservableObject {
-    package let dismissAction: @MainActor () -> Void
+    package typealias DismissAction = @MainActor () -> Void
+    
+    package let dismissAction: DismissAction
 
     package let dataObserver: DataObserver
 
     private var cancellables = Set<AnyCancellable>()
 
     // Subjects
-
-    package let searchQuerySubject = CurrentValueSubject<String, Never>("")
-
-    package let showFilterDrawerSubject = CurrentValueSubject<Bool, Never>(UserDefaults.standard.showFilters)
-
-    package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(UserDefaults.standard.sorting)
-
+    
+    package let activeFilterScopeSubject = CurrentValueSubject<[String], Never>([])
+    
     package let activeFiltersSubject = CurrentValueSubject<Set<LogFilter>, Never>([])
+    
+    package let categoryFiltersSubject = CurrentValueSubject<[LogFilter], Never>([])
+    
+    package let currentEntriesSubject = CurrentValueSubject<[LogEntryID], Never>([])
+    
+    package let customActionsSubject = CurrentValueSubject<[VisualLoggerAction], Never>([])
+    
+    package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(UserDefaults.standard.sorting)
+    
+    package let searchQuerySubject = CurrentValueSubject<String, Never>("")
+    
+    package let showFilterDrawerSubject = CurrentValueSubject<Bool, Never>(UserDefaults.standard.showFilters)
+    
+    package let sourceFiltersSubject = CurrentValueSubject<[LogFilter], Never>([])
 
-    package var sourcesSubject = CurrentValueSubject<[LogFilter], Never>([])
-
-    package var categoriesSubject = CurrentValueSubject<[LogFilter], Never>([])
-
-    package var entriesSubject = CurrentValueSubject<[LogEntryID], Never>([])
-
-    package var activeFilterScopeSubject = CurrentValueSubject<[String], Never>([])
-
-    package init(dataObserver: DataObserver, dismissAction: @escaping @MainActor () -> Void) {
+    package init(dataObserver: DataObserver, dismissAction: @escaping DismissAction) {
         self.dataObserver = dataObserver
         self.dismissAction = dismissAction
-
         setupPublishers()
     }
 }
@@ -79,7 +82,7 @@ private extension VisualLoggerViewModel {
         }
         .receive(on: RunLoop.main)
         .sink { [unowned self] in
-            categoriesSubject.send($0)
+            categoryFiltersSubject.send($0)
         }
         .store(in: &cancellables)
 
@@ -93,7 +96,7 @@ private extension VisualLoggerViewModel {
         }
         .receive(on: RunLoop.main)
         .sink { [unowned self] in
-            sourcesSubject.send($0)
+            sourceFiltersSubject.send($0)
         }
         .store(in: &cancellables)
 
@@ -125,6 +128,7 @@ private extension VisualLoggerViewModel {
         .receive(on: RunLoop.main)
         .map { [unowned self] entries, query, filters, sorting in
             UserDefaults.standard.sorting = sorting
+            
             var result = filterEntries(entries, with: filters)
             if !query.isEmpty {
                 result = filterEntries(result, with: [query.filter])
@@ -132,9 +136,17 @@ private extension VisualLoggerViewModel {
             return result.sort(by: sorting)
         }
         .sink { [unowned self] in
-            entriesSubject.send($0)
+            currentEntriesSubject.send($0)
         }
         .store(in: &cancellables)
+        
+        // Custom actions
+        dataObserver.customActions
+            .receive(on: RunLoop.main)
+            .sink { [unowned self] in
+                customActionsSubject.send($0)
+            }
+            .store(in: &cancellables)
 
         // Persisting showFilters to UserDefaults
         showFilterDrawerSubject

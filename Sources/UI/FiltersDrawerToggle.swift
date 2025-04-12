@@ -11,9 +11,7 @@ struct FiltersDrawerToggle: View {
     var body: some View {
         let _ = Self._debugPrintChanges()
         Button {
-            withAnimation(.snappy) {
-                isOn.toggle()
-            }
+            isOn.toggle()
         } label: {
             Image(systemName: isOn ? icons.filtersOn : icons.filtersOff)
                 .badge(count: activeFilters)

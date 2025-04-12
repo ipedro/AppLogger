@@ -16,14 +16,15 @@ struct SortingButton: View {
 
     var body: some View {
         let _ = Self._debugPrintChanges()
-        Menu {
-            Picker("Sorting", selection: $selection) {
-                ForEach(options, id: \.rawValue) { option in
-                    Label(option.description, systemImage: icon(option)).tag(option)
-                }
+        Picker(selection: $selection) {
+            ForEach(options, id: \.rawValue) { option in
+                Label(
+                    option.description,
+                    systemImage: icon(option)
+                ).tag(option)
             }
         } label: {
-            Image(systemName: icon)
+            Label("Sorting", systemImage: icon)
         }
         .symbolRenderingMode(.hierarchical)
         .onReceive(viewModel.entriesSortingSubject) {

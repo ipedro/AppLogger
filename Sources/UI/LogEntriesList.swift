@@ -34,20 +34,17 @@ package struct LogEntriesList: View {
                             Divider()
                         }
                     }
+                    .animation(.snappy, value: data)
                 } header: {
-                    if showFilters {
-                        FiltersDrawer().transition(
-                            .move(edge: .top)
-                                .combined(with: .opacity)
-                        )
-                    }
+                    FiltersDrawer()
+                        .compositingGroup()
+                        .opacity(showFilters ? 1 : 0)
+                        .frame(height: showFilters ? nil : 1, alignment: .top)
+                        .clipped()
                 }
             }
             .padding(.bottom, 50)
-            .animation(.snappy, value: data)
         }
-        .clipped()
-        .ignoresSafeArea(.container, edges: .bottom)
         .background {
             if data.isEmpty {
                 Text(emptyReason)
@@ -58,6 +55,7 @@ package struct LogEntriesList: View {
                     .padding(.top, showFilters ? 150 : 0)
             }
         }
+        .animation(.snappy, value: showFilters)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(configuration.navigationTitle)
         .toolbar {
@@ -70,7 +68,7 @@ package struct LogEntriesList: View {
                 content: trailingNavigationBarItems
             )
         }
-        .onReceive(viewModel.entriesSubject) {
+        .onReceive(viewModel.currentEntriesSubject) {
             entries = $0
         }
         .onReceive(viewModel.showFilterDrawerSubject) {
@@ -99,8 +97,7 @@ package struct LogEntriesList: View {
                 activeFilters: activeFilterScope.count
             )
 
-            SortingButton()
-                .disabled(entries.isEmpty)
+            ActionsMenu()
         }
     }
 

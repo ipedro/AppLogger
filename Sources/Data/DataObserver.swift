@@ -3,34 +3,9 @@ import Models
 import SwiftUI
 
 package final class DataObserver: @unchecked Sendable {
-    package init(
-        allCategories: [LogEntryCategory] = [],
-        allEntries: [LogEntryID] = [],
-        allSources: [LogEntrySource] = [],
-        entryCategories: [LogEntryID: LogEntryCategory] = [:],
-        entryContents: [LogEntryID: LogEntryContent] = [:],
-        entrySources: [LogEntryID: LogEntrySource] = [:],
-        entryUserInfos: [LogEntryID: LogEntryUserInfo?] = [:],
-        sourceColors: [LogEntrySource.ID: DynamicColor] = [:],
-    ) {
-        self.allCategories = CurrentValueSubject(allCategories)
-        self.allEntries = CurrentValueSubject(allEntries)
-        self.allSources = CurrentValueSubject(allSources)
-        self.entryCategories = entryCategories
-        self.entryContents = entryContents
-        self.entrySources = entrySources
-        self.sourceColors = sourceColors
-
-        for (id, userInfo) in entryUserInfos {
-            guard let (keys, values) = userInfo?.denormalize(id: id) else {
-                continue
-            }
-            entryUserInfoKeys[id] = keys
-            for (key, value) in values {
-                entryUserInfoValues[key] = value
-            }
-        }
-    }
+    
+    /// A published array of custom actions.
+    let customActions: CurrentValueSubject<[VisualLoggerAction], Never>
 
     /// A published array of log entry IDs from the data store.
     let allEntries: CurrentValueSubject<[LogEntryID], Never>
@@ -58,11 +33,43 @@ package final class DataObserver: @unchecked Sendable {
 
     /// A dictionary mapping log source IDs to their corresponding color.
     private(set) var sourceColors = [LogEntrySource.ID: DynamicColor]()
+    
+    package init(
+        allCategories: [LogEntryCategory] = [],
+        allEntries: [LogEntryID] = [],
+        allSources: [LogEntrySource] = [],
+        customActions: [VisualLoggerAction] = [],
+        entryCategories: [LogEntryID: LogEntryCategory] = [:],
+        entryContents: [LogEntryID: LogEntryContent] = [:],
+        entrySources: [LogEntryID: LogEntrySource] = [:],
+        entryUserInfos: [LogEntryID: LogEntryUserInfo?] = [:],
+        sourceColors: [LogEntrySource.ID: DynamicColor] = [:],
+    ) {
+        self.allCategories = CurrentValueSubject(allCategories)
+        self.allEntries = CurrentValueSubject(allEntries)
+        self.allSources = CurrentValueSubject(allSources)
+        self.customActions = CurrentValueSubject(customActions)
+        self.entryCategories = entryCategories
+        self.entryContents = entryContents
+        self.entrySources = entrySources
+        self.sourceColors = sourceColors
+        
+        for (id, userInfo) in entryUserInfos {
+            guard let (keys, values) = userInfo?.denormalize(id: id) else {
+                continue
+            }
+            entryUserInfoKeys[id] = keys
+            for (key, value) in values {
+                entryUserInfoValues[key] = value
+            }
+        }
+    }
 
     func updateValues(
         allCategories: [LogEntryCategory],
         allEntries: [LogEntryID],
         allSources: [LogEntrySource],
+        customActions: [VisualLoggerAction],
         entryCategories: [LogEntryID: LogEntryCategory],
         entryContents: [LogEntryID: LogEntryContent],
         entrySources: [LogEntryID: LogEntrySource],
@@ -75,6 +82,7 @@ package final class DataObserver: @unchecked Sendable {
             self.allEntries.send(allEntries)
             self.allSources.send(allSources)
             self.allCategories.send(allCategories)
+            self.customActions.send(customActions)
         }
 
         self.entryCategories = entryCategories

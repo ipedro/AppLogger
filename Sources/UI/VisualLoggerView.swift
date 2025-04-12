@@ -45,6 +45,13 @@ package struct VisualLoggerView<Content>: View where Content: View {
         allCategories: Set(allEntries.map(\.category)).sorted(),
         allEntries: allEntries.map(\.id),
         allSources: allEntries.map(\.source),
+        customActions: [
+            VisualLoggerAction(
+                title: "Action",
+                image: nil,
+                handler: { _ in print("Action executed")
+                })
+        ],
         entryCategories: allEntries.valuesByID(\.category),
         entryContents: allEntries.valuesByID(\.content),
         entrySources: allEntries.valuesByID(\.source),

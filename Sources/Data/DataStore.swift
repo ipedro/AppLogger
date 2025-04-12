@@ -8,8 +8,11 @@ package actor DataStore {
     private weak var observer: DataObserver?
 
     private var sourceColorGenerator = DynamicColorGenerator<LogEntrySource>()
+    
+    /// An array holding all custom actions.
+    private var customActions = Set<VisualLoggerAction>()
 
-    /// A reactive subject that holds an array of log entry IDs.
+    /// An array holding all log entry IDs.
     private var allEntries = Set<LogEntryID>()
 
     /// An array holding all log entry categories present in the store.
@@ -41,19 +44,26 @@ package actor DataStore {
         }
         return observer
     }
+    
+    package func addAction(_ action: VisualLoggerAction) {
+        customActions.insert(action)
+        updateObserver()
+    }
+    
+    package func removeAction(_ action: VisualLoggerAction) {
+        customActions.remove(action)
+        updateObserver()
+    }
 
     /// Adds a log entry to the DataStore.
     ///
     /// - Parameter logEntry: The log entry to add.
-    /// - Returns: A Boolean indicating whether the log entry was successfully
-    /// added. Returns false if the log entry's ID already exists.
-    @discardableResult
-    package func addLogEntry(_ logEntry: LogEntry) -> Bool {
+    package func addLogEntry(_ logEntry: LogEntry) {
         let id = logEntry.id
 
         // O(1) lookup for duplicates.
         guard allEntries.insert(id).inserted else {
-            return false
+            return
         }
 
         defer {
@@ -76,8 +86,6 @@ package actor DataStore {
                 entryUserInfoValues[key] = value
             }
         }
-
-        return true
     }
 
     private func updateObserver() {
@@ -89,6 +97,7 @@ package actor DataStore {
             allCategories: allCategories.sorted(),
             allEntries: allEntries.sorted(),
             allSources: allSources.sorted(),
+            customActions: customActions.sorted(),
             entryCategories: entryCategories,
             entryContents: entryContents,
             entrySources: entrySources,
