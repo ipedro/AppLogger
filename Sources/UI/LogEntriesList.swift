@@ -83,7 +83,7 @@ package struct LogEntriesList: View {
     }
 
     private var emptyReason: String {
-        if searchQuery.isEmpty {
+        if activeFilterScope.isEmpty {
             configuration.emptyReasons.empty
         } else {
             configuration.emptyReasons.searchResults + ":\n\n\(activeFilterScope.joined(separator: ", "))"
