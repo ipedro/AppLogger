@@ -99,8 +99,8 @@ public extension VisualLoggerConfiguration {
             export: String = "square.and.arrow.up",
             filtersOff: String = "line.3.horizontal.decrease.circle",
             filtersOn: String = "line.3.horizontal.decrease.circle.fill",
-            sortAscending: String = "text.line.last.and.arrowtriangle.forward",
-            sortDescending: String = "text.line.first.and.arrowtriangle.forward"
+            sortAscending: String = "text.append",
+            sortDescending: String = "text.insert"
         ) {
             self.dismiss = dismiss
             self.export = export

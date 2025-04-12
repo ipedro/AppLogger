@@ -74,8 +74,8 @@ package struct DynamicColor: Sendable {
                         case .dark:
                             Components(
                                 hue: hue,
-                                saturation: max(0.4, saturation * 1.1),
-                                brightness: max(0.6, brightness * 1.5)
+                                saturation: max(0.4, saturation * 0.9),
+                                brightness: max(0.6, brightness * 1.7)
                             )
                         default:
                             Components(
