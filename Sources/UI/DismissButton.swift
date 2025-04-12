@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DismissButton: View {
-    var action: () -> Void
+    let action: () -> Void
 
     @Environment(\.configuration.icons.dismiss)
     private var icon

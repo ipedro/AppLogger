@@ -20,13 +20,10 @@ package struct VisualLoggerView<Content>: View where Content: View {
     private var preferredColorScheme
 
     @Environment(\.colorScheme)
-    private var colorScheme
+    private var currentColorScheme
 
     @Environment(\.configuration.accentColor)
     private var accentColor
-
-    @EnvironmentObject
-    private var viewModel: VisualLoggerViewModel
 
     private let content: Content
 
@@ -34,7 +31,7 @@ package struct VisualLoggerView<Content>: View where Content: View {
         let _ = Self._debugPrintChanges()
         content
             .tint(accentColor)
-            .colorScheme(preferredColorScheme ?? colorScheme)
+            .colorScheme(preferredColorScheme ?? currentColorScheme)
     }
 }
 

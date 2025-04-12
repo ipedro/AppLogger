@@ -6,10 +6,6 @@ struct LogEntryUserInfoRow: View {
     let offset: Int
     let id: LogEntryUserInfoKey
 
-    private var value: String {
-        viewModel.entryUserInfoValue(id)
-    }
-
     @Environment(\.spacing)
     private var spacing
 
@@ -41,9 +37,13 @@ struct LogEntryUserInfoRow: View {
             Color(uiColor: .systemGray6)
         }
     }
+    
+    private var valueString: String {
+        viewModel.entryUserInfoValue(id)
+    }
 
     private var valueText: some View {
-        LinkText(data: value, alignment: .trailing)
+        LinkText(data: valueString, alignment: .trailing)
             .foregroundStyle(.tint)
             .font(.system(.caption, design: .monospaced))
     }

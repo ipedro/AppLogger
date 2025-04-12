@@ -11,7 +11,7 @@ struct LogEntryUserInfoView: View {
     var body: some View {
         let _ = Self._debugPrintChanges()
         LazyVStack(spacing: .zero) {
-            ForEach(Array(ids.enumerated()), id: \.element) { @Sendable offset, id in
+            ForEach(Array(ids.enumerated()), id: \.element) { /*@Sendable*/ offset, id in
                 LogEntryUserInfoRow(offset: offset, id: id)
             }
         }

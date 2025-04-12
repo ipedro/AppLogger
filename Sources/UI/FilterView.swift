@@ -1,11 +1,7 @@
 import Models
 import SwiftUI
 
-struct FilterView: View, Equatable {
-    static func == (lhs: FilterView, rhs: FilterView) -> Bool {
-        lhs.data == rhs.data && lhs.isOn == rhs.isOn
-    }
-
+struct FilterView: View {
     let data: Filter
 
     @Binding var isOn: Bool
@@ -27,6 +23,20 @@ struct FilterView: View, Equatable {
             .background(accentColor.opacity(0.08), in: shape)
     }
 }
+
+#if swift(>=6.0)
+extension FilterView: @preconcurrency Equatable {
+    static func == (lhs: FilterView, rhs: FilterView) -> Bool {
+        lhs.data == rhs.data && lhs.isOn == rhs.isOn
+    }
+}
+#else
+extension FilterView: Equatable {
+    static func == (lhs: FilterView, rhs: FilterView) -> Bool {
+        lhs.data == rhs.data && lhs.isOn == rhs.isOn
+    }
+}
+#endif
 
 @available(iOS 17.0, *)
 #Preview {

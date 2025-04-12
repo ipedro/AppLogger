@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ExportButton: View {
-    var action: () -> Void
+    let action: () -> Void
 
     @Environment(\.configuration.icons.export)
     private var icon

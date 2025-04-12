@@ -2,7 +2,7 @@ import Models
 import SwiftUI
 
 struct FiltersRow: View {
-    var title: String
+    let title: String
 
     @Binding
     var selection: Set<Filter>
@@ -17,7 +17,7 @@ struct FiltersRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: spacing, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(data, id: \.self) { @Sendable filter in
+                    ForEach(data, id: \.self) { /*@Sendable*/ filter in
                         FilterView(
                             data: filter,
                             isOn: Binding {

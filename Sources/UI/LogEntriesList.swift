@@ -27,7 +27,7 @@ package struct LogEntriesList: View {
         ScrollView {
             LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(data, id: \.self) { @Sendable id in
+                    ForEach(data, id: \.self) { /*@Sendable*/ id in
                         LogEntryView(id: id)
 
                         if id != data.last {
