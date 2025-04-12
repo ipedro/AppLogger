@@ -10,13 +10,13 @@ struct FiltersDrawer: View {
     private var spacing
 
     @State
-    private var activeFilters: Set<Filter> = []
+    private var activeFilters: Set<LogFilter> = []
 
     @State
-    private var categories: [Filter] = []
+    private var categories: [LogFilter] = []
 
     @State
-    private var sources: [Filter] = []
+    private var sources: [LogFilter] = []
 
     var body: some View {
         let _ = Self._debugPrintChanges()

@@ -7,7 +7,7 @@ import Foundation
 /// - A specific type of filter (defined by `Kind`)
 /// - The actual search query
 /// - A human-readable display name
-package struct Filter: Hashable {
+package struct LogFilter: Hashable {
     package let kind: Kind
     package let query: String
     package let displayName: String
@@ -19,7 +19,7 @@ package struct Filter: Hashable {
     }
 }
 
-package extension Filter {
+package extension LogFilter {
     /// Represents the different aspects of a log entry that can be filtered.
     ///
     /// `Kind` is implemented as an `OptionSet`, allowing multiple
@@ -54,13 +54,13 @@ package extension Filter {
     }
 }
 
-extension Filter: Comparable {
-    package static func < (lhs: Filter, rhs: Filter) -> Bool {
+extension LogFilter: Comparable {
+    package static func < (lhs: LogFilter, rhs: LogFilter) -> Bool {
         lhs.query.localizedStandardCompare(rhs.query) == .orderedAscending
     }
 }
 
-extension Filter: ExpressibleByStringLiteral {
+extension LogFilter: ExpressibleByStringLiteral {
     package init(stringLiteral value: String) {
         query = value
         displayName = value
@@ -68,8 +68,8 @@ extension Filter: ExpressibleByStringLiteral {
     }
 }
 
-package extension Collection where Element == Filter {
-    func sort(by selection: Set<Filter>) -> [Filter] {
+package extension Collection where Element == LogFilter {
+    func sort(by selection: Set<LogFilter>) -> [LogFilter] {
         sorted { lhs, rhs in
             let lhsActive = selection.contains(lhs)
             let rhsActive = selection.contains(rhs)
@@ -102,10 +102,10 @@ package protocol Filterable {
     static var filterCriteriaOptional: KeyPath<Self, String?>? { get }
 }
 
-// MARK: - Filter Convertible
+// MARK: - LogFilter Convertible
 
 /// A protocol that extends `Filterable` to provide automatic conversion
-/// to `Filter` instances.
+/// to `LogFilter` instances.
 ///
 /// ## Discussion
 /// `FilterConvertible` streamlines the process of creating filters from
@@ -115,12 +115,12 @@ package protocol Filterable {
 /// - Which properties should be considered for filtering
 package protocol FilterConvertible: Filterable {
     static var filterDisplayName: KeyPath<Self, String> { get }
-    static var filterKind: Filter.Kind { get }
+    static var filterKind: LogFilter.Kind { get }
 }
 
 package extension FilterConvertible {
-    var filter: Filter {
-        Filter(
+    var filter: LogFilter {
+        LogFilter(
             Self.filterKind,
             query: self[keyPath: Self.filterCriteria],
             displayName: self[keyPath: Self.filterDisplayName]
@@ -131,14 +131,14 @@ package extension FilterConvertible {
 // MARK: - Helpers
 
 extension String: FilterConvertible {
-    package static var filterKind: Filter.Kind { .all }
+    package static var filterKind: LogFilter.Kind { .all }
     package static var filterDisplayName: KeyPath<String, String> { \.self }
     package static var filterCriteria: KeyPath<String, String> { \.self }
     package static var filterCriteriaOptional: KeyPath<String, String?>? { nil }
 }
 
 package extension Filterable {
-    func matches(_ filter: Filter) -> Bool {
+    func matches(_ filter: LogFilter) -> Bool {
         let value = self[keyPath: Self.filterCriteria]
         if value.localizedCaseInsensitiveContains(filter.query) {
             return true

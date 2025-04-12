@@ -2,7 +2,7 @@ import Models
 import SwiftUI
 
 struct FilterView: View {
-    let data: Filter
+    let data: LogFilter
 
     @Binding var isOn: Bool
 

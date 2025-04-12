@@ -19,11 +19,11 @@ package final class VisualLoggerViewModel: ObservableObject {
 
     package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(UserDefaults.standard.sorting)
 
-    package let activeFiltersSubject = CurrentValueSubject<Set<Filter>, Never>([])
+    package let activeFiltersSubject = CurrentValueSubject<Set<LogFilter>, Never>([])
 
-    package var sourcesSubject = CurrentValueSubject<[Filter], Never>([])
+    package var sourcesSubject = CurrentValueSubject<[LogFilter], Never>([])
 
-    package var categoriesSubject = CurrentValueSubject<[Filter], Never>([])
+    package var categoriesSubject = CurrentValueSubject<[LogFilter], Never>([])
 
     package var entriesSubject = CurrentValueSubject<[LogEntryID], Never>([])
 
@@ -146,7 +146,7 @@ private extension VisualLoggerViewModel {
 }
 
 private extension VisualLoggerViewModel {
-    func filterEntries(_ entries: [LogEntryID], with filters: Set<Filter>) -> [LogEntryID] {
+    func filterEntries(_ entries: [LogEntryID], with filters: Set<LogFilter>) -> [LogEntryID] {
         var result = entries
 
         if !filters.isEmpty {
@@ -158,7 +158,7 @@ private extension VisualLoggerViewModel {
         return result
     }
 
-    func filterEntry(_ id: LogEntryID, with filters: Set<Filter>) -> Bool {
+    func filterEntry(_ id: LogEntryID, with filters: Set<LogFilter>) -> Bool {
         var source: LogEntrySource {
             dataObserver.entrySources[id]!
         }

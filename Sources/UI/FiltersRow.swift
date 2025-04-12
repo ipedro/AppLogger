@@ -5,9 +5,9 @@ struct FiltersRow: View {
     let title: String
 
     @Binding
-    var selection: Set<Filter>
+    var selection: Set<LogFilter>
 
-    let data: [Filter]
+    let data: [LogFilter]
 
     @Environment(\.spacing)
     private var spacing
@@ -53,7 +53,7 @@ struct FiltersRow: View {
 @available(iOS 17.0, *)
 #Preview {
     @Previewable @State
-    var activeFilters: Set<Filter> = [
+    var activeFilters: Set<LogFilter> = [
         "Filter 1",
     ]
     FiltersRow(
