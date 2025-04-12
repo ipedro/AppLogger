@@ -97,7 +97,7 @@ private extension VisualLoggerViewModel {
                     set.insert(source)
                 }
             }
-            sources.formUnion(activeFilters.filter { $0.kind == .source } )
+            sources.formUnion(activeFilters.filter { $0.kind == .source })
             return sources.sort(by: activeFilters)
         }
         .receive(on: RunLoop.main)
@@ -137,7 +137,7 @@ private extension VisualLoggerViewModel {
 
             let categoryFilters = filters.filter { $0.kind == .category }
             let sourceFilters = filters.filter { $0.kind == .source }
-            
+
             var result = filterEntries(entries, with: categoryFilters)
             result = filterEntries(result, with: sourceFilters)
             if !query.isEmpty {
