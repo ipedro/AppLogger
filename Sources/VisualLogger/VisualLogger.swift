@@ -11,13 +11,13 @@ public actor VisualLogger {
 
     /// Shared instance of `VisualLogger` for global accessibility.
     public static let current = VisualLogger()
-    
+
     public nonisolated func addAction(_ action: VisualLoggerAction) {
         Task {
             await dataStore.addAction(action)
         }
     }
-    
+
     public nonisolated func removeAction(_ action: VisualLoggerAction) {
         Task {
             await dataStore.removeAction(action)

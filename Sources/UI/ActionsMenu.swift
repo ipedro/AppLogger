@@ -11,12 +11,12 @@ struct ActionsMenu: View {
 
     var body: some View {
         let _ = Self._debugPrintChanges()
-        
+
         Menu {
             SortingButton()
-            
+
             Divider()
-            
+
             ForEach(customActions) { action in
                 Button(action: action.execute) {
                     Label {
@@ -56,7 +56,7 @@ struct ActionsMenu: View {
                             handler: {
                                 _ in print("Action executed")
                             }
-                        )
+                        ),
                     ]
                 ),
                 dismissAction: {}

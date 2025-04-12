@@ -8,7 +8,7 @@ package actor DataStore {
     private weak var observer: DataObserver?
 
     private var sourceColorGenerator = DynamicColorGenerator<LogEntrySource>()
-    
+
     /// An array holding all custom actions.
     private var customActions = Set<VisualLoggerAction>()
 
@@ -44,12 +44,12 @@ package actor DataStore {
         }
         return observer
     }
-    
+
     package func addAction(_ action: VisualLoggerAction) {
         customActions.insert(action)
         updateObserver()
     }
-    
+
     package func removeAction(_ action: VisualLoggerAction) {
         customActions.remove(action)
         updateObserver()

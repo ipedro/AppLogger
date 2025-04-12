@@ -25,17 +25,17 @@ struct FilterView: View {
 }
 
 #if swift(>=6.0)
-extension FilterView: @preconcurrency Equatable {
-    static func == (lhs: FilterView, rhs: FilterView) -> Bool {
-        lhs.data == rhs.data && lhs.isOn == rhs.isOn
+    extension FilterView: @preconcurrency Equatable {
+        static func == (lhs: FilterView, rhs: FilterView) -> Bool {
+            lhs.data == rhs.data && lhs.isOn == rhs.isOn
+        }
     }
-}
 #else
-extension FilterView: Equatable {
-    static func == (lhs: FilterView, rhs: FilterView) -> Bool {
-        lhs.data == rhs.data && lhs.isOn == rhs.isOn
+    extension FilterView: Equatable {
+        static func == (lhs: FilterView, rhs: FilterView) -> Bool {
+            lhs.data == rhs.data && lhs.isOn == rhs.isOn
+        }
     }
-}
 #endif
 
 @available(iOS 17.0, *)

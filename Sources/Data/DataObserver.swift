@@ -3,7 +3,6 @@ import Models
 import SwiftUI
 
 package final class DataObserver: @unchecked Sendable {
-    
     /// A published array of custom actions.
     let customActions: CurrentValueSubject<[VisualLoggerAction], Never>
 
@@ -33,7 +32,7 @@ package final class DataObserver: @unchecked Sendable {
 
     /// A dictionary mapping log source IDs to their corresponding color.
     private(set) var sourceColors = [LogEntrySource.ID: DynamicColor]()
-    
+
     package init(
         allCategories: [LogEntryCategory] = [],
         allEntries: [LogEntryID] = [],
@@ -53,7 +52,7 @@ package final class DataObserver: @unchecked Sendable {
         self.entryContents = entryContents
         self.entrySources = entrySources
         self.sourceColors = sourceColors
-        
+
         for (id, userInfo) in entryUserInfos {
             guard let (keys, values) = userInfo?.denormalize(id: id) else {
                 continue

@@ -37,7 +37,7 @@ struct LogEntryUserInfoRow: View {
             Color(uiColor: .systemGray6)
         }
     }
-    
+
     private var valueString: String {
         viewModel.entryUserInfoValue(id)
     }

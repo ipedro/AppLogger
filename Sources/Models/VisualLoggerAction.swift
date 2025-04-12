@@ -9,26 +9,25 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 public struct VisualLoggerAction: Identifiable, Sendable {
-    
     /// A type that defines the closure for an action handler.
     public typealias ActionHandler = @Sendable (_ action: VisualLoggerAction) -> Void
-    
+
     /// This action's identifier.
     public let id: String
-    
+
     /// Short display title.
     package let title: String
-    
+
     /// Image that can appear next to this action.
     package let image: Image?
-    
+
     /// This action's handler
     private let handler: ActionHandler
-    
+
     package func execute() {
         handler(self)
     }
-    
+
     public init(
         id: String? = nil,
         title: String,
@@ -45,8 +44,8 @@ public struct VisualLoggerAction: Identifiable, Sendable {
 extension VisualLoggerAction: Equatable {
     public static func == (lhs: VisualLoggerAction, rhs: VisualLoggerAction) -> Bool {
         lhs.id == rhs.id &&
-        lhs.title == rhs.title &&
-        lhs.image == rhs.image
+            lhs.title == rhs.title &&
+            lhs.image == rhs.image
     }
 }
 

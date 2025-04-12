@@ -16,7 +16,7 @@ struct FiltersDrawer: View {
                 title: "Categories",
                 keyPath: \.categoryFiltersSubject
             )
-            
+
             FilterList(
                 title: "Sources",
                 keyPath: \.sourceFiltersSubject

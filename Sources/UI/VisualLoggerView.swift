@@ -50,7 +50,8 @@ package struct VisualLoggerView<Content>: View where Content: View {
                 title: "Action",
                 image: nil,
                 handler: { _ in print("Action executed")
-                })
+                }
+            ),
         ],
         entryCategories: allEntries.valuesByID(\.category),
         entryContents: allEntries.valuesByID(\.content),

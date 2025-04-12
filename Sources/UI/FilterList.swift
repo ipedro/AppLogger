@@ -13,13 +13,13 @@ struct FilterList: View {
 
     @State
     private var filters = [LogFilter]()
-    
+
     @EnvironmentObject
     private var viewModel: VisualLoggerViewModel
 
     @Environment(\.spacing)
     private var spacing
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack {
@@ -46,7 +46,7 @@ struct FilterList: View {
             filters = $0
         }
     }
-    
+
     private func content() -> some View {
         Section {
             ForEach(filters, id: \.self) { /*@Sendable*/ filter in
@@ -78,8 +78,8 @@ struct FilterList: View {
     }
 }
 
-//@available(iOS 17.0, *)
-//#Preview {
+// @available(iOS 17.0, *)
+// #Preview {
 //    @Previewable @State
 //    var activeFilters: Set<LogFilter> = [
 //        "Filter 1",
@@ -93,4 +93,4 @@ struct FilterList: View {
 //            "Filter 3",
 //        ]
 //    )
-//}
+// }
