@@ -10,7 +10,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct VisualLoggerAction: Identifiable, Sendable {
     /// A type that defines the closure for an action handler.
-    public typealias ActionHandler = @Sendable (_ action: VisualLoggerAction) -> Void
+    public typealias ActionHandler = @MainActor (_ action: VisualLoggerAction) -> Void
 
     /// This action's identifier.
     public let id: String
@@ -24,6 +24,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
     /// This action's handler
     private let handler: ActionHandler
 
+    @MainActor
     package func execute() {
         handler(self)
     }
