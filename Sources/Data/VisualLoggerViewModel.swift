@@ -45,16 +45,16 @@ package extension VisualLoggerViewModel {
         dataObserver.sourceColors[source.id]?[colorScheme]?.color() ?? .secondary
     }
 
-    func entrySource(_ id: LogEntryID) -> LogEntrySource {
-        dataObserver.entrySources[id]!
+    func entrySource(_ id: LogEntryID) -> LogEntrySource? {
+        dataObserver.entrySources[id]
     }
 
-    func entryCategory(_ id: LogEntryID) -> LogEntryCategory {
-        dataObserver.entryCategories[id]!
+    func entryCategory(_ id: LogEntryID) -> LogEntryCategory? {
+        dataObserver.entryCategories[id]
     }
 
-    func entryContent(_ id: LogEntryID) -> LogEntryContent {
-        dataObserver.entryContents[id]!
+    func entryContent(_ id: LogEntryID) -> LogEntryContent? {
+        dataObserver.entryContents[id]
     }
 
     func entryUserInfoKeys(_ id: LogEntryID) -> [LogEntryUserInfoKey]? {
@@ -88,11 +88,17 @@ private extension VisualLoggerViewModel {
 
         // Sources pipeline
         Publishers.CombineLatest(
-            dataObserver.allSources.throttleOnMain(for: 0.15),
-            activeFiltersSubject
+            activeFiltersSubject,
+            currentEntriesSubject
         )
-        .map { allSources, activeFilters in
-            Set(allSources.map(\.filter)).sort(by: activeFilters)
+        .map { [unowned self] activeFilters, entries in
+            var sources = entries.reduce(into: Set<LogFilter>()) { set, entry in
+                if let source = entrySource(entry)?.filter {
+                    set.insert(source)
+                }
+            }
+            sources.formUnion(activeFilters.filter { $0.kind == .source } )
+            return sources.sort(by: activeFilters)
         }
         .receive(on: RunLoop.main)
         .sink { [unowned self] in
@@ -129,7 +135,11 @@ private extension VisualLoggerViewModel {
         .map { [unowned self] entries, query, filters, sorting in
             UserDefaults.standard.sorting = sorting
 
-            var result = filterEntries(entries, with: filters)
+            let categoryFilters = filters.filter { $0.kind == .category }
+            let sourceFilters = filters.filter { $0.kind == .source }
+            
+            var result = filterEntries(entries, with: categoryFilters)
+            result = filterEntries(result, with: sourceFilters)
             if !query.isEmpty {
                 result = filterEntries(result, with: [query.filter])
             }

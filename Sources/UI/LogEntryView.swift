@@ -16,10 +16,10 @@ struct LogEntryView: View {
 
     var body: some View {
         let _ = Self._debugPrintChanges()
-        let category = viewModel.entryCategory(id)
-        let content = viewModel.entryContent(id)
+        let category = viewModel.entryCategory(id)!
+        let content = viewModel.entryContent(id)!
         let createdAt = viewModel.entryCreatedAt(id)
-        let source = viewModel.entrySource(id)
+        let source = viewModel.entrySource(id)!
         let tint = viewModel.sourceColor(source, for: colorScheme)
         let userInfo = viewModel.entryUserInfoKeys(id)
 

@@ -23,17 +23,15 @@ struct FilterList: View {
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack {
-            if !filters.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(
-                        spacing: spacing,
-                        pinnedViews: .sectionHeaders,
-                        content: content
-                    )
-                    .padding(.trailing, spacing * 2)
-                }
-                .fixedSize(horizontal: false, vertical: true)
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(
+                    spacing: spacing,
+                    pinnedViews: .sectionHeaders,
+                    content: content
+                )
+                .padding(.trailing, spacing * 2)
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
         .animation(.snappy, value: filters)
         .onReceive(viewModel.activeFiltersSubject) {
