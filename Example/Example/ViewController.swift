@@ -106,10 +106,10 @@ class ViewController: UIViewController {
             "currentViewFrame": view.frame,
         ])
     }
-    
+
     private lazy var changeColorSchemeAction = VisualLoggerAction(
         title: "Change Color Scheme",
-        handler: { [weak self] action in
+        handler: { [weak self] _ in
             if self?.view.window?.overrideUserInterfaceStyle == .dark {
                 self?.view.window?.overrideUserInterfaceStyle = .light
             } else {

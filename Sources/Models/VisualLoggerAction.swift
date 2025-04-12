@@ -28,7 +28,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
     package func execute() {
         handler(self)
     }
-    
+
     public init(
         id: String? = nil,
         title: String,
@@ -40,7 +40,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
         self.image = image
         self.handler = handler
     }
-    
+
     @_disfavoredOverload
     public init(
         id: String? = nil,
