@@ -7,7 +7,7 @@ import Foundation
 /// - A specific type of filter (defined by `Kind`)
 /// - The actual search query
 /// - A human-readable display name
-package struct LogFilter: Hashable {
+package struct LogFilter: Hashable, Sendable {
     package let kind: Kind
     package let query: String
     package let displayName: String
@@ -24,7 +24,7 @@ package extension LogFilter {
     ///
     /// `Kind` is implemented as an `OptionSet`, allowing multiple
     /// filter criteria to be combined using bitwise operations.
-    struct Kind: CustomStringConvertible, Hashable, OptionSet {
+    struct Kind: Sendable, CustomStringConvertible, Hashable, OptionSet {
         package let rawValue: Int8
 
         package var description: String {

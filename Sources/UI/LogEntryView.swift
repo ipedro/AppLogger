@@ -16,12 +16,12 @@ struct LogEntryView: View {
 
     var body: some View {
         let _ = Self._debugPrintChanges()
-        let source = viewModel.entrySource(id)
         let category = viewModel.entryCategory(id)
-        let createdAt = viewModel.entryCreatedAt(id)
         let content = viewModel.entryContent(id)
-        let userInfo = viewModel.entryUserInfoKeys(id)
+        let createdAt = viewModel.entryCreatedAt(id)
+        let source = viewModel.entrySource(id)
         let tint = viewModel.sourceColor(source, for: colorScheme)
+        let userInfo = viewModel.entryUserInfoKeys(id)
 
         VStack(alignment: .leading, spacing: spacing) {
             LogEntryHeaderView(
