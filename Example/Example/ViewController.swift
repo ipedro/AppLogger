@@ -99,12 +99,24 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        VisualLogger.current.addAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewWillAppear",
             "animated": animated,
             "currentViewFrame": view.frame,
         ])
     }
+    
+    private lazy var changeColorSchemeAction = VisualLoggerAction(
+        title: "Change Color Scheme",
+        handler: { [weak self] action in
+            if self?.view.window?.overrideUserInterfaceStyle == .dark {
+                self?.view.window?.overrideUserInterfaceStyle = .light
+            } else {
+                self?.view.window?.overrideUserInterfaceStyle = .dark
+            }
+        }
+    )
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -117,6 +129,7 @@ class ViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        VisualLogger.current.removeAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewWillDisappear",
             "animated": animated,

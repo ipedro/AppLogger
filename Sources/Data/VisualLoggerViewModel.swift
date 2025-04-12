@@ -74,7 +74,7 @@ private extension VisualLoggerViewModel {
     func setupPublishers() {
         // Categories pipeline
         Publishers.CombineLatest(
-            dataObserver.allCategories.throttleOnMain(for: 0.15),
+            dataObserver.allCategories.throttleOnMain(for: 0.3),
             activeFiltersSubject
         )
         .map { allCategories, activeFilters in
@@ -89,7 +89,7 @@ private extension VisualLoggerViewModel {
         // Sources pipeline
         Publishers.CombineLatest(
             activeFiltersSubject,
-            currentEntriesSubject
+            currentEntriesSubject.throttleOnMain(for: 0.3)
         )
         .map { [unowned self] activeFilters, entries in
             var sources = entries.reduce(into: Set<LogFilter>()) { set, entry in
@@ -128,7 +128,7 @@ private extension VisualLoggerViewModel {
         Publishers.CombineLatest4(
             dataObserver.allEntries.throttleOnMain(for: 0.15),
             searchQuerySubject.debounceOnMain(for: 0.3).map(\.trimmed),
-            activeFiltersSubject,
+            activeFiltersSubject.throttleOnMain(for: 0.3),
             entriesSortingSubject
         )
         .receive(on: RunLoop.main)

@@ -28,16 +28,33 @@ public struct VisualLoggerAction: Identifiable, Sendable {
     package func execute() {
         handler(self)
     }
-
+    
     public init(
         id: String? = nil,
         title: String,
-        image: Image?,
+        image: Image? = nil,
         handler: @escaping ActionHandler
     ) {
         self.id = id ?? title
         self.title = title
         self.image = image
+        self.handler = handler
+    }
+    
+    @_disfavoredOverload
+    public init(
+        id: String? = nil,
+        title: String,
+        image: UIImage? = nil,
+        handler: @escaping ActionHandler
+    ) {
+        self.id = id ?? title
+        self.title = title
+        self.image = if let image {
+            Image(uiImage: image)
+        } else {
+            nil
+        }
         self.handler = handler
     }
 }
