@@ -6,7 +6,7 @@ struct LogEntryUserInfoRow: View {
     let offset: Int
     let id: LogEntryUserInfoKey
 
-    var value: String {
+    private var value: String {
         viewModel.entryUserInfoValue(id)
     }
 
