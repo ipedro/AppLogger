@@ -34,7 +34,7 @@ public actor VisualLogger {
     ///
     /// - Parameters:
     ///   - animated: A Boolean value indicating whether the presentation should be animated. Defaults to `true`.
-    ///   - configuration: An `VisualLoggerConfiguration` instance that provides custom presentation settings.
+    ///   - configuration: A `VisualLoggerConfiguration` instance that provides custom presentation settings.
     ///     Defaults to a new instance of `VisualLoggerConfiguration`.
     ///   - completion: An optional closure executed after the presentation completes.
     ///

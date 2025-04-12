@@ -10,7 +10,7 @@ class ViewController: UIViewController {
             Task { await VisualLogger.current.present() }
             // Log only the action title instead of the entire action object.
             log.info(action.title, userInfo: [
-                "discoverabilityTitle": action.discoverabilityTitle,
+                "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,
@@ -24,7 +24,7 @@ class ViewController: UIViewController {
             Task { await VisualLogger.current.present(configuration: .init(colorScheme: .light)) }
             // Log only the action title instead of the entire action object.
             log.info(action.title, userInfo: [
-                "discoverabilityTitle": action.discoverabilityTitle,
+                "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,
@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
             Task { await VisualLogger.current.present(configuration: .init(colorScheme: .dark)) }
             log.info(action.title, userInfo: [
-                "discoverabilityTitle": action.discoverabilityTitle,
+                "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,

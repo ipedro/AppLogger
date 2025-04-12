@@ -1,7 +1,7 @@
 import Models
 import SwiftUI
 
-struct FilterView: View, @preconcurrency Equatable {
+struct FilterView: View, Equatable {
     static func == (lhs: FilterView, rhs: FilterView) -> Bool {
         lhs.data == rhs.data && lhs.isOn == rhs.isOn
     }
