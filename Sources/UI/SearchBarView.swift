@@ -11,12 +11,8 @@ struct SearchBarView: View {
     @EnvironmentObject
     private var viewModel: VisualLoggerViewModel
 
-    private var searchQuery: Binding<String> {
-        Binding(
-            get: { viewModel.searchQuerySubject.value },
-            set: { viewModel.searchQuerySubject.send($0) }
-        )
-    }
+    @State
+    private var searchQuery: String = ""
 
     var body: some View {
         let _ = Self._debugPrintChanges()
@@ -27,7 +23,7 @@ struct SearchBarView: View {
 
                 TextField(
                     "Search logs",
-                    text: searchQuery
+                    text: $searchQuery
                 )
                 .autocorrectionDisabled()
                 .submitLabel(.search)
@@ -48,6 +44,12 @@ struct SearchBarView: View {
         .onTapGesture {
             focus = true
         }
+        .onReceive(viewModel.searchQuerySubject) {
+            searchQuery = $0
+        }
+        .onChange(of: searchQuery) {
+            viewModel.searchQuerySubject.send($0.trimmed)
+        }
         .animation(.interactiveSpring, value: showDismiss)
     }
 
@@ -58,6 +60,12 @@ struct SearchBarView: View {
     private func clearText() {
         viewModel.searchQuerySubject.value = String()
         focus.toggle()
+    }
+}
+
+private extension String {
+    var trimmed: String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

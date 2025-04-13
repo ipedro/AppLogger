@@ -146,9 +146,8 @@ private extension VisualLoggerViewModel {
         .receive(on: queue)
         .map { filter, query in
             var scope = filter.sorted()
-            let trimmedQuery = query.trimmed
-            if !trimmedQuery.isEmpty {
-                scope.append(trimmedQuery.filter)
+            if !query.isEmpty {
+                scope.append(query.filter)
             }
             return scope.map(\.displayName)
         }
@@ -175,7 +174,7 @@ private extension VisualLoggerViewModel {
                 dataObserver.entryContents,
                 dataObserver.entryUserInfoKeys,
                 dataObserver.entryUserInfoValues,
-                query.trimmed,
+                query,
                 filters,
                 sorting
             )
@@ -329,17 +328,11 @@ private extension Publisher {
     }
 }
 
-private extension String {
-    var trimmed: String {
-        trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
-
 private extension UserDefaults {
     var sorting: LogEntrySorting {
         get {
             let rawValue = integer(forKey: "VisualLogger.sorting")
-            return LogEntrySorting(rawValue: rawValue) ?? .descending
+            return LogEntrySorting(rawValue: rawValue) ?? .defaultValue
         }
         set {
             set(newValue.rawValue, forKey: "VisualLogger.sorting")

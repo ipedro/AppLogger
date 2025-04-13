@@ -9,7 +9,7 @@ struct SortingButton: View {
     private var viewModel: VisualLoggerViewModel
 
     @State
-    private var selection: LogEntrySorting = .ascending
+    private var selection: LogEntrySorting = .defaultValue
 
     @Environment(\.configuration.icons)
     private var icons
