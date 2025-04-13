@@ -37,7 +37,7 @@ final class Coordinator: NSObject {
             }
         }
     }
-    
+
     deinit {
         print(#function, "VisualLoggerCoordinator released")
     }
