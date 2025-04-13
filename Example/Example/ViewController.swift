@@ -3,7 +3,7 @@ import VisualLogger
 
 class ViewController: UIViewController {
     private var errorCount = 0
-    
+
     // MARK: - Lazy vars
 
     private lazy var presentButton = UIButton(
@@ -69,7 +69,7 @@ class ViewController: UIViewController {
             UIView(), // Extra view for layout purposes.
         ]
     )
-    
+
     private lazy var changeColorSchemeAction = VisualLoggerAction(
         title: "Change Color Scheme",
         handler: { [weak self] _ in
@@ -86,12 +86,12 @@ class ViewController: UIViewController {
                 "Changed color scheme",
                 userInfo: [
                     "colorScheme": newScheme,
-                    "window": window
+                    "window": window,
                 ]
             )
         }
     )
-    
+
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
