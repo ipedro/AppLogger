@@ -40,13 +40,13 @@ package final class VisualLoggerViewModel: ObservableObject {
 
     deinit {
         stop()
-        debugPrint(#function, "VisualLoggerViewModel released")
+        // debugPrint(#function, "VisualLoggerViewModel released")
     }
 
     package func stop() {
-        for cancellable in cancellables {
-            cancellable.cancel()
-            debugPrint(#function, "VisualLoggerViewModel canceled observer: \(cancellable)")
+        cancellables.forEach {
+            $0.cancel()
+            // debugPrint(#function, "VisualLoggerViewModel canceled observer: \($0)")
         }
         cancellables.removeAll()
         activeFilterScopeSubject.value.removeAll()
