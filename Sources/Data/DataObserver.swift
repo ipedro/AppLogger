@@ -77,12 +77,13 @@ package final class DataObserver: @unchecked Sendable {
         sourceColors: [LogEntrySource.ID: DynamicColor]
     ) {
         defer {
-            // push update to subscribers as last step
-            self.allEntries.send(allEntries)
             self.allSources.send(allSources)
             self.allCategories.send(allCategories)
             self.customActions.send(customActions)
             self.entrySources.send(entrySources)
+            
+            // push update to entries as last step
+            self.allEntries.send(allEntries)
         }
 
         self.entryCategories = entryCategories

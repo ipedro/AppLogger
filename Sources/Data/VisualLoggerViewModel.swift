@@ -87,7 +87,7 @@ private extension VisualLoggerViewModel {
         setupActiveFilterScopeSubject(backgroundQueue)
         
         // Entries pipeline
-        setupCurrentEntriesSubject()
+        setupCurrentEntriesSubject(backgroundQueue)
 
         // Custom actions
         setupCustomActionsSubject()
@@ -159,24 +159,63 @@ private extension VisualLoggerViewModel {
         .store(in: &cancellables)
     }
     
-    func setupCurrentEntriesSubject() {
+    func setupCurrentEntriesSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest4(
-            dataObserver.allEntries.throttleOnMain(),
-            searchQuerySubject.debounceOnMain().map(\.trimmed),
+            dataObserver.allEntries,
+            searchQuerySubject.debounceOnMain(),
             activeFiltersSubject,
             entriesSortingSubject
         )
+        .throttleOnMain()
         .map { [unowned self] entries, query, filters, sorting in
+            (
+                entries,
+                dataObserver.entrySources.value,
+                dataObserver.entryCategories,
+                dataObserver.entryContents,
+                dataObserver.entryUserInfoKeys,
+                dataObserver.entryUserInfoValues,
+                query.trimmed,
+                filters,
+                sorting
+            )
+        }
+        .receive(on: queue)
+        .map { allIds, sources, categories, contents, userInfoKeys, userInfoValues, query, filters, sorting in
             let categoryFilters = filters.filter { $0.kind == .category }
             let sourceFilters = filters.filter { $0.kind == .source }
 
-            var result = filterEntries(entries, with: categoryFilters)
-            result = filterEntries(result, with: sourceFilters)
+            var filtered = allIds
+            
+            filtered = categoryFilters.filterEntries(
+                ids: filtered,
+                sources: sources,
+                categories: categories,
+                contents: contents,
+                userInfoKeys: userInfoKeys,
+                userInfoValues: userInfoValues
+            )
+            filtered = sourceFilters.filterEntries(
+                ids: filtered,
+                sources: sources,
+                categories: categories,
+                contents: contents,
+                userInfoKeys: userInfoKeys,
+                userInfoValues: userInfoValues
+            )
             if !query.isEmpty {
-                result = filterEntries(result, with: [query.filter])
+                filtered = [query.filter].filterEntries(
+                    ids: filtered,
+                    sources: sources,
+                    categories: categories,
+                    contents: contents,
+                    userInfoKeys: userInfoKeys,
+                    userInfoValues: userInfoValues
+                )
             }
-            return result.sort(by: sorting)
+            return filtered.sort(by: sorting)
         }
+        .receive(on: RunLoop.main)
         .sink { [unowned self] in
             currentEntriesSubject.send($0)
         }
@@ -211,62 +250,6 @@ private extension VisualLoggerViewModel {
     }
 }
 
-private extension VisualLoggerViewModel {
-    func filterEntries(_ entries: [LogEntryID], with filters: Set<LogFilter>) -> [LogEntryID] {
-        var result = entries
-
-        if !filters.isEmpty {
-            result = result.filter { id in
-                filterEntry(id, with: filters)
-            }
-        }
-
-        return result
-    }
-
-    func filterEntry(_ id: LogEntryID, with filters: Set<LogFilter>) -> Bool {
-        var source: LogEntrySource {
-            dataObserver.entrySources.value[id]!
-        }
-
-        var category: LogEntryCategory {
-            dataObserver.entryCategories[id]!
-        }
-
-        var content: LogEntryContent {
-            dataObserver.entryContents[id]!
-        }
-
-        var userInfo: Set<String> {
-            let keys = dataObserver.entryUserInfoKeys[id, default: []]
-            var userInfo = Set(keys.map(\.key))
-            for key in keys {
-                if let value = dataObserver.entryUserInfoValues[key] {
-                    userInfo.insert(value)
-                }
-            }
-            return userInfo
-        }
-
-        for filter in filters {
-            if filter.kind.contains(.source) {
-                if source.matches(filter) { return true }
-            }
-            if filter.kind.contains(.category) {
-                if category.matches(filter) { return true }
-            }
-            if filter.kind.contains(.content) {
-                if content.matches(filter) { return true }
-            }
-            if filter.kind.contains(.userInfo) {
-                if userInfo.contains(where: { $0.matches(filter) }) { return true }
-            }
-        }
-
-        return false
-    }
-}
-
 private extension Collection where Element == LogFilter {
     func filterEntries(
         ids: [LogEntryID],
@@ -276,28 +259,28 @@ private extension Collection where Element == LogFilter {
         userInfoKeys: [LogEntryID : [LogEntryUserInfoKey]],
         userInfoValues: [LogEntryUserInfoKey : String]
     ) -> [LogEntryID] {
-        var result = ids
+        guard !isEmpty else {
+            return ids
+        }
         
-        if !isEmpty {
-            result = result.filter { id in
-                func userInfo() -> Set<String> {
-                    let keys = userInfoKeys[id, default: []]
-                    var userInfo = Set(keys.map(\.key))
-                    for key in keys {
-                        if let value = userInfoValues[key] {
-                            userInfo.insert(value)
-                        }
+        let result = ids.filter { id in
+            func userInfo() -> Set<String> {
+                let keys = userInfoKeys[id, default: []]
+                var userInfo = Set(keys.map(\.key))
+                for key in keys {
+                    if let value = userInfoValues[key] {
+                        userInfo.insert(value)
                     }
-                    return userInfo
                 }
-                return filterEntry(
-                    id: id,
-                    source: sources[id]!,
-                    category: categories[id]!,
-                    content: contents[id]!,
-                    userInfo: userInfo()
-                )
+                return userInfo
             }
+            return filterEntry(
+                id: id,
+                source: sources[id]!,
+                category: categories[id]!,
+                content: contents[id]!,
+                userInfo: userInfo()
+            )
         }
         
         return result
