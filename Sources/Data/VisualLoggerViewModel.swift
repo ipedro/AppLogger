@@ -334,7 +334,7 @@ private extension UserDefaults {
             else {
                 return .defaultValue
             }
-        
+
             return sorting
         }
         set {
