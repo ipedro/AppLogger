@@ -51,15 +51,16 @@ struct SearchBarView: View {
             viewModel.searchQuerySubject.send($0.trimmed)
         }
         .animation(.interactiveSpring, value: showDismiss)
+        .onDisappear(perform: clearText)
     }
 
     private var showDismiss: Bool {
-        focus || !viewModel.searchQuerySubject.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        focus || !searchQuery.isEmpty
     }
 
     private func clearText() {
-        viewModel.searchQuerySubject.value = String()
-        focus.toggle()
+        searchQuery = String()
+        focus = false
     }
 }
 

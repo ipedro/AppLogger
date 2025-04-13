@@ -24,6 +24,9 @@ package struct VisualLoggerView<Content>: View where Content: View {
 
     @Environment(\.configuration.accentColor)
     private var accentColor
+    
+    @EnvironmentObject
+    private var viewModel: VisualLoggerViewModel
 
     private let content: Content
 
@@ -32,6 +35,15 @@ package struct VisualLoggerView<Content>: View where Content: View {
         content
             .tint(accentColor)
             .colorScheme(preferredColorScheme ?? currentColorScheme)
+            .onDisappear {
+                // There is a bug with the SwiftUI environment that can hold on
+                // to the view model if there is a search query, so cancelling
+                // observers manually to be safe.
+                //
+                // The zombie view model gets released when the search bar comes
+                // into focus again.
+                viewModel.cancelObservers()
+            }
     }
 }
 
