@@ -45,6 +45,9 @@ struct SearchBarView: View {
             .background(Color.secondaryBackground)
             .clipShape(Capsule())
         }
+        .onTapGesture {
+            focus = true
+        }
         .animation(.interactiveSpring, value: showDismiss)
     }
 
