@@ -77,12 +77,34 @@ private extension VisualLoggerViewModel {
     func setupPublishers() {
         let backgroundQueue = DispatchQueue.global()
         
-        // Categories pipeline
+        // Category Filters pipeline
+        setupCategoryFiltersSubject(backgroundQueue)
+
+        // Source Filters pipeline
+        setupSourceFiltersSubject(backgroundQueue)
+
+        // Active Filter Scope pipeline
+        setupActiveFilterScopeSubject(backgroundQueue)
+        
+        // Entries pipeline
+        setupCurrentEntriesSubject()
+
+        // Custom actions
+        setupCustomActionsSubject()
+
+        // Persisting entries sorting to UserDefaults
+        setupEntriesSortingSubject()
+        
+        // Persisting showFilters to UserDefaults
+        setupShowFilterDrawerSubject()
+    }
+    
+    func setupCategoryFiltersSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest(
             dataObserver.allCategories,
             activeFiltersSubject
         )
-        .throttle(for: 0.15, scheduler: backgroundQueue, latest: true)
+        .throttle(for: 0.15, scheduler: queue, latest: true)
         .map { allCategories, activeFilters in
             Set(allCategories.map(\.filter)).sort(by: activeFilters)
         }
@@ -91,14 +113,15 @@ private extension VisualLoggerViewModel {
             categoryFiltersSubject.send($0)
         }
         .store(in: &cancellables)
-
-        // Sources pipeline
+    }
+    
+    func setupSourceFiltersSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest3(
             activeFiltersSubject,
             currentEntriesSubject,
             dataObserver.entrySources
         )
-        .throttle(for: 0.15, scheduler: backgroundQueue, latest: true)
+        .throttle(for: 0.15, scheduler: queue, latest: true)
         .map { activeFilters, entries, sources in
             var sources = entries.reduce(into: Set<LogFilter>()) { set, entry in
                 if let source = sources[entry]?.filter {
@@ -113,13 +136,14 @@ private extension VisualLoggerViewModel {
             sourceFiltersSubject.send($0)
         }
         .store(in: &cancellables)
-
-        // Active Filter Scope pipeline
+    }
+    
+    func setupActiveFilterScopeSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest(
             activeFiltersSubject,
             searchQuerySubject
         )
-        .receive(on: backgroundQueue)
+        .receive(on: queue)
         .map { filter, query in
             var scope = filter.sorted()
             let trimmedQuery = query.trimmed
@@ -133,8 +157,9 @@ private extension VisualLoggerViewModel {
             activeFilterScopeSubject.send($0)
         }
         .store(in: &cancellables)
-
-        // Entries pipeline
+    }
+    
+    func setupCurrentEntriesSubject() {
         Publishers.CombineLatest4(
             dataObserver.allEntries.throttleOnMain(),
             searchQuerySubject.debounceOnMain().map(\.trimmed),
@@ -156,24 +181,27 @@ private extension VisualLoggerViewModel {
             currentEntriesSubject.send($0)
         }
         .store(in: &cancellables)
-
-        // Custom actions
+    }
+    
+    func setupCustomActionsSubject() {
         dataObserver.customActions
             .receive(on: RunLoop.main)
             .sink { [unowned self] in
                 customActionsSubject.send($0)
             }
             .store(in: &cancellables)
-
-        // Persisting showFilters to UserDefaults
+    }
+    
+    func setupEntriesSortingSubject() {
         entriesSortingSubject
             .receive(on: RunLoop.main)
             .sink {
                 UserDefaults.standard.sorting = $0
             }
             .store(in: &cancellables)
-        
-        // Persisting showFilters to UserDefaults
+    }
+    
+    func setupShowFilterDrawerSubject() {
         showFilterDrawerSubject
             .receive(on: RunLoop.main)
             .sink {
