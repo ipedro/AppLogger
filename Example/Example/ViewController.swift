@@ -3,6 +3,8 @@ import VisualLogger
 
 class ViewController: UIViewController {
     private var errorCount = 0
+    
+    // MARK: - Lazy vars
 
     private lazy var presentButton = UIButton(
         configuration: .bordered(),
@@ -67,6 +69,30 @@ class ViewController: UIViewController {
             UIView(), // Extra view for layout purposes.
         ]
     )
+    
+    private lazy var changeColorSchemeAction = VisualLoggerAction(
+        title: "Change Color Scheme",
+        handler: { [weak self] _ in
+            guard let window = self?.view?.window else {
+                return
+            }
+            let newScheme: UIUserInterfaceStyle = if window.overrideUserInterfaceStyle == .dark {
+                .light
+            } else {
+                .dark
+            }
+            window.overrideUserInterfaceStyle = newScheme
+            log.info(
+                "Changed color scheme",
+                userInfo: [
+                    "colorScheme": newScheme,
+                    "window": window
+                ]
+            )
+        }
+    )
+    
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -106,17 +132,6 @@ class ViewController: UIViewController {
             "currentViewFrame": view.frame,
         ])
     }
-
-    private lazy var changeColorSchemeAction = VisualLoggerAction(
-        title: "Change Color Scheme",
-        handler: { [weak self] _ in
-            if self?.view.window?.overrideUserInterfaceStyle == .dark {
-                self?.view.window?.overrideUserInterfaceStyle = .light
-            } else {
-                self?.view.window?.overrideUserInterfaceStyle = .dark
-            }
-        }
-    )
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
