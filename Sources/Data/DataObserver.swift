@@ -22,7 +22,7 @@ package final class DataObserver: @unchecked Sendable {
     private(set) var entryContents: [LogEntryID: LogEntryContent]
 
     /// A dictionary mapping log entry IDs to their corresponding source.
-    private(set) var entrySources: [LogEntryID: LogEntrySource]
+    private(set) var entrySources: CurrentValueSubject<[LogEntryID: LogEntrySource], Never>
 
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
     private(set) var entryUserInfoKeys = [LogEntryID: [LogEntryUserInfoKey]]()
@@ -50,7 +50,7 @@ package final class DataObserver: @unchecked Sendable {
         self.customActions = CurrentValueSubject(customActions)
         self.entryCategories = entryCategories
         self.entryContents = entryContents
-        self.entrySources = entrySources
+        self.entrySources = CurrentValueSubject(entrySources)
         self.sourceColors = sourceColors
 
         for (id, userInfo) in entryUserInfos {
@@ -82,11 +82,11 @@ package final class DataObserver: @unchecked Sendable {
             self.allSources.send(allSources)
             self.allCategories.send(allCategories)
             self.customActions.send(customActions)
+            self.entrySources.send(entrySources)
         }
 
         self.entryCategories = entryCategories
         self.entryContents = entryContents
-        self.entrySources = entrySources
         self.entryUserInfoKeys = entryUserInfoKeys
         self.entryUserInfoValues = entryUserInfoValues
         self.sourceColors = sourceColors

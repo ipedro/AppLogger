@@ -3,7 +3,6 @@ import Foundation
 import Models
 import SwiftUI
 
-@MainActor
 package final class VisualLoggerViewModel: ObservableObject {
     package typealias DismissAction = @MainActor () -> Void
 
@@ -38,6 +37,10 @@ package final class VisualLoggerViewModel: ObservableObject {
         self.dismissAction = dismissAction
         setupPublishers()
     }
+    
+    deinit {
+        cancellables.forEach { $0.cancel() }
+    }
 }
 
 package extension VisualLoggerViewModel {
@@ -46,7 +49,7 @@ package extension VisualLoggerViewModel {
     }
 
     func entrySource(_ id: LogEntryID) -> LogEntrySource? {
-        dataObserver.entrySources[id]
+        dataObserver.entrySources.value[id]
     }
 
     func entryCategory(_ id: LogEntryID) -> LogEntryCategory? {
@@ -72,11 +75,14 @@ package extension VisualLoggerViewModel {
 
 private extension VisualLoggerViewModel {
     func setupPublishers() {
+        let backgroundQueue = DispatchQueue.global()
+        
         // Categories pipeline
         Publishers.CombineLatest(
-            dataObserver.allCategories.throttleOnMain(for: 0.3),
+            dataObserver.allCategories,
             activeFiltersSubject
         )
+        .throttle(for: 0.15, scheduler: backgroundQueue, latest: true)
         .map { allCategories, activeFilters in
             Set(allCategories.map(\.filter)).sort(by: activeFilters)
         }
@@ -87,13 +93,15 @@ private extension VisualLoggerViewModel {
         .store(in: &cancellables)
 
         // Sources pipeline
-        Publishers.CombineLatest(
+        Publishers.CombineLatest3(
             activeFiltersSubject,
-            currentEntriesSubject.throttleOnMain(for: 0.3)
+            currentEntriesSubject,
+            dataObserver.entrySources
         )
-        .map { [unowned self] activeFilters, entries in
+        .throttle(for: 0.15, scheduler: backgroundQueue, latest: true)
+        .map { activeFilters, entries, sources in
             var sources = entries.reduce(into: Set<LogFilter>()) { set, entry in
-                if let source = entrySource(entry)?.filter {
+                if let source = sources[entry]?.filter {
                     set.insert(source)
                 }
             }
@@ -111,6 +119,7 @@ private extension VisualLoggerViewModel {
             activeFiltersSubject,
             searchQuerySubject
         )
+        .receive(on: backgroundQueue)
         .map { filter, query in
             var scope = filter.sorted()
             let trimmedQuery = query.trimmed
@@ -119,6 +128,7 @@ private extension VisualLoggerViewModel {
             }
             return scope.map(\.displayName)
         }
+        .receive(on: RunLoop.main)
         .sink { [unowned self] in
             activeFilterScopeSubject.send($0)
         }
@@ -126,15 +136,12 @@ private extension VisualLoggerViewModel {
 
         // Entries pipeline
         Publishers.CombineLatest4(
-            dataObserver.allEntries.throttleOnMain(for: 0.15),
-            searchQuerySubject.debounceOnMain(for: 0.3).map(\.trimmed),
-            activeFiltersSubject.throttleOnMain(for: 0.3),
+            dataObserver.allEntries.throttleOnMain(),
+            searchQuerySubject.debounceOnMain().map(\.trimmed),
+            activeFiltersSubject,
             entriesSortingSubject
         )
-        .receive(on: RunLoop.main)
         .map { [unowned self] entries, query, filters, sorting in
-            UserDefaults.standard.sorting = sorting
-
             let categoryFilters = filters.filter { $0.kind == .category }
             let sourceFilters = filters.filter { $0.kind == .source }
 
@@ -159,7 +166,16 @@ private extension VisualLoggerViewModel {
             .store(in: &cancellables)
 
         // Persisting showFilters to UserDefaults
+        entriesSortingSubject
+            .receive(on: RunLoop.main)
+            .sink {
+                UserDefaults.standard.sorting = $0
+            }
+            .store(in: &cancellables)
+        
+        // Persisting showFilters to UserDefaults
         showFilterDrawerSubject
+            .receive(on: RunLoop.main)
             .sink {
                 UserDefaults.standard.showFilters = $0
             }
@@ -182,7 +198,7 @@ private extension VisualLoggerViewModel {
 
     func filterEntry(_ id: LogEntryID, with filters: Set<LogFilter>) -> Bool {
         var source: LogEntrySource {
-            dataObserver.entrySources[id]!
+            dataObserver.entrySources.value[id]!
         }
 
         var category: LogEntryCategory {
@@ -225,14 +241,14 @@ private extension VisualLoggerViewModel {
 
 private extension Publisher {
     func debounceOnMain(
-        for dueTime: RunLoop.SchedulerTimeType.Stride,
+        for dueTime: RunLoop.SchedulerTimeType.Stride = 0.3,
         options: RunLoop.SchedulerOptions? = nil
     ) -> Publishers.Debounce<Self, RunLoop> {
         debounce(for: dueTime, scheduler: RunLoop.main, options: options)
     }
 
     func throttleOnMain(
-        for dueTime: RunLoop.SchedulerTimeType.Stride,
+        for dueTime: RunLoop.SchedulerTimeType.Stride = 0.15,
         latest: Bool = true
     ) -> Publishers.Throttle<Self, RunLoop> {
         throttle(for: dueTime, scheduler: RunLoop.main, latest: latest)
