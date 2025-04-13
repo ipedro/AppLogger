@@ -267,6 +267,69 @@ private extension VisualLoggerViewModel {
     }
 }
 
+private extension Collection where Element == LogFilter {
+    func filterEntries(
+        ids: [LogEntryID],
+        sources: [LogEntryID : LogEntrySource],
+        categories: [LogEntryID : LogEntryCategory],
+        contents: [LogEntryID : LogEntryContent],
+        userInfoKeys: [LogEntryID : [LogEntryUserInfoKey]],
+        userInfoValues: [LogEntryUserInfoKey : String]
+    ) -> [LogEntryID] {
+        var result = ids
+        
+        if !isEmpty {
+            result = result.filter { id in
+                func userInfo() -> Set<String> {
+                    let keys = userInfoKeys[id, default: []]
+                    var userInfo = Set(keys.map(\.key))
+                    for key in keys {
+                        if let value = userInfoValues[key] {
+                            userInfo.insert(value)
+                        }
+                    }
+                    return userInfo
+                }
+                return filterEntry(
+                    id: id,
+                    source: sources[id]!,
+                    category: categories[id]!,
+                    content: contents[id]!,
+                    userInfo: userInfo()
+                )
+            }
+        }
+        
+        return result
+    }
+    
+    func filterEntry(
+        id: LogEntryID,
+        source: @autoclosure () -> LogEntrySource,
+        category: @autoclosure () -> LogEntryCategory,
+        content: @autoclosure () -> LogEntryContent,
+        userInfo: @autoclosure () -> Set<String>
+    ) -> Bool {
+        
+        for filter in self {
+            if filter.kind.contains(.source) {
+                if source().matches(filter) { return true }
+            }
+            if filter.kind.contains(.category) {
+                if category().matches(filter) { return true }
+            }
+            if filter.kind.contains(.content) {
+                if content().matches(filter) { return true }
+            }
+            if filter.kind.contains(.userInfo) {
+                if userInfo().contains(where: { $0.matches(filter) }) { return true }
+            }
+        }
+        
+        return false
+    }
+}
+
 private extension Publisher {
     func debounceOnMain(
         for dueTime: RunLoop.SchedulerTimeType.Stride = 0.3,
