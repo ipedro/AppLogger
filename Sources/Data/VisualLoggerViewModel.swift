@@ -44,8 +44,8 @@ package final class VisualLoggerViewModel: ObservableObject {
     }
 
     package func stop() {
-        cancellables.forEach {
-            $0.cancel()
+        for cancellable in cancellables {
+            cancellable.cancel()
             // debugPrint(#function, "VisualLoggerViewModel canceled observer: \($0)")
         }
         cancellables.removeAll()
