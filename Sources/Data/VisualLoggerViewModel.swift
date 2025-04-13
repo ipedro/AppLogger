@@ -274,7 +274,6 @@ private extension Collection where Element == LogFilter {
                 return userInfo
             }
             return filterEntry(
-                id: id,
                 source: sources[id]!,
                 category: categories[id]!,
                 content: contents[id]!,
@@ -286,7 +285,6 @@ private extension Collection where Element == LogFilter {
     }
 
     func filterEntry(
-        id _: LogEntryID,
         source: @autoclosure () -> LogEntrySource,
         category: @autoclosure () -> LogEntryCategory,
         content: @autoclosure () -> LogEntryContent,
@@ -330,8 +328,14 @@ private extension Publisher {
 private extension UserDefaults {
     var sorting: LogEntrySorting {
         get {
-            let rawValue = integer(forKey: "VisualLogger.sorting")
-            return LogEntrySorting(rawValue: rawValue) ?? .defaultValue
+            guard
+                let rawValue = string(forKey: "VisualLogger.sorting"),
+                let sorting = LogEntrySorting(rawValue: rawValue)
+            else {
+                return .defaultValue
+            }
+        
+            return sorting
         }
         set {
             set(newValue.rawValue, forKey: "VisualLogger.sorting")

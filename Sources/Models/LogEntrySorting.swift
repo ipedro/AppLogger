@@ -2,7 +2,7 @@
 ///
 /// `LogEntrySorting` provides a simple way to control the chronological order
 /// of log entries in the UI.
-package enum LogEntrySorting: Int, CustomStringConvertible, CaseIterable, Identifiable {
+package enum LogEntrySorting: String, CustomStringConvertible, CaseIterable, Identifiable {
     /// Shows oldest logs first
     case ascending
     /// Shows newest logs first
