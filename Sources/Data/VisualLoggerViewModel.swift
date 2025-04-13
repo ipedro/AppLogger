@@ -40,7 +40,7 @@ package final class VisualLoggerViewModel: ObservableObject {
 
     deinit {
         cancellables.forEach { $0.cancel() }
-        print(#function, "VisualLoggerViewModel released")
+        debugPrint(#function, "VisualLoggerViewModel released")
     }
 }
 

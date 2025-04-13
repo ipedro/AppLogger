@@ -39,7 +39,7 @@ final class Coordinator: NSObject {
     }
 
     deinit {
-        print(#function, "VisualLoggerCoordinator released")
+        debugPrint(#function, "VisualLoggerCoordinator released")
     }
 
     /// Retrieves the key window used for presenting the logging interface.
