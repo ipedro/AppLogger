@@ -325,30 +325,3 @@ private extension Publisher {
         throttle(for: dueTime, scheduler: RunLoop.main, latest: latest)
     }
 }
-
-private extension UserDefaults {
-    var sorting: LogEntrySorting {
-        get {
-            guard
-                let rawValue = string(forKey: "VisualLogger.sorting"),
-                let sorting = LogEntrySorting(rawValue: rawValue)
-            else {
-                return .defaultValue
-            }
-
-            return sorting
-        }
-        set {
-            set(newValue.rawValue, forKey: "VisualLogger.sorting")
-        }
-    }
-
-    var showFilters: Bool {
-        get {
-            bool(forKey: "VisualLogger.showFilters")
-        }
-        set {
-            set(newValue, forKey: "VisualLogger.showFilters")
-        }
-    }
-}

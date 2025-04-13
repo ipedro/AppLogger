@@ -19,7 +19,7 @@ package struct LogEntriesList: View {
     private var searchQuery = ""
 
     @State
-    private var showFilters: Bool = false
+    private var showFilters: Bool = UserDefaults.standard.showFilters
 
     @State
     private var activeFilterScope: [String] = []
@@ -78,6 +78,9 @@ package struct LogEntriesList: View {
         }
         .onReceive(viewModel.showFilterDrawerSubject) {
             showFilters = $0
+        }
+        .onChange(of: showFilters) {
+            viewModel.showFilterDrawerSubject.send($0)
         }
         .onReceive(viewModel.searchQuerySubject) {
             searchQuery = $0
