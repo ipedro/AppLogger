@@ -8,7 +8,7 @@ package struct LogEntriesList: View {
 
     @Environment(\.configuration)
     private var configuration
-    
+
     @Environment(\.spacing)
     private var spacing
 
