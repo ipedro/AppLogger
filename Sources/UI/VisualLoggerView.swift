@@ -24,7 +24,7 @@ package struct VisualLoggerView<Content>: View where Content: View {
 
     @Environment(\.configuration.accentColor)
     private var accentColor
-    
+
     @EnvironmentObject
     private var viewModel: VisualLoggerViewModel
 

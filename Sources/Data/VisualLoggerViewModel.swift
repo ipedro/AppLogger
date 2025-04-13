@@ -42,7 +42,7 @@ package final class VisualLoggerViewModel: ObservableObject {
         cancelObservers()
         debugPrint(#function, "VisualLoggerViewModel released")
     }
-    
+
     package func cancelObservers() {
         cancellables.forEach { $0.cancel() }
         debugPrint(#function, "VisualLoggerViewModel canceled observers")
