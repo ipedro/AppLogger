@@ -65,7 +65,6 @@ final class Coordinator: NSObject {
         }
 
         let viewController = makeViewController()
-        print(type(of: viewController))
         self.viewController = viewController
 
         if let sheetPresentation = viewController.sheetPresentationController {

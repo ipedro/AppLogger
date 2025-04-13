@@ -31,9 +31,9 @@ public actor VisualLogger {
     /// writes without blocking the main thread.
     ///
     /// - Parameter log: A `LogEntry` instance representing the event or message to be logged.
-    public nonisolated func addLogEntry(_ log: LogEntry) {
+    public nonisolated func addLogEntry(_ log: @autoclosure @escaping @Sendable () -> LogEntry) {
         Task {
-            await dataStore.addLogEntry(log)
+            await dataStore.addLogEntry(log())
         }
     }
 

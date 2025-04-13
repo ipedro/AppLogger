@@ -8,6 +8,9 @@ package struct LogEntriesList: View {
 
     @Environment(\.configuration)
     private var configuration
+    
+    @Environment(\.spacing)
+    private var spacing
 
     @State
     private var entries: [LogEntryID] = []
@@ -39,12 +42,14 @@ package struct LogEntriesList: View {
                     FiltersDrawer()
                         .compositingGroup()
                         .opacity(showFilters ? 1 : 0)
-                        .frame(height: showFilters ? nil : 10, alignment: .top)
+                        .frame(height: showFilters ? nil : spacing, alignment: .top)
                         .clipped()
                 }
             }
             .padding(.bottom, 50)
         }
+        .clipped()
+        .ignoresSafeArea(.container, edges: .bottom)
         .background {
             if data.isEmpty {
                 Text(emptyReason)
