@@ -31,6 +31,6 @@ struct VisualLoggerFormatter: LogFormatterProtocol {
     }
 
     var debugDescription: String {
-        "VisualLoggerFormatter"
+        "\(type(of: self))"
     }
 }
