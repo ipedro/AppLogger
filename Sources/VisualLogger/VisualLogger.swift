@@ -65,9 +65,10 @@ public actor VisualLogger {
         let coordinator = await Coordinator(
             dataObserver: observer,
             configuration: configuration,
-            dismiss: dismiss(viewController:)
+            dismiss: { [weak self] in
+                await self?.dismiss()
+            }
         )
-
         self.coordinator = coordinator
 
         await coordinator.present(
@@ -82,12 +83,7 @@ public actor VisualLogger {
     /// dismisses it on the main actor to ensure proper UI thread management.
     ///
     /// - Parameter viewController: The `UIViewController` instance to dismiss. If `nil`, only the coordinator state is reset.
-    private func dismiss(viewController: UIViewController?) {
+    private func dismiss() async {
         coordinator = nil
-        if let viewController {
-            Task { @MainActor in
-                viewController.dismiss(animated: true)
-            }
-        }
     }
 }

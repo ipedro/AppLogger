@@ -13,7 +13,7 @@ final class Coordinator: NSObject {
     private let configuration: VisualLoggerConfiguration
 
     /// Closure for handling dismissal of the presented view controller.
-    private let dismiss: (UIViewController?) -> Void
+    private let dismiss: () -> Void
 
     /// Weak reference to the currently presented view controller.
     private weak var viewController: UIViewController?
@@ -27,11 +27,19 @@ final class Coordinator: NSObject {
     init(
         dataObserver: DataObserver,
         configuration: VisualLoggerConfiguration,
-        dismiss: @escaping (_ viewController: UIViewController?) -> Void
+        dismiss: @escaping @Sendable () async -> Void
     ) {
         self.dataObserver = dataObserver
         self.configuration = configuration
-        self.dismiss = dismiss
+        self.dismiss = {
+            Task {
+                await dismiss()
+            }
+        }
+    }
+    
+    deinit {
+        print(#function, "VisualLoggerCoordinator released")
     }
 
     /// Retrieves the key window used for presenting the logging interface.
@@ -45,7 +53,9 @@ final class Coordinator: NSObject {
 
     private lazy var viewModel = VisualLoggerViewModel(
         dataObserver: dataObserver,
-        dismissAction: dismissAction
+        dismissAction: { [weak self] in
+            self?.dismissAction()
+        }
     )
 
     /// Presents the logging interface modally.
@@ -87,7 +97,8 @@ final class Coordinator: NSObject {
     ///
     /// This method is invoked by the view model to trigger the dismissal action.
     private func dismissAction() {
-        dismiss(viewController)
+        viewController?.dismiss(animated: true)
+        dismiss()
     }
 
     /// Creates and returns the view controller for presenting the logging interface.
@@ -137,7 +148,7 @@ extension Coordinator: UISheetPresentationControllerDelegate {
     /// - Parameter _: The presentation controller that was dismissed.
     func presentationControllerDidDismiss(_: UIPresentationController) {
         // Presentation has ended; clear the view controller reference.
-        dismiss(nil)
+        dismiss()
     }
 }
 
