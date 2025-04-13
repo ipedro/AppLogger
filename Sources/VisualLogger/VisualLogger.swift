@@ -65,8 +65,8 @@ public actor VisualLogger {
         let coordinator = await Coordinator(
             dataObserver: observer,
             configuration: configuration,
-            dismiss: { [weak self] in
-                await self?.dismiss()
+            dismiss: { [unowned self] in
+                await dismiss()
             }
         )
         self.coordinator = coordinator

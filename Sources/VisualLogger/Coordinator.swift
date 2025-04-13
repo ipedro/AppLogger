@@ -53,8 +53,8 @@ final class Coordinator: NSObject {
 
     private lazy var viewModel = VisualLoggerViewModel(
         dataObserver: dataObserver,
-        dismissAction: { [weak self] in
-            self?.dismissAction()
+        dismissAction: { [unowned self] in
+            dismissAction()
         }
     )
 
