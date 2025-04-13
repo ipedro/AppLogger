@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(iOS 13.0, *)
 public struct VisualLoggerAction: Identifiable, Sendable {
     /// A type that defines the closure for an action handler.
     public typealias ActionHandler = @MainActor (_ action: VisualLoggerAction) -> Void
