@@ -37,7 +37,7 @@ package final class VisualLoggerViewModel: ObservableObject {
         self.dismissAction = dismissAction
         setupPublishers()
     }
-    
+
     deinit {
         cancellables.forEach { $0.cancel() }
     }
@@ -76,7 +76,7 @@ package extension VisualLoggerViewModel {
 private extension VisualLoggerViewModel {
     func setupPublishers() {
         let backgroundQueue = DispatchQueue.global()
-        
+
         // Category Filters pipeline
         setupCategoryFiltersSubject(backgroundQueue)
 
@@ -85,7 +85,7 @@ private extension VisualLoggerViewModel {
 
         // Active Filter Scope pipeline
         setupActiveFilterScopeSubject(backgroundQueue)
-        
+
         // Entries pipeline
         setupCurrentEntriesSubject(backgroundQueue)
 
@@ -94,11 +94,11 @@ private extension VisualLoggerViewModel {
 
         // Persisting entries sorting to UserDefaults
         setupEntriesSortingSubject()
-        
+
         // Persisting showFilters to UserDefaults
         setupShowFilterDrawerSubject()
     }
-    
+
     func setupCategoryFiltersSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest(
             dataObserver.allCategories,
@@ -114,7 +114,7 @@ private extension VisualLoggerViewModel {
         }
         .store(in: &cancellables)
     }
-    
+
     func setupSourceFiltersSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest3(
             activeFiltersSubject,
@@ -137,7 +137,7 @@ private extension VisualLoggerViewModel {
         }
         .store(in: &cancellables)
     }
-    
+
     func setupActiveFilterScopeSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest(
             activeFiltersSubject,
@@ -157,7 +157,7 @@ private extension VisualLoggerViewModel {
         }
         .store(in: &cancellables)
     }
-    
+
     func setupCurrentEntriesSubject(_ queue: DispatchQueue) {
         Publishers.CombineLatest4(
             dataObserver.allEntries,
@@ -185,7 +185,7 @@ private extension VisualLoggerViewModel {
             let sourceFilters = filters.filter { $0.kind == .source }
 
             var filtered = allIds
-            
+
             filtered = categoryFilters.filterEntries(
                 ids: filtered,
                 sources: sources,
@@ -220,7 +220,7 @@ private extension VisualLoggerViewModel {
         }
         .store(in: &cancellables)
     }
-    
+
     func setupCustomActionsSubject() {
         dataObserver.customActions
             .receive(on: RunLoop.main)
@@ -229,7 +229,7 @@ private extension VisualLoggerViewModel {
             }
             .store(in: &cancellables)
     }
-    
+
     func setupEntriesSortingSubject() {
         entriesSortingSubject
             .receive(on: RunLoop.main)
@@ -238,7 +238,7 @@ private extension VisualLoggerViewModel {
             }
             .store(in: &cancellables)
     }
-    
+
     func setupShowFilterDrawerSubject() {
         showFilterDrawerSubject
             .receive(on: RunLoop.main)
@@ -252,16 +252,16 @@ private extension VisualLoggerViewModel {
 private extension Collection where Element == LogFilter {
     func filterEntries(
         ids: [LogEntryID],
-        sources: [LogEntryID : LogEntrySource],
-        categories: [LogEntryID : LogEntryCategory],
-        contents: [LogEntryID : LogEntryContent],
-        userInfoKeys: [LogEntryID : [LogEntryUserInfoKey]],
-        userInfoValues: [LogEntryUserInfoKey : String]
+        sources: [LogEntryID: LogEntrySource],
+        categories: [LogEntryID: LogEntryCategory],
+        contents: [LogEntryID: LogEntryContent],
+        userInfoKeys: [LogEntryID: [LogEntryUserInfoKey]],
+        userInfoValues: [LogEntryUserInfoKey: String]
     ) -> [LogEntryID] {
         guard !isEmpty else {
             return ids
         }
-        
+
         let result = ids.filter { id in
             func userInfo() -> Set<String> {
                 let keys = userInfoKeys[id, default: []]
@@ -281,18 +281,17 @@ private extension Collection where Element == LogFilter {
                 userInfo: userInfo()
             )
         }
-        
+
         return result
     }
-    
+
     func filterEntry(
-        id: LogEntryID,
+        id _: LogEntryID,
         source: @autoclosure () -> LogEntrySource,
         category: @autoclosure () -> LogEntryCategory,
         content: @autoclosure () -> LogEntryContent,
         userInfo: @autoclosure () -> Set<String>
     ) -> Bool {
-        
         for filter in self {
             if filter.kind.contains(.source) {
                 if source().matches(filter) { return true }
@@ -307,7 +306,7 @@ private extension Collection where Element == LogFilter {
                 if userInfo().contains(where: { $0.matches(filter) }) { return true }
             }
         }
-        
+
         return false
     }
 }

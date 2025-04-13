@@ -7,7 +7,7 @@ package enum LogEntrySorting: Int, CustomStringConvertible, CaseIterable, Identi
     case ascending
     /// Shows newest logs first
     case descending
-    
+
     package static let defaultValue: LogEntrySorting = .descending
 
     package var description: String {

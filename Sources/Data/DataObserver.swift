@@ -81,7 +81,7 @@ package final class DataObserver: @unchecked Sendable {
             self.allCategories.send(allCategories)
             self.customActions.send(customActions)
             self.entrySources.send(entrySources)
-            
+
             // push update to entries as last step
             self.allEntries.send(allEntries)
         }
