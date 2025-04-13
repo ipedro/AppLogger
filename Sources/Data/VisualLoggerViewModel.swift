@@ -8,7 +8,7 @@ package final class VisualLoggerViewModel: ObservableObject {
 
     package let dismissAction: DismissAction
 
-    package let dataObserver: DataObserver
+    private let dataObserver: DataObserver
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -39,13 +39,23 @@ package final class VisualLoggerViewModel: ObservableObject {
     }
 
     deinit {
-        cancelObservers()
+        stop()
         debugPrint(#function, "VisualLoggerViewModel released")
     }
 
-    package func cancelObservers() {
-        cancellables.forEach { $0.cancel() }
-        debugPrint(#function, "VisualLoggerViewModel canceled observers")
+    package func stop() {
+        cancellables.forEach {
+            $0.cancel()
+            debugPrint(#function, "VisualLoggerViewModel canceled observer: \($0)")
+        }
+        cancellables.removeAll()
+        activeFilterScopeSubject.value.removeAll()
+        activeFiltersSubject.value.removeAll()
+        categoryFiltersSubject.value.removeAll()
+        currentEntriesSubject.value.removeAll()
+        customActionsSubject.value.removeAll()
+        searchQuerySubject.value = ""
+        sourceFiltersSubject.value.removeAll()
     }
 }
 

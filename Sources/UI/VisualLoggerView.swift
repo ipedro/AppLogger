@@ -37,12 +37,13 @@ package struct VisualLoggerView<Content>: View where Content: View {
             .colorScheme(preferredColorScheme ?? currentColorScheme)
             .onDisappear {
                 // There is a bug with the SwiftUI environment that can hold on
-                // to the view model if there is a search query, so cancelling
-                // observers manually to be safe.
+                // to the view model if the search bar has come into focus
+                // during the logger presentation, so cancelling observers
+                // manually to be safe.
                 //
                 // The zombie view model gets released when the search bar comes
                 // into focus again.
-                viewModel.cancelObservers()
+                viewModel.stop()
             }
     }
 }

@@ -51,7 +51,6 @@ struct SearchBarView: View {
             viewModel.searchQuerySubject.send($0.trimmed)
         }
         .animation(.interactiveSpring, value: showDismiss)
-        .onDisappear(perform: clearText)
     }
 
     private var showDismiss: Bool {

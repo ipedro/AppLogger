@@ -31,7 +31,6 @@ struct ActionsMenu: View {
                 .symbolRenderingMode(.hierarchical)
         }
         .onReceive(viewModel.customActionsSubject) {
-            print("actions", $0)
             customActions = $0
         }
     }
