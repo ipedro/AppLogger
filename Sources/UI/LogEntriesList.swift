@@ -37,7 +37,7 @@ package struct LogEntriesList: View {
                             Divider()
                         }
                     }
-                    .animation(.snappy, value: data)
+                    .animation(.default, value: data)
                 } header: {
                     FiltersDrawer()
                         .compositingGroup()
