@@ -12,7 +12,7 @@ let log = XCGLogger.default
 
 @main
 struct Example_SwiftUIApp: App {
-    init () {
+    init() {
         log.formatters = [VisualLoggerFormatter()]
         log.setup(
             level: .verbose,
@@ -27,7 +27,7 @@ struct Example_SwiftUIApp: App {
             fileLevel: nil
         )
     }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView().task {

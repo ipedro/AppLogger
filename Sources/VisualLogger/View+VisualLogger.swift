@@ -60,7 +60,7 @@ public extension View {
             )
         )
     }
-    
+
     /// Presents a visual logging interface modally using the new sheet presentation APIs.
     ///
     /// This method leverages enhanced sheet presentation features available in iOS 16.4 and later.
@@ -111,17 +111,17 @@ public extension View {
 private struct VisualLoggerPresentationModifier<SheetContent: View>: ViewModifier {
     @Binding
     var isPresented: Bool
-    
+
     var configuration: VisualLoggerConfiguration
-    
+
     var onDismiss: (() -> Void)?
-    
+
     @ViewBuilder
     let sheetContent: () -> SheetContent
-    
+
     @State
     private var dataObserver: DataObserver?
-    
+
     private var __isPresented: Binding<Bool> {
         Binding(
             get: { isPresented && dataObserver != nil },

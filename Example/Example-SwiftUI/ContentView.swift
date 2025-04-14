@@ -11,25 +11,25 @@ import VisualLogger
 struct ContentView: View {
     @State
     private var showLogger = false
-    
+
     @State
     private var errorCount = 0
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            
+
             Text("Hello, world!")
-            
+
             Toggle(
                 "Present VisualLogger",
                 isOn: $showLogger
             )
             .toggleStyle(.button)
             .buttonStyle(.borderedProminent)
-            
+
             Button("Log Error") {
                 log.error("Error #\(errorCount) occurred", userInfo: [
                     "code": 123,
@@ -38,7 +38,7 @@ struct ContentView: View {
                 ])
                 errorCount += 1
             }
-            
+
             Spacer()
         }
         .padding(30)

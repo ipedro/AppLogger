@@ -67,7 +67,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
-    
+
     func makeDataObserver() async -> DataObserver {
         await dataStore.makeObserver()
     }
