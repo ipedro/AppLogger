@@ -12,7 +12,6 @@ public typealias VisualLoggerActionHandler = @MainActor (_ action: VisualLoggerA
 
 /// Defines a custom action.
 public struct VisualLoggerAction: Identifiable, Sendable {
-
     /// This action's identifier.
     public let id: String
 
