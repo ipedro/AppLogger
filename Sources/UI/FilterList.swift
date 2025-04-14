@@ -12,7 +12,7 @@ struct FilterList: View {
     private var selection = Set<LogFilter>()
 
     @State
-    private var filters = [LogFilter]()
+    private var data = [LogFilter]()
 
     @EnvironmentObject
     private var viewModel: VisualLoggerViewModel
@@ -27,13 +27,13 @@ struct FilterList: View {
                 LazyHStack(
                     spacing: spacing,
                     pinnedViews: .sectionHeaders,
-                    content: content
+                    content: filters
                 )
                 .padding(.trailing, spacing * 2)
             }
             .fixedSize(horizontal: false, vertical: true)
         }
-        .animation(.snappy, value: filters)
+        .animation(.snappy, value: data)
         .onReceive(viewModel.activeFiltersSubject) {
             selection = $0
         }
@@ -41,13 +41,13 @@ struct FilterList: View {
             viewModel.activeFiltersSubject.send($0)
         }
         .onReceive(viewModel[keyPath: keyPath]) {
-            filters = $0
+            data = $0
         }
     }
 
-    private func content() -> some View {
+    private func filters() -> some View {
         Section {
-            ForEach(filters, id: \.self) { /*@Sendable*/ filter in
+            ForEach(data, id: \.self) { /*@Sendable*/ filter in
                 FilterView(
                     data: filter,
                     isOn: Binding {
