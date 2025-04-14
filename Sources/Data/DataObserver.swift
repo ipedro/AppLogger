@@ -15,14 +15,14 @@ package final class DataObserver: @unchecked Sendable {
     /// An array holding all log entry sources present in the store.
     let allSources: CurrentValueSubject<[LogEntrySource], Never>
 
+    /// A dictionary mapping log entry IDs to their corresponding source.
+    let entrySources: CurrentValueSubject<[LogEntryID: LogEntrySource], Never>
+
     /// A dictionary mapping log entry IDs to their corresponding category.
     private(set) var entryCategories: [LogEntryID: LogEntryCategory]
 
     /// A dictionary mapping log entry IDs to their corresponding content.
     private(set) var entryContents: [LogEntryID: LogEntryContent]
-
-    /// A dictionary mapping log entry IDs to their corresponding source.
-    private(set) var entrySources: CurrentValueSubject<[LogEntryID: LogEntrySource], Never>
 
     /// A dictionary mapping log entry IDs to their corresponding userInfo keys.
     private(set) var entryUserInfoKeys = [LogEntryID: [LogEntryUserInfoKey]]()
