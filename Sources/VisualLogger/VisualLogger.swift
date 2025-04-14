@@ -46,7 +46,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
     ///   - sourceView: The view that the sheet centers itself over.
     ///   - completion: An optional closure executed after the presentation completes.
     ///
-    /// > Note: If a coordinator is already active, the method exits without re-presenting the UI.
+    /// > Note: If there is a presentation already active, the method exits without re-presenting the UI.
     ///
     /// > Tip: To customize the sheet’s position, set a view within the view hierarchy
     /// of the presenting view controller as the `sourceView` of the sheet.

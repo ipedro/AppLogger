@@ -1,16 +1,11 @@
-//
-//  VisualLoggerAction.swift
-//  swiftui-visual-logger
-//
-//  Created by Pedro Almeida on 12.04.25.
-//
-
 import SwiftUI
 
 /// A type that defines the closure for an action handler.
 public typealias VisualLoggerActionHandler = @MainActor (_ action: VisualLoggerAction) -> Void
 
-/// Defines a custom action.
+/// A menu element that performs its action in a closure.
+///
+/// Create a ``VisualLoggerAction`` object when you want to customize the `VisualLogger` with a menu element that performs its action in a closure.
 public struct VisualLoggerAction: Identifiable, Sendable {
     /// This action's identifier.
     public let id: String
