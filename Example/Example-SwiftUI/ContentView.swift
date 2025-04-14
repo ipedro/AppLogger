@@ -30,26 +30,30 @@ struct ContentView: View {
             .toggleStyle(.button)
             .buttonStyle(.borderedProminent)
 
-            Button("Log Error") {
-                log.error("Error #\(errorCount) occurred", userInfo: [
-                    "code": 123,
-                    "domain": "example.com",
-                    "reason": "Something went wrong",
-                ])
-                errorCount += 1
-            }
+            Button("Log Error", action: logError)
 
             Spacer()
         }
         .padding(30)
         .visualLoggerSheet(isPresented: $showLogger)
-        .onChange(of: showLogger) { newValue in
-            if newValue {
-                log.info("VisualLogger presented")
-            } else {
-                log.info("VisualLogger dismissed")
-            }
+        .onChange(of: showLogger, perform: didShowLogger)
+    }
+
+    private func didShowLogger(_ newValue: Bool) {
+        if newValue {
+            log.info("VisualLogger presented")
+        } else {
+            log.info("VisualLogger dismissed")
         }
+    }
+
+    private func logError() {
+        log.error("Error #\(errorCount) occurred", userInfo: [
+            "code": 123,
+            "domain": "example.com",
+            "reason": "Something went wrong",
+        ])
+        errorCount += 1
     }
 }
 
