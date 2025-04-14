@@ -60,7 +60,6 @@ struct FilterList: View {
                         }
                     }
                 )
-                .equatable()
             }
         } header: {
             Text(title)
