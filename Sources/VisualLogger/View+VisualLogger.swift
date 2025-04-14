@@ -25,6 +25,8 @@ import UI
 public extension View {
     /// Presents a visual logging interface modally using a sheet presentation.
     ///
+    /// Prefer ``visualLoggerSheet(isPresented:configuration:onDismiss:)`` on iOS 16.4+.
+    ///
     /// - Parameters:
     ///   - isPresented: A binding to a Boolean value that indicates whether the logger should be presented.
     ///   - configuration: The configuration object for customizing the appearance and behavior of the logger (default is `.init()`).
@@ -45,7 +47,13 @@ public extension View {
     ///     }
     /// }
     /// ```
-    @available(iOS, introduced: 15.0, deprecated: 16.4, message: "Please use visualLoggerSheet(isPresented:configuration:onDismiss:)")
+    @available(
+        iOS,
+        introduced: 15.0,
+        deprecated: 16.4,
+        message: "Please use visualLoggerSheet(isPresented:configuration:onDismiss:)",
+        renamed: "visualLoggerSheet(isPresented:configuration:onDismiss:)"
+    )
     func visualLogger(
         isPresented: Binding<Bool>,
         configuration: VisualLoggerConfiguration = .init(),
