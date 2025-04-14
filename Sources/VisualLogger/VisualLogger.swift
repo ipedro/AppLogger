@@ -78,7 +78,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
                     source: self,
                     content: LogEntryContent(
                         function: function,
-                        message: "VisualLogger already presented"
+                        message: "VisualLogger already presented."
                     )
                 )
             )
