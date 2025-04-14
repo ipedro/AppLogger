@@ -50,13 +50,10 @@ final class Coordinator: NSObject {
             .filter(\.isKeyWindow)
             .first
     }
-
-    private lazy var viewModel = VisualLoggerViewModel(
-        dataObserver: dataObserver,
-        dismissAction: { [unowned self] in
-            dismissAction()
-        }
-    )
+    
+    struct PresentationError: LocalizedError {
+        let errorDescription: String?
+    }
 
     /// Presents the logging interface modally.
     ///
@@ -66,13 +63,18 @@ final class Coordinator: NSObject {
     /// - Parameters:
     ///   - animated: A Boolean value indicating whether the presentation should be animated (default is true).
     ///   - completion: An optional closure called after the presentation is complete.
-    func present(animated: Bool = true, completion: (() -> Void)? = nil) {
-        guard
-            viewController == nil,
-            let presentingController = keyWindow?.rootViewController?.topPresentedViewController
-        else {
-            return
+    func present(animated: Bool = true, completion: (() -> Void)?) throws {
+        guard viewController == nil else {
+            throw PresentationError(errorDescription: "Another ViewController already presented.")
         }
+        guard let keyWindow else {
+            throw PresentationError(errorDescription: "No KeyWindow found.")
+        }
+        guard let rootViewController = keyWindow.rootViewController else {
+            throw PresentationError(errorDescription: "No rootViewController found.")
+        }
+        
+        let presentingController = rootViewController.topPresentedViewController
 
         let viewController = makeViewController()
         self.viewController = viewController
@@ -99,6 +101,16 @@ final class Coordinator: NSObject {
     private func dismissAction() {
         viewController?.dismiss(animated: true)
         dismiss()
+    }
+    
+    /// Injects the necessary dependencies into the provided SwiftUI view.
+    ///
+    /// - Parameter view: A SwiftUI view that requires dependency injection.
+    /// - Returns: The modified SwiftUI view with the configuration and view model injected.
+    func injectDependencies(_ view: some View) -> some View {
+        view
+            .configuration(configuration)
+            .environmentObject(makeViewModel())
     }
 
     /// Creates and returns the view controller for presenting the logging interface.
@@ -129,15 +141,14 @@ final class Coordinator: NSObject {
     func makeNavigationStack() -> some View {
         injectDependencies(VisualLoggerView.navigationStack())
     }
-
-    /// Injects the necessary dependencies into the provided SwiftUI view.
-    ///
-    /// - Parameter view: A SwiftUI view that requires dependency injection.
-    /// - Returns: The modified SwiftUI view with the configuration and view model injected.
-    func injectDependencies(_ view: some View) -> some View {
-        view
-            .configuration(configuration)
-            .environmentObject(viewModel)
+    
+    private func makeViewModel() -> VisualLoggerViewModel {
+        VisualLoggerViewModel(
+            dataObserver: dataObserver,
+            dismissAction: { [unowned self] in
+                dismissAction()
+            }
+        )
     }
 }
 

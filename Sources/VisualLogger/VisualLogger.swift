@@ -2,7 +2,7 @@ import Data
 import UIKit
 
 /// A centralized logging actor for handling asynchronous log entry management and UI presentation.
-public actor VisualLogger {
+public actor VisualLogger: LogEntrySourceProtocol {
     /// Underlying datastore that records log entries.
     private let dataStore = DataStore()
 
@@ -51,13 +51,37 @@ public actor VisualLogger {
     ///   - completion: An optional closure executed after the presentation completes.
     ///
     /// - Warning: If a coordinator is already active, the method exits without re-presenting the UI.
-    public func present(
+    public nonisolated func present(
         animated: Bool = true,
         configuration: VisualLoggerConfiguration = .init(),
         completion: (@Sendable () -> Void)? = nil
+    ) {
+        Task {
+            await _present(
+                animated: animated,
+                configuration: configuration,
+                completion: completion
+            )
+        }
+    }
+    
+    private func _present(
+        animated: Bool = true,
+        configuration: VisualLoggerConfiguration = .init(),
+        function: String = #function,
+        completion: (@Sendable () -> Void)? = nil
     ) async {
         guard coordinator == nil else {
-            return
+            return addLogEntry(
+                LogEntry(
+                    category: .warning,
+                    source: self,
+                    content: LogEntryContent(
+                        function: function,
+                        message: "VisualLogger already presented"
+                    )
+                )
+            )
         }
 
         let observer = await dataStore.makeObserver()
@@ -69,12 +93,27 @@ public actor VisualLogger {
                 await dismiss()
             }
         )
-        self.coordinator = coordinator
 
-        await coordinator.present(
-            animated: animated,
-            completion: completion
-        )
+        do {
+            try await coordinator.present(
+                animated: animated,
+                completion: completion
+            )
+            
+            self.coordinator = coordinator
+        }
+        catch {
+            addLogEntry(
+                LogEntry(
+                    category: .warning,
+                    source: self,
+                    content: LogEntryContent(
+                        function: function,
+                        message: error.localizedDescription
+                    )
+                )
+            )
+        }
     }
 
     /// Dismisses the current logging interface.

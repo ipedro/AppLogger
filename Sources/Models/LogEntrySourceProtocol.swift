@@ -30,14 +30,10 @@ public protocol LogEntrySourceProtocol {
     static var logEntryInfo: LogEntrySourceInfo? { get }
 }
 
+// MARK: - Default Values
+
 public extension LogEntrySourceProtocol {
     static var logEntryEmoji: Character? { nil }
-
-    static var logEntryName: String {
-        let type = "\(type(of: self))"
-        guard let sanitizedType = type.split(separator: "<").first else { return type }
-        return String(sanitizedType)
-    }
-
+    static var logEntryName: String { "\(Self.self)" }
     static var logEntryInfo: LogEntrySourceInfo? { nil }
 }

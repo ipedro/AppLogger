@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUICore
 import VisualLogger
 
 class ViewController: UIViewController {
@@ -9,7 +10,6 @@ class ViewController: UIViewController {
     private lazy var presentButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Logger", handler: { action in
-            Task { await VisualLogger.current.present() }
             // Log only the action title instead of the entire action object.
             log.info(action.title, userInfo: [
                 "discoverabilityTitle": action.discoverabilityTitle ?? "–",
@@ -17,13 +17,14 @@ class ViewController: UIViewController {
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,
             ])
+            
+            VisualLogger.current.present()
         })
     )
 
     private lazy var presentLightButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Light Logger", handler: { action in
-            Task { await VisualLogger.current.present(configuration: .init(colorScheme: .light)) }
             // Log only the action title instead of the entire action object.
             log.info(action.title, userInfo: [
                 "discoverabilityTitle": action.discoverabilityTitle ?? "–",
@@ -31,19 +32,22 @@ class ViewController: UIViewController {
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,
             ])
+
+            VisualLogger.current.present(configuration: .init(colorScheme: .light))
         })
     )
 
     private lazy var presentDarkButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
-            Task { await VisualLogger.current.present(configuration: .init(colorScheme: .dark)) }
             log.info(action.title, userInfo: [
                 "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,
             ])
+
+            VisualLogger.current.present(configuration: .init(colorScheme: .dark))
         })
     )
 
@@ -72,6 +76,7 @@ class ViewController: UIViewController {
 
     private lazy var changeColorSchemeAction = VisualLoggerAction(
         title: "Change Color Scheme",
+        image: Image(systemName: "circle.lefthalf.striped.horizontal"),
         handler: { [weak self] _ in
             guard let window = self?.view?.window else {
                 return
