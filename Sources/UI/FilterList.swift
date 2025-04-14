@@ -59,7 +59,7 @@ struct FilterList: View {
             )
         }
     }
-    
+
     private func header() -> some View {
         Text(title)
             .foregroundColor(.secondary)
