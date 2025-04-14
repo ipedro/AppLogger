@@ -1,4 +1,3 @@
-import SwiftUICore
 import UIKit
 import VisualLogger
 
@@ -76,7 +75,7 @@ class ViewController: UIViewController {
 
     private lazy var changeColorSchemeAction = VisualLoggerAction(
         title: "Change Color Scheme",
-        image: Image(systemName: "circle.lefthalf.striped.horizontal"),
+        image: UIImage(systemName: "circle.lefthalf.striped.horizontal"),
         handler: { [weak self] _ in
             guard let window = self?.view?.window else {
                 return
