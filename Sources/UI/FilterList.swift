@@ -24,11 +24,9 @@ struct FilterList: View {
         let _ = Self._debugPrintChanges()
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(
-                    spacing: spacing,
-                    pinnedViews: .sectionHeaders,
-                    content: filters
-                )
+                LazyHStack(spacing: spacing, pinnedViews: .sectionHeaders) {
+                    Section(content: filters, header: header)
+                }
                 .padding(.trailing, spacing * 2)
             }
             .fixedSize(horizontal: false, vertical: true)
@@ -46,32 +44,32 @@ struct FilterList: View {
     }
 
     private func filters() -> some View {
-        Section {
-            ForEach(data, id: \.self) { /*@Sendable*/ filter in
-                FilterView(
-                    data: filter,
-                    isOn: Binding {
-                        selection.contains(filter)
-                    } set: { active in
-                        if active {
-                            selection.insert(filter)
-                        } else {
-                            selection.remove(filter)
-                        }
+        ForEach(data, id: \.self) { /*@Sendable*/ filter in
+            FilterView(
+                data: filter,
+                isOn: Binding {
+                    selection.contains(filter)
+                } set: { active in
+                    if active {
+                        selection.insert(filter)
+                    } else {
+                        selection.remove(filter)
                     }
-                )
-            }
-        } header: {
-            Text(title)
-                .foregroundColor(.secondary)
-                .padding(EdgeInsets(
-                    top: spacing,
-                    leading: spacing * 2,
-                    bottom: spacing,
-                    trailing: spacing
-                ))
-                .background(.background)
+                }
+            )
         }
+    }
+    
+    private func header() -> some View {
+        Text(title)
+            .foregroundColor(.secondary)
+            .padding(EdgeInsets(
+                top: spacing,
+                leading: spacing * 2,
+                bottom: spacing,
+                trailing: spacing
+            ))
+            .background(.background)
     }
 }
 
