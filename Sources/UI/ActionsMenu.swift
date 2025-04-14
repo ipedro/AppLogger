@@ -18,7 +18,7 @@ struct ActionsMenu: View {
             Divider()
 
             ForEach(customActions) { action in
-                Button(action: action.execute) {
+                Button(role: action.role, action: action.execute) {
                     Label {
                         Text(action.title)
                     } icon: {

@@ -5,25 +5,51 @@ import UIKit
 public actor VisualLogger: LogEntrySourceProtocol {
     /// Underlying datastore that records log entries.
     private let dataStore = DataStore()
-
+    
     /// The current active coordinator responsible for presenting the log interface.
     private var coordinator: Coordinator?
-
-    /// Shared instance of `VisualLogger` for global accessibility.
-    public static let current = VisualLogger()
-
-    public nonisolated func addAction(_ action: VisualLoggerAction) {
+    
+    /// Shared instance of `VisualLogger`.
+    static let current = VisualLogger()
+    
+    /// Enqueues a visual logger action for later use.
+    ///
+    /// This method asynchronously adds the specified visual logger action to the underlying data store.
+    /// It is designed to allow you to attach interactive actions within the visual logging interface.
+    ///
+    /// - Parameter action: A `VisualLoggerAction` instance representing the action to be added.
+    ///
+    /// **Example:**
+    /// ```swift
+    /// let clearLogsAction = VisualLoggerAction(title: "Clear Logs") {
+    ///     // Implementation to clear logs
+    /// }
+    /// VisualLogger.addAction(clearLogsAction)
+    /// ```
+    public static func addAction(_ action: VisualLoggerAction) {
         Task {
-            await dataStore.addAction(action)
+            await current.dataStore.addAction(action)
         }
     }
-
-    public nonisolated func removeAction(_ action: VisualLoggerAction) {
+    
+    /// Removes a visual logger action.
+    ///
+    /// This method asynchronously removes the specified visual logger action from the underlying data store,
+    /// ensuring that the action is no longer available within the visual logging interface.
+    ///
+    /// - Parameter action: A `VisualLoggerAction` instance representing the action to be removed.
+    ///
+    /// **Example:**
+    /// ```swift
+    /// let clearLogsAction = VisualLoggerAction(title: "Clear Logs")
+    /// VisualLogger.removeAction(clearLogsAction)
+    /// ```
+    public static func removeAction(_ action: VisualLoggerAction) {
         Task {
-            await dataStore.removeAction(action)
+            await current.dataStore.removeAction(action)
         }
     }
-
+    
     /// Adds a log entry to the underlying data store.
     ///
     /// This method offloads the logging operation to a background task, ensuring that the
@@ -31,12 +57,12 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// writes without blocking the main thread.
     ///
     /// - Parameter log: A `LogEntry` instance representing the event or message to be logged.
-    public nonisolated func addLogEntry(_ log: @autoclosure @escaping @Sendable () -> LogEntry) {
+    public static func addLogEntry(_ log: @autoclosure @escaping @Sendable () -> LogEntry) {
         Task {
-            await dataStore.addLogEntry(log())
+            await current.dataStore.addLogEntry(log())
         }
     }
-
+    
     /// Presents the logging interface modally on a sheet.
     ///
     /// - Parameters:
@@ -52,14 +78,14 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// of the presenting view controller as the `sourceView` of the sheet.
     /// The sheet attempts to visually center itself over this view. The system
     /// only positions the sheet within system-defined margins.
-    public nonisolated func present(
+    public static func present(
         animated: Bool = true,
         configuration: VisualLoggerConfiguration = .init(),
         from sourceView: UIView? = nil,
         completion: (@Sendable () -> Void)? = nil
     ) {
         Task {
-            await _present(
+            await current._present(
                 animated: animated,
                 configuration: configuration,
                 sourceView: sourceView,
@@ -67,11 +93,11 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
-
+    
     func makeDataObserver() async -> DataObserver {
         await dataStore.makeObserver()
     }
-
+    
     private func _present(
         animated: Bool,
         configuration: VisualLoggerConfiguration,
@@ -80,7 +106,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
         function: String = #function
     ) async {
         guard coordinator == nil else {
-            return addLogEntry(
+            return await dataStore.addLogEntry(
                 LogEntry(
                     category: .warning,
                     source: self,
@@ -91,9 +117,9 @@ public actor VisualLogger: LogEntrySourceProtocol {
                 )
             )
         }
-
+        
         let observer = await dataStore.makeObserver()
-
+        
         let coordinator = await Coordinator(
             dataObserver: observer,
             configuration: configuration,
@@ -101,17 +127,17 @@ public actor VisualLogger: LogEntrySourceProtocol {
                 await dismiss()
             }
         )
-
+        
         do {
             try await coordinator.present(
                 animated: animated,
                 sourceView: sourceView,
                 completion: completion
             )
-
+            
             self.coordinator = coordinator
         } catch {
-            addLogEntry(
+            await dataStore.addLogEntry(
                 LogEntry(
                     category: .error,
                     source: self,
@@ -123,13 +149,20 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
-
+    
     /// Dismisses the current logging interface.
     ///
-    /// This helper method resets the active coordinator and, if a view controller is provided,
-    /// dismisses it on the main actor to ensure proper UI thread management.
+    /// This helper method resets the active coordinator. Once dismissed, the logging interface
+    /// is no longer available until presented again.
+    public func dismissInterface() async {
+        await dismiss()
+    }
+    
+    /// Dismisses the current logging interface without external parameters.
     ///
-    /// - Parameter viewController: The `UIViewController` instance to dismiss. If `nil`, only the coordinator state is reset.
+    /// This method is invoked internally to reset the active coordinator and clear the log interface state.
+    ///
+    /// - Note: This method should not be called directly outside of the VisualLogger context.
     private func dismiss() async {
         coordinator = nil
     }

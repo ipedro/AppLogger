@@ -17,7 +17,7 @@ class ViewController: UIViewController {
                 "state": action.state.rawValue,
             ])
 
-            VisualLogger.current.present()
+            VisualLogger.present()
         })
     )
 
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
                 "state": action.state.rawValue,
             ])
 
-            VisualLogger.current.present(configuration: .init(colorScheme: .light))
+            VisualLogger.present(configuration: .init(colorScheme: .light))
         })
     )
 
@@ -46,7 +46,7 @@ class ViewController: UIViewController {
                 "state": action.state.rawValue,
             ])
 
-            VisualLogger.current.present(configuration: .init(colorScheme: .dark))
+            VisualLogger.present(configuration: .init(colorScheme: .dark))
         })
     )
 
@@ -139,7 +139,7 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        VisualLogger.current.addAction(changeColorSchemeAction)
+        VisualLogger.addAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewDidAppear",
             "animated": animated,
@@ -158,7 +158,7 @@ class ViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        VisualLogger.current.removeAction(changeColorSchemeAction)
+        VisualLogger.removeAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewDidDisappear",
             "animated": animated,

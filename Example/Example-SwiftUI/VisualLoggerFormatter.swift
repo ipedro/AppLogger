@@ -6,7 +6,7 @@ import XCGLogger
 struct VisualLoggerFormatter: LogFormatterProtocol {
     func format(logDetails: inout LogDetails, message: inout String) -> String {
         let logDetails = logDetails
-        VisualLogger.current.addLogEntry(
+        VisualLogger.addLogEntry(
             LogEntry(
                 date: logDetails.date,
                 category: LogEntryCategory(logDetails.level.description),

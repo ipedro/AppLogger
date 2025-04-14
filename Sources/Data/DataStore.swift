@@ -54,6 +54,31 @@ package actor DataStore {
         customActions.remove(action)
         updateObserver()
     }
+    
+    private lazy var clearLogsAction = VisualLoggerAction(
+        title: "Clear logs",
+        role: .destructive,
+        systemImage: "trash"
+    ) { [unowned self] _ in
+        Task {
+            await clearLogs()
+        }
+    }
+    
+    private func clearLogs() {
+        defer {
+            updateObserver()
+        }
+        allEntries.removeAll()
+        allCategories.removeAll()
+        allSources.removeAll()
+        customActions.removeAll()
+        entryCategories.removeAll()
+        entryContents.removeAll()
+        entrySources.removeAll()
+        entryUserInfoKeys.removeAll()
+        entryUserInfoValues.removeAll()
+    }
 
     /// Adds a log entry to the DataStore.
     ///
@@ -65,6 +90,8 @@ package actor DataStore {
         guard allEntries.insert(id).inserted else {
             return
         }
+
+        customActions.insert(clearLogsAction)
 
         defer {
             updateObserver()
