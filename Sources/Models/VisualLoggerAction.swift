@@ -7,21 +7,23 @@
 
 import SwiftUI
 
+/// A type that defines the closure for an action handler.
+public typealias VisualLoggerActionHandler = @MainActor (_ action: VisualLoggerAction) -> Void
+
+/// Defines a custom action.
 public struct VisualLoggerAction: Identifiable, Sendable {
-    /// A type that defines the closure for an action handler.
-    public typealias ActionHandler = @MainActor (_ action: VisualLoggerAction) -> Void
 
     /// This action's identifier.
     public let id: String
 
     /// Short display title.
-    package let title: String
+    public let title: String
 
     /// Image that can appear next to this action.
     package let image: Image?
 
     /// This action's handler
-    private let handler: ActionHandler
+    private let handler: VisualLoggerActionHandler
 
     @MainActor
     package func execute() {
@@ -32,7 +34,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
         id: String? = nil,
         title: String,
         image: Image? = nil,
-        handler: @escaping ActionHandler
+        handler: @escaping VisualLoggerActionHandler
     ) {
         self.id = id ?? title
         self.title = title
@@ -45,7 +47,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
         id: String? = nil,
         title: String,
         image: UIImage? = nil,
-        handler: @escaping ActionHandler
+        handler: @escaping VisualLoggerActionHandler
     ) {
         self.id = id ?? title
         self.title = title

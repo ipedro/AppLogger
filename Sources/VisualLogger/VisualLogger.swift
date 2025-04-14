@@ -104,7 +104,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
         } catch {
             addLogEntry(
                 LogEntry(
-                    category: .warning,
+                    category: .error,
                     source: self,
                     content: LogEntryContent(
                         function: function,

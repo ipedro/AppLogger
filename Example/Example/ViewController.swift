@@ -52,14 +52,14 @@ class ViewController: UIViewController {
 
     private lazy var logErrorButton = UIButton(
         configuration: .bordered(),
-        primaryAction: UIAction(title: "Log Error", handler: { _ in
+        primaryAction: UIAction(title: "Log Error", handler: { [unowned self] _ in
             // Log a small string message along with the action title.
-            log.error("Error #\(self.errorCount) occurred", userInfo: [
+            log.error("Error #\(errorCount) occurred", userInfo: [
                 "code": 123,
                 "domain": "example.com",
                 "reason": "Something went wrong",
             ])
-            self.errorCount += 1
+            errorCount += 1
         })
     )
 
@@ -76,23 +76,24 @@ class ViewController: UIViewController {
     private lazy var changeColorSchemeAction = VisualLoggerAction(
         title: "Change Color Scheme",
         image: UIImage(systemName: "circle.lefthalf.striped.horizontal"),
-        handler: { [weak self] _ in
-            guard let window = self?.view?.window else {
+        handler: { [unowned self] action in
+            guard let window = view?.window else {
                 return
             }
-            let newScheme: UIUserInterfaceStyle = if window.overrideUserInterfaceStyle == .dark {
+            let newValue: UIUserInterfaceStyle = if window.overrideUserInterfaceStyle == .dark {
                 .light
             } else {
                 .dark
             }
-            window.overrideUserInterfaceStyle = newScheme
             log.info(
-                "Changed color scheme",
+                action.title,
                 userInfo: [
-                    "colorScheme": newScheme,
+                    "newValue": newValue,
+                    "oldValue": window.overrideUserInterfaceStyle,
                     "window": window,
                 ]
             )
+            window.overrideUserInterfaceStyle = newValue
         }
     )
 
@@ -129,7 +130,6 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        VisualLogger.current.addAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewWillAppear",
             "animated": animated,
@@ -139,6 +139,7 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        VisualLogger.current.addAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewDidAppear",
             "animated": animated,
@@ -148,7 +149,6 @@ class ViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        VisualLogger.current.removeAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewWillDisappear",
             "animated": animated,
@@ -158,6 +158,7 @@ class ViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        VisualLogger.current.removeAction(changeColorSchemeAction)
         log.verbose(userInfo: [
             "event": "viewDidDisappear",
             "animated": animated,
