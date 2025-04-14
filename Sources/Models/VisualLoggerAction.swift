@@ -17,24 +17,24 @@ public enum VisualLoggerActionRole {
 public struct VisualLoggerAction: Identifiable, Sendable {
     /// This action's identifier.
     public let id: String
-    
+
     /// Short display title.
     public let title: String
-    
+
     /// Image that can appear next to this action.
     package let image: Image?
-    
+
     /// The role of the action which determines its styling.
     package let role: ButtonRole?
-    
+
     /// This action's handler.
     private let handler: VisualLoggerActionHandler
-    
+
     @MainActor
     package func execute() {
         handler(self)
     }
-    
+
     /// Initializes a new `VisualLoggerAction` with an optional identifier, a title, a role, an optional image, and an action handler.
     ///
     /// If `id` is omitted, the title will be used as the identifier.
@@ -72,7 +72,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
             }
         }()
     }
-    
+
     /// Initializes a new `VisualLoggerAction` using a system image name.
     ///
     /// This initializer creates a new instance with an image generated from the provided system image name.
@@ -106,7 +106,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
             handler: handler
         )
     }
-    
+
     /// Initializes a new `VisualLoggerAction` using a `UIImage`.
     ///
     /// This initializer allows the creation of an action with a `UIImage`. It converts the `UIImage` into a SwiftUI `Image` internally.
@@ -153,8 +153,8 @@ public struct VisualLoggerAction: Identifiable, Sendable {
 extension VisualLoggerAction: Equatable {
     public static func == (lhs: VisualLoggerAction, rhs: VisualLoggerAction) -> Bool {
         lhs.id == rhs.id &&
-        lhs.title == rhs.title &&
-        lhs.image == rhs.image
+            lhs.title == rhs.title &&
+            lhs.image == rhs.image
     }
 }
 

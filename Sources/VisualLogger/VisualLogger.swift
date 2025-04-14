@@ -5,13 +5,13 @@ import UIKit
 public actor VisualLogger: LogEntrySourceProtocol {
     /// Underlying datastore that records log entries.
     private let dataStore = DataStore()
-    
+
     /// The current active coordinator responsible for presenting the log interface.
     private var coordinator: Coordinator?
-    
+
     /// Shared instance of `VisualLogger`.
     static let current = VisualLogger()
-    
+
     /// Enqueues a visual logger action for later use.
     ///
     /// This method asynchronously adds the specified visual logger action to the underlying data store.
@@ -31,7 +31,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
             await current.dataStore.addAction(action)
         }
     }
-    
+
     /// Removes a visual logger action.
     ///
     /// This method asynchronously removes the specified visual logger action from the underlying data store,
@@ -49,7 +49,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
             await current.dataStore.removeAction(action)
         }
     }
-    
+
     /// Adds a log entry to the underlying data store.
     ///
     /// This method offloads the logging operation to a background task, ensuring that the
@@ -62,7 +62,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
             await current.dataStore.addLogEntry(log())
         }
     }
-    
+
     /// Presents the logging interface modally on a sheet.
     ///
     /// - Parameters:
@@ -93,11 +93,11 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
-    
+
     func makeDataObserver() async -> DataObserver {
         await dataStore.makeObserver()
     }
-    
+
     private func _present(
         animated: Bool,
         configuration: VisualLoggerConfiguration,
@@ -117,9 +117,9 @@ public actor VisualLogger: LogEntrySourceProtocol {
                 )
             )
         }
-        
+
         let observer = await dataStore.makeObserver()
-        
+
         let coordinator = await Coordinator(
             dataObserver: observer,
             configuration: configuration,
@@ -127,14 +127,14 @@ public actor VisualLogger: LogEntrySourceProtocol {
                 await dismiss()
             }
         )
-        
+
         do {
             try await coordinator.present(
                 animated: animated,
                 sourceView: sourceView,
                 completion: completion
             )
-            
+
             self.coordinator = coordinator
         } catch {
             await dataStore.addLogEntry(
@@ -149,7 +149,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
-    
+
     /// Dismisses the current logging interface.
     ///
     /// This helper method resets the active coordinator. Once dismissed, the logging interface
@@ -157,7 +157,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
     public func dismissInterface() async {
         await dismiss()
     }
-    
+
     /// Dismisses the current logging interface without external parameters.
     ///
     /// This method is invoked internally to reset the active coordinator and clear the log interface state.

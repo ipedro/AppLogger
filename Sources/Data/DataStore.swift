@@ -54,7 +54,7 @@ package actor DataStore {
         customActions.remove(action)
         updateObserver()
     }
-    
+
     private lazy var clearLogsAction = VisualLoggerAction(
         title: "Clear logs",
         role: .destructive,
@@ -64,7 +64,7 @@ package actor DataStore {
             await clearLogs()
         }
     }
-    
+
     private func clearLogs() {
         defer {
             updateObserver()
