@@ -62,8 +62,13 @@ final class Coordinator: NSObject {
     ///
     /// - Parameters:
     ///   - animated: A Boolean value indicating whether the presentation should be animated (default is true).
+    ///   - sourceView: The view that the sheet centers itself over.
     ///   - completion: An optional closure called after the presentation is complete.
-    func present(animated: Bool = true, completion: (() -> Void)?) throws {
+    func present(
+        animated: Bool,
+        sourceView: UIView?,
+        completion: (() -> Void)?
+    ) throws {
         guard viewController == nil else {
             throw PresentationError(errorDescription: "Another ViewController already presented.")
         }
@@ -80,11 +85,14 @@ final class Coordinator: NSObject {
         self.viewController = viewController
 
         if let sheetPresentation = viewController.sheetPresentationController {
+            sheetPresentation.sourceView = sourceView
             sheetPresentation.detents = [.large(), .medium()]
             sheetPresentation.selectedDetentIdentifier = .medium
             sheetPresentation.prefersGrabberVisible = true
             sheetPresentation.prefersScrollingExpandsWhenScrolledToEdge = false
             sheetPresentation.largestUndimmedDetentIdentifier = .large
+            sheetPresentation.prefersEdgeAttachedInCompactHeight = true
+            sheetPresentation.widthFollowsPreferredContentSizeWhenEdgeAttached = true
             sheetPresentation.delegate = self
         }
 

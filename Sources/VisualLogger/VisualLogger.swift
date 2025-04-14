@@ -37,39 +37,43 @@ public actor VisualLogger: LogEntrySourceProtocol {
         }
     }
 
-    /// Presents the logging interface modally.
-    ///
-    /// Before initiating presentation, this method checks that no coordinator is already active.
-    /// It then creates a data observer from the data store and configures a new `Coordinator` instance
-    /// to manage the logging UI. The asynchronous presentation allows for a smooth and dynamic
-    /// user experience.
+    /// Presents the logging interface modally on a sheet.
     ///
     /// - Parameters:
     ///   - animated: A Boolean value indicating whether the presentation should be animated. Defaults to `true`.
     ///   - configuration: A `VisualLoggerConfiguration` instance that provides custom presentation settings.
     ///     Defaults to a new instance of `VisualLoggerConfiguration`.
+    ///   - sourceView: The view that the sheet centers itself over.
     ///   - completion: An optional closure executed after the presentation completes.
     ///
-    /// - Warning: If a coordinator is already active, the method exits without re-presenting the UI.
+    /// > Note: If a coordinator is already active, the method exits without re-presenting the UI.
+    ///
+    /// > Tip: To customize the sheet’s position, set a view within the view hierarchy
+    /// of the presenting view controller as the `sourceView` of the sheet.
+    /// The sheet attempts to visually center itself over this view. The system
+    /// only positions the sheet within system-defined margins.
     public nonisolated func present(
         animated: Bool = true,
         configuration: VisualLoggerConfiguration = .init(),
+        from sourceView: UIView? = nil,
         completion: (@Sendable () -> Void)? = nil
     ) {
         Task {
             await _present(
                 animated: animated,
                 configuration: configuration,
+                sourceView: sourceView,
                 completion: completion
             )
         }
     }
 
     private func _present(
-        animated: Bool = true,
-        configuration: VisualLoggerConfiguration = .init(),
-        function: String = #function,
-        completion: (@Sendable () -> Void)? = nil
+        animated: Bool,
+        configuration: VisualLoggerConfiguration,
+        sourceView: UIView?,
+        completion: (@Sendable () -> Void)?,
+        function: String = #function
     ) async {
         guard coordinator == nil else {
             return addLogEntry(
@@ -97,6 +101,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
         do {
             try await coordinator.present(
                 animated: animated,
+                sourceView: sourceView,
                 completion: completion
             )
 
