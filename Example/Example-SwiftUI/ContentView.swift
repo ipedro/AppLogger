@@ -24,7 +24,7 @@ struct ContentView: View {
             Text("Hello, world!")
 
             Toggle(
-                "Present VisualLogger",
+                "\(showLogger ? "Dismiss" : "Present") VisualLogger",
                 isOn: $showLogger
             )
             .toggleStyle(.button)
