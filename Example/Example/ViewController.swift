@@ -1,5 +1,5 @@
-import UIKit
 import SwiftUICore
+import UIKit
 import VisualLogger
 
 class ViewController: UIViewController {
@@ -17,7 +17,7 @@ class ViewController: UIViewController {
                 "attributes": action.attributes.rawValue,
                 "state": action.state.rawValue,
             ])
-            
+
             VisualLogger.current.present()
         })
     )

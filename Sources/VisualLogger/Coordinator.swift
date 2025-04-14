@@ -50,7 +50,7 @@ final class Coordinator: NSObject {
             .filter(\.isKeyWindow)
             .first
     }
-    
+
     struct PresentationError: LocalizedError {
         let errorDescription: String?
     }
@@ -73,7 +73,7 @@ final class Coordinator: NSObject {
         guard let rootViewController = keyWindow.rootViewController else {
             throw PresentationError(errorDescription: "No rootViewController found.")
         }
-        
+
         let presentingController = rootViewController.topPresentedViewController
 
         let viewController = makeViewController()
@@ -102,7 +102,7 @@ final class Coordinator: NSObject {
         viewController?.dismiss(animated: true)
         dismiss()
     }
-    
+
     /// Injects the necessary dependencies into the provided SwiftUI view.
     ///
     /// - Parameter view: A SwiftUI view that requires dependency injection.
@@ -141,7 +141,7 @@ final class Coordinator: NSObject {
     func makeNavigationStack() -> some View {
         injectDependencies(VisualLoggerView.navigationStack())
     }
-    
+
     private func makeViewModel() -> VisualLoggerViewModel {
         VisualLoggerViewModel(
             dataObserver: dataObserver,

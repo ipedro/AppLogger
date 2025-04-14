@@ -64,7 +64,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
-    
+
     private func _present(
         animated: Bool = true,
         configuration: VisualLoggerConfiguration = .init(),
@@ -99,10 +99,9 @@ public actor VisualLogger: LogEntrySourceProtocol {
                 animated: animated,
                 completion: completion
             )
-            
+
             self.coordinator = coordinator
-        }
-        catch {
+        } catch {
             addLogEntry(
                 LogEntry(
                     category: .warning,
