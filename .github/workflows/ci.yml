@@ -22,6 +22,7 @@ jobs:
           echo "No changes to commit"
         fi
   update-license:
+    needs: swift-format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,7 +30,7 @@ jobs:
       - name: Prepend License to Swift files
         run: |
           # Read LICENSE file, add a backslash and a space before each line, then append two newlines.
-          LICENSE_BLOCK=$(sed 's/^/\\\\ /' LICENSE; printf "\n\n")
+          LICENSE_BLOCK=$(sed 's/^/\\\\ /' LICENSE; printf $'\n\n')
           
           # Iterate over each Swift file in the Sources directory.
           find Sources -type f -name "*.swift" | while read -r file; do
