@@ -87,7 +87,7 @@ package struct LogEntriesList: View {
                     .foregroundStyle(.secondary)
                     .font(.callout)
                     .multilineTextAlignment(.center)
-                    .padding(.top, showFilters ? 150 : 0)
+                    .padding(flipped ? .bottom : .top, showFilters ? 150 : 0)
             }
         }
         .animation(.snappy, value: showFilters)
