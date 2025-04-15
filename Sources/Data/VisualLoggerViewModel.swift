@@ -175,14 +175,13 @@ private extension VisualLoggerViewModel {
     }
 
     func setupCurrentEntriesSubject(_ queue: DispatchQueue) {
-        Publishers.CombineLatest4(
+        Publishers.CombineLatest3(
             dataObserver.allEntries,
             searchQuerySubject.debounceOnMain(),
-            activeFiltersSubject,
-            entriesSortingSubject
+            activeFiltersSubject
         )
         .throttleOnMain()
-        .map { [unowned self] entries, query, filters, sorting in
+        .map { [unowned self] entries, query, filters in
             (
                 entries,
                 dataObserver.entrySources.value,
@@ -191,12 +190,11 @@ private extension VisualLoggerViewModel {
                 dataObserver.entryUserInfoKeys,
                 dataObserver.entryUserInfoValues,
                 query,
-                filters,
-                sorting
+                filters
             )
         }
         .receive(on: queue)
-        .map { allIds, sources, categories, contents, userInfoKeys, userInfoValues, query, filters, _ in
+        .map { allIds, sources, categories, contents, userInfoKeys, userInfoValues, query, filters in
             let categoryFilters = filters.filter { $0.kind == .category }
             let sourceFilters = filters.filter { $0.kind == .source }
 
