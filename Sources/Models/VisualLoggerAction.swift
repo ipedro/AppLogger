@@ -168,6 +168,19 @@ extension VisualLoggerAction: Hashable {
 
 extension VisualLoggerAction: Comparable {
     public static func < (lhs: VisualLoggerAction, rhs: VisualLoggerAction) -> Bool {
-        lhs.id.localizedStandardCompare(rhs.id) == .orderedAscending
+        let prefix = VisualLoggerAction.internalNameSpace
+        let lhsIsInternal = lhs.id.hasPrefix(prefix)
+        let rhsIsInternal = rhs.id.hasPrefix(prefix)
+        
+        // If lhs is internal and rhs is not, lhs comes first.
+        if lhsIsInternal && !rhsIsInternal {
+            return true
+        }
+        // If rhs is internal and lhs is not, rhs comes first.
+        if !lhsIsInternal && rhsIsInternal {
+            return false
+        }
+        // Otherwise, fallback to standard comparison based on title.
+        return lhs.title.localizedStandardCompare(rhs.title) == .orderedAscending
     }
 }
