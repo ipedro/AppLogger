@@ -9,6 +9,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Update main branch
+      run: |
+        git fetch origin main
+        git reset --hard origin/main
     - name: Run SwiftFormat
       run: swiftformat .
     - name: Commit and Push Changes
@@ -18,7 +22,6 @@ jobs:
         git add .
         if ! git diff --quiet --staged; then
           git commit -m "Apply SwiftFormat"
-          git push origin main
         else
           echo "No changes to commit"
         fi
