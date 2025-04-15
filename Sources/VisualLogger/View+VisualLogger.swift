@@ -174,8 +174,11 @@ private struct VisualLoggerSheetModifier<SheetContent: View>: ViewModifier {
     .onAppear {
         VisualLogger.addAction(
             VisualLoggerAction(title: "Add Logs", systemImage: "plus.circle.fill") { _ in
-                for mock in LogEntryMock.allCases.shuffled() {
-                    VisualLogger.addLogEntry(mock.entry())
+                Task {
+                    for mock in LogEntryMock.allCases.shuffled() {
+                        VisualLogger.addLogEntry(mock.entry())
+                        try? await Task.sleep(for: .seconds(1))
+                    }
                 }
             }
         )
