@@ -165,7 +165,7 @@ private struct VisualLoggerSheetModifier<SheetContent: View>: ViewModifier {
 #Preview {
     @Previewable @State
     var isPresented = false
-    
+
     VStack {
         Toggle("Show Logger", isOn: $isPresented)
             .toggleStyle(.button)
@@ -173,7 +173,7 @@ private struct VisualLoggerSheetModifier<SheetContent: View>: ViewModifier {
     }
     .onAppear {
         VisualLogger.addAction(
-            VisualLoggerAction(title: "Add Logs", handler: { action in
+            VisualLoggerAction(title: "Add Logs", handler: { _ in
                 for mock in LogEntryMock.allCases {
                     VisualLogger.addLogEntry(mock.entry())
                 }
