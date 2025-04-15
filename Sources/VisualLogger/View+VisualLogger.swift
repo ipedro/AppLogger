@@ -110,6 +110,7 @@ public extension View {
                         .presentationDragIndicator(.visible)
                         .presentationContentInteraction(.scrolls)
                         .presentationBackgroundInteraction(.enabled)
+                        .presentationCompactAdaptation(.sheet)
                 }
             )
         )
