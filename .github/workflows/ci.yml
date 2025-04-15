@@ -22,6 +22,7 @@ jobs:
         git add .
         if ! git diff --quiet --staged; then
           git commit -m "Apply SwiftFormat"
+          git push origin main
         else
           echo "No changes to commit"
         fi
