@@ -29,7 +29,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
 
     /// This action's handler.
     private let handler: VisualLoggerActionHandler
-    
+
     package static let internalNameSpace = "__VisualLogger"
 
     @MainActor
