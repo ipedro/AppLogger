@@ -56,6 +56,7 @@ package actor DataStore {
     }
 
     private lazy var clearLogsAction = VisualLoggerAction(
+        id: "__VisualLogger.clear_logs",
         title: "Clear logs",
         role: .destructive,
         systemImage: "trash"
@@ -69,10 +70,10 @@ package actor DataStore {
         defer {
             updateObserver()
         }
-        allEntries.removeAll()
         allCategories.removeAll()
+        allEntries.removeAll()
         allSources.removeAll()
-        customActions.removeAll()
+        customActions.remove(clearLogsAction)
         entryCategories.removeAll()
         entryContents.removeAll()
         entrySources.removeAll()

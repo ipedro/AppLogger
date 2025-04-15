@@ -166,6 +166,6 @@ extension VisualLoggerAction: Hashable {
 
 extension VisualLoggerAction: Comparable {
     public static func < (lhs: VisualLoggerAction, rhs: VisualLoggerAction) -> Bool {
-        lhs.title.localizedStandardCompare(rhs.title) == .orderedAscending
+        lhs.id.localizedStandardCompare(rhs.id) == .orderedAscending
     }
 }
