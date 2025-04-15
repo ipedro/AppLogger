@@ -13,7 +13,7 @@ let package = Package(
             targets: [
                 "VisualLogger",
             ]
-        )
+        ),
     ],
     targets: [
         .target(

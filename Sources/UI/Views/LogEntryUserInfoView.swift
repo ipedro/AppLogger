@@ -26,7 +26,7 @@ import SwiftUI
 
 struct LogEntryUserInfoView: View {
     let ids: [LogEntryUserInfoKey]
-    
+
     var body: some View {
         let _ = Self._debugPrintChanges()
         LazyVStack(spacing: .zero) {
