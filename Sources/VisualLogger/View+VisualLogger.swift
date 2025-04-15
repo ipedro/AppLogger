@@ -160,3 +160,25 @@ private struct VisualLoggerSheetModifier<SheetContent: View>: ViewModifier {
         }
     }
 }
+
+@available(iOS 17.0, *)
+#Preview {
+    @Previewable @State
+    var isPresented = false
+    
+    VStack {
+        Toggle("Show Logger", isOn: $isPresented)
+            .toggleStyle(.button)
+            .buttonStyle(.borderedProminent)
+    }
+    .onAppear {
+        VisualLogger.addAction(
+            VisualLoggerAction(title: "Add Logs", handler: { action in
+                for mock in LogEntryMock.allCases {
+                    VisualLogger.addLogEntry(mock.entry())
+                }
+            })
+        )
+    }
+    .visualLoggerSheet(isPresented: $isPresented)
+}
