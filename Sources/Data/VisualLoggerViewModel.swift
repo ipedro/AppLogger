@@ -196,7 +196,7 @@ private extension VisualLoggerViewModel {
             )
         }
         .receive(on: queue)
-        .map { allIds, sources, categories, contents, userInfoKeys, userInfoValues, query, filters, sorting in
+        .map { allIds, sources, categories, contents, userInfoKeys, userInfoValues, query, filters, _ in
             let categoryFilters = filters.filter { $0.kind == .category }
             let sourceFilters = filters.filter { $0.kind == .source }
 

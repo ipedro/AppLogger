@@ -23,10 +23,10 @@ package struct LogEntriesList: View {
 
     @State
     private var activeFilterScope: [String] = []
-    
+
     @State
     private var sorting: LogEntrySorting = UserDefaults.standard.sorting
-    
+
     private var flipped: Bool {
         sorting == .ascending
     }
@@ -109,7 +109,7 @@ package struct LogEntriesList: View {
             .clipped()
             .flippedUpsideDown(flipped)
     }
-    
+
     private var emptyReason: String {
         if activeFilterScope.isEmpty {
             configuration.emptyReasons.empty
