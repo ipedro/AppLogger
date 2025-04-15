@@ -29,8 +29,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepend License to Swift files
         run: |
-          # Read LICENSE file, add `// ` before each line, then append two newlines.
-          LICENSE_BLOCK=$(sed 's/^/\/\/ /' LICENSE; printf $'\n\n')
+          # Read LICENSE file, add `// ` before each line.
+          LICENSE_BLOCK=$(sed 's/^/\/\/ /' LICENSE)
           
           # Iterate over each Swift file in the Sources directory.
           find Sources -type f -name "*.swift" | while read -r file; do
@@ -39,7 +39,7 @@ jobs:
               if grep -q '^import ' "$file"; then
                   # Remove everything above the first import.
                   awk 'BEGIN {found=0} {if ($0 ~ /^import / && !found) {found=1} if(found){print}}' "$file" > tmp_content
-                  { echo "$LICENSE_BLOCK"; cat tmp_content; } > tmp && mv tmp "$file"
+                  { echo "$LICENSE_BLOCK"; printf $'\n\n'; cat tmp_content; } > tmp && mv tmp "$file"
                   rm tmp_content
               else
                   # For files without an import, simply prepend the LICENSE block.
