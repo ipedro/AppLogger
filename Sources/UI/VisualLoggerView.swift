@@ -22,8 +22,8 @@ package struct VisualLoggerView<Content>: View where Content: View {
     @Environment(\.colorScheme)
     private var currentColorScheme
 
-    @Environment(\.configuration.accentColor)
-    private var accentColor
+    @Environment(\.configuration.tintColor)
+    private var tintColor
 
     @EnvironmentObject
     private var viewModel: VisualLoggerViewModel
@@ -33,7 +33,7 @@ package struct VisualLoggerView<Content>: View where Content: View {
     package var body: some View {
         let _ = Self._debugPrintChanges()
         content
-            .tint(accentColor)
+            .tint(tintColor)
             .colorScheme(preferredColorScheme ?? currentColorScheme)
             .onDisappear {
                 // There is a bug with the SwiftUI environment that can hold on
@@ -82,5 +82,5 @@ package struct VisualLoggerView<Content>: View where Content: View {
                 dismissAction: { print("dismiss") }
             )
         )
-        .configuration(.init(accentColor: .red))
+        .configuration(.init(tintColor: .red))
 }

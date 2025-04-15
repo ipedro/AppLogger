@@ -2,10 +2,10 @@ import SwiftUI
 
 /// A configuration structure for customizing the appearance and behavior of the app's logging interface.
 ///
-/// This struct allows you to define properties such as accent colors, color schemes, empty reason messages, icons, and navigation titles.
+/// This struct allows you to define properties such as tint colors, color schemes, empty reason messages, icons, and navigation titles.
 public struct VisualLoggerConfiguration: Sendable {
-    /// The accent color used throughout the logging interface.
-    public var accentColor: Color
+    /// The tint color used throughout the logging interface.
+    public var tintColor: Color?
 
     /// The color scheme for the interface, or `nil` to use the system default.
     public var colorScheme: ColorScheme?
@@ -22,19 +22,19 @@ public struct VisualLoggerConfiguration: Sendable {
     /// Initializes a new configuration with default values for each property.
     ///
     /// - Parameters:
-    ///   - accentColor: The accent color for the interface.
+    ///   - tintColor: The tint color for the interface.
     ///   - colorScheme: The color scheme to use.
     ///   - emptyReasons: Custom messages for empty states.
     ///   - icons: Custom icons for actions.
     ///   - navigationTitle: The title for the navigation bar.
     public init(
-        accentColor: Color = .secondary,
+        tintColor: Color? = nil,
         colorScheme: ColorScheme? = nil,
         emptyReasons: EmptyReasons = .init(),
         icons: Icons = .init(),
         navigationTitle: String = "Logs"
     ) {
-        self.accentColor = accentColor
+        self.tintColor = tintColor
         self.colorScheme = colorScheme
         self.emptyReasons = emptyReasons
         self.icons = icons

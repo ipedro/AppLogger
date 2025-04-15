@@ -9,10 +9,14 @@ struct FilterView: View {
     @Environment(\.colorScheme)
     private var colorScheme
 
-    @Environment(\.configuration.accentColor)
-    private var accentColor
+    @Environment(\.configuration.tintColor)
+    private var tintColor
 
     private let shape = Capsule()
+    
+    private var backgroundColor: Color {
+        (tintColor ?? .accentColor).opacity(0.08)
+    }
 
     var body: some View {
         let _ = Self._debugPrintChanges()
@@ -20,7 +24,7 @@ struct FilterView: View {
             .clipShape(shape)
             .toggleStyle(.button)
             .buttonStyle(.borderedProminent)
-            .background(accentColor.opacity(0.08), in: shape)
+            .background(backgroundColor, in: shape)
     }
 }
 
