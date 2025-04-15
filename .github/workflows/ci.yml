@@ -5,59 +5,20 @@ on:
       - main
 jobs:
   swift-format:
-    needs: update-license
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Update main branch
+    - name: Run SwiftFormat with License Header
       run: |
-        git fetch origin main
-        git reset --hard origin/main
-    - name: Run SwiftFormat
-      run: swiftformat .
+        swiftformat Sources --header "$(cat LICENSE)"
     - name: Commit and Push Changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
         if ! git diff --quiet --staged; then
-          git commit -m "Apply SwiftFormat"
+          git commit -m "Apply SwiftFormat with License Header"
           git push origin main
         else
           echo "No changes to commit"
         fi
-  update-license:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Prepend License to Swift files
-        run: |
-          # Read LICENSE file, add `// ` before each line.
-          LICENSE_BLOCK=$(sed 's/^/\/\/ /' LICENSE)
-          
-          # Iterate over each Swift file in the Sources directory.
-          find Sources -type f -name "*.swift" | while read -r file; do
-              echo "Processing $file"
-              
-              if grep -q '^import ' "$file"; then
-                  # Remove everything above the first import.
-                  awk 'BEGIN {found=0} {if ($0 ~ /^import / && !found) {found=1} if(found){print}}' "$file" > tmp_content
-                  { echo "$LICENSE_BLOCK"; printf $'\n\n'; cat tmp_content; } > tmp && mv tmp "$file"
-                  rm tmp_content
-              else
-                  # For files without an import, simply prepend the LICENSE block.
-                  { echo "$LICENSE_BLOCK"; printf $'\nimport Foundation\n\n'; cat "$file"; } > tmp && mv tmp "$file"
-              fi
-          done
-      - name: Commit and Push Changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          if ! git diff --quiet --staged; then
-            git commit -m "Prepend license to Swift files"
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
