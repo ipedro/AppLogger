@@ -13,7 +13,7 @@ struct FilterView: View {
     private var tintColor
 
     private let shape = Capsule()
-    
+
     private var backgroundColor: Color {
         (tintColor ?? .accentColor).opacity(0.08)
     }
