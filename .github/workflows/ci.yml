@@ -29,7 +29,7 @@ jobs:
       - name: Prepend License to Swift files
         run: |
           # Read LICENSE file, add a backslash and a space before each line, then append two newlines.
-          LICENSE_BLOCK=$(sed 's/^/\\ /' LICENSE; echo; echo)
+          LICENSE_BLOCK=$(sed 's/^/\\\\ /' LICENSE; printf "\n\n")
           
           # Iterate over each Swift file in the Sources directory.
           find Sources -type f -name "*.swift" | while read -r file; do
@@ -45,17 +45,6 @@ jobs:
                   { echo "$LICENSE_BLOCK"; cat "$file"; } > tmp && mv tmp "$file"
               fi
           done
-      - name: Commit and Push Changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          if ! git diff --quiet --staged; then
-            git commit -m "Prepend license to Swift files"
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
       - name: Commit and Push Changes
         run: |
           git config --local user.email "action@github.com"
