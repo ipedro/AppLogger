@@ -59,7 +59,7 @@ package struct LogEntriesList: View {
         ScrollView {
             LazyVStack(spacing: .zero, pinnedViews: [.sectionHeaders, .sectionFooters]) {
                 Section {
-                    ForEach(data, id: \.self) { /*@Sendable*/ id in
+                    ForEach(data, id: \.self) { @MainActor @Sendable id in
                         LogEntryView(id: id).flippedUpsideDown(flipped)
 
                         if id != data.last {
@@ -80,6 +80,7 @@ package struct LogEntriesList: View {
         }
         .clipped()
         .flippedUpsideDown(flipped)
+        .interactiveDismissDisabled(flipped)
         .background {
             if data.isEmpty {
                 Text(emptyReason)

@@ -61,6 +61,9 @@ struct LogEntryView: View {
                 LogEntryUserInfoView(
                     ids: userInfo
                 )
+                .clipShape(
+                    RoundedRectangle(cornerRadius: spacing * 1.5)
+                )
             }
         }
         .tint(tint)

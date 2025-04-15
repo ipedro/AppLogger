@@ -66,7 +66,7 @@ struct FilterList: View {
     }
 
     private func filters() -> some View {
-        ForEach(data, id: \.self) { /*@Sendable*/ filter in
+        ForEach(data, id: \.self) { @MainActor @Sendable filter in
             FilterView(
                 data: filter,
                 isOn: Binding {
