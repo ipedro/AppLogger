@@ -171,7 +171,7 @@ extension VisualLoggerAction: Comparable {
         let prefix = VisualLoggerAction.internalNameSpace
         let lhsIsInternal = lhs.id.hasPrefix(prefix)
         let rhsIsInternal = rhs.id.hasPrefix(prefix)
-        
+
         // If lhs is internal and rhs is not, lhs comes first.
         if lhsIsInternal && !rhsIsInternal {
             return true
