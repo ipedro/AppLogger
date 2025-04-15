@@ -60,7 +60,7 @@ public extension View {
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         modifier(
-            VisualLoggerPresentationModifier(
+            VisualLoggerSheetModifier(
                 isPresented: isPresented,
                 configuration: configuration,
                 onDismiss: onDismiss,
@@ -100,7 +100,7 @@ public extension View {
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         modifier(
-            VisualLoggerPresentationModifier(
+            VisualLoggerSheetModifier(
                 isPresented: isPresented,
                 configuration: configuration,
                 onDismiss: onDismiss,
@@ -116,13 +116,13 @@ public extension View {
     }
 }
 
-private struct VisualLoggerPresentationModifier<SheetContent: View>: ViewModifier {
+private struct VisualLoggerSheetModifier<SheetContent: View>: ViewModifier {
     @Binding
     var isPresented: Bool
 
-    var configuration: VisualLoggerConfiguration
+    let configuration: VisualLoggerConfiguration
 
-    var onDismiss: (() -> Void)?
+    let onDismiss: (() -> Void)?
 
     @ViewBuilder
     let sheetContent: () -> SheetContent
