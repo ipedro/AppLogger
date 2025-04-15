@@ -30,7 +30,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
     /// This action's handler.
     private let handler: VisualLoggerActionHandler
 
-    package static let internalNameSpace = "__VisualLogger"
+    package static let internalNamespace = "__VisualLogger"
 
     @MainActor
     package func execute() {
@@ -168,7 +168,7 @@ extension VisualLoggerAction: Hashable {
 
 extension VisualLoggerAction: Comparable {
     public static func < (lhs: VisualLoggerAction, rhs: VisualLoggerAction) -> Bool {
-        let prefix = VisualLoggerAction.internalNameSpace
+        let prefix = VisualLoggerAction.internalNamespace
         let lhsIsInternal = lhs.id.hasPrefix(prefix)
         let rhsIsInternal = rhs.id.hasPrefix(prefix)
 

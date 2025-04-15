@@ -56,7 +56,7 @@ package actor DataStore {
     }
 
     private lazy var clearLogsAction = VisualLoggerAction(
-        id: "\(VisualLoggerAction.internalNameSpace).clear_logs",
+        id: "\(VisualLoggerAction.internalNamespace).clear_logs",
         title: "Clear logs",
         role: .destructive,
         systemImage: "trash"
