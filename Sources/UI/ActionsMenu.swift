@@ -25,7 +25,7 @@ struct ActionsMenu: View {
                         action.image
                     }
                 }
-                if action.id.starts(with: "__VisualLogger") {
+                if action.id.starts(with: VisualLoggerAction.internalNameSpace) {
                     Divider()
                 }
             }
