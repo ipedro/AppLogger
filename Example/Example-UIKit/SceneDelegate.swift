@@ -14,15 +14,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             "activationState": {
                 switch scene.activationState {
                 case .background:
-                    return "Background"
+                    "Background"
                 case .foregroundActive:
-                    return "Foreground Active"
+                    "Foreground Active"
                 case .foregroundInactive:
-                    return "Foreground Inactive"
+                    "Foreground Inactive"
                 case .unattached:
-                    return "Unattached"
+                    "Unattached"
                 default:
-                    return "Unknown"
+                    "Unknown"
                 }
             }(),
         ]

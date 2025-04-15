@@ -1,17 +1,17 @@
 // MIT License
-// 
+//
 // Copyright (c) 2025 Pedro Almeida
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,7 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 
 import Foundation
 
@@ -65,7 +64,7 @@ public struct LogEntryUserInfo: Sendable {
     /// The resulting dictionary is used to instantiate the `.dictionary` case.
     ///
     /// - Parameter dictionary: A dictionary with keys conforming to `Hashable` and values of any type.
-    public init<Key, Value>(_ dictionary: [Key: Value]) where Key: Hashable {
+    public init(_ dictionary: [some Hashable: some Any]) {
         storage = dictionary.reduce(into: [String: String]()) { partialResult, element in
             partialResult[String(describing: element.key)] = Self.convert(toString: element.value)
         }
@@ -83,7 +82,7 @@ public struct LogEntryUserInfo: Sendable {
     ///
     /// - Parameter value: The object to convert into a `UserInfo` instance.
     public init?(_ value: Any? = nil) {
-        guard let value = value else { return nil }
+        guard let value else { return nil }
 
         if let dict = value as? [String: Any] {
             storage = Self.convert(toDictionary: dict).sorted(by: <)
@@ -108,13 +107,13 @@ public struct LogEntryUserInfo: Sendable {
     private static func convert(toString object: Any?) -> String {
         switch object {
         case .none:
-            return emptyValue
+            emptyValue
         case let string as String where ["", "nil", "[]", "{}", "[:]"].contains(string):
-            return emptyValue
+            emptyValue
         case let string as String:
-            return string.trimmingCharacters(in: .whitespacesAndNewlines)
+            string.trimmingCharacters(in: .whitespacesAndNewlines)
         case let .some(object):
-            return String(describing: object)
+            String(describing: object)
         }
     }
 

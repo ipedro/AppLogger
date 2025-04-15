@@ -168,7 +168,7 @@ class ViewController: UIViewController {
 
     /// Extracts key information about the view controller and its view.
     private func viewControllerDetails() -> [String: Any] {
-        return [
+        [
             "className": String(describing: type(of: self)),
             "viewFrame": view.frame,
             "backgroundColor": view.backgroundColor?.description ?? "none",

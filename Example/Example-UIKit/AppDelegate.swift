@@ -55,13 +55,13 @@ extension UIApplication.State: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .active:
-            return "Active"
+            "Active"
         case .inactive:
-            return "Inactive"
+            "Inactive"
         case .background:
-            return "Background"
+            "Background"
         default:
-            return "Default"
+            "Default"
         }
     }
 }
