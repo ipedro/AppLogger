@@ -24,7 +24,6 @@ struct ActionsMenu: View {
                     } icon: {
                         action.image
                     }
-                    .foregroundColor(action.role == .destructive ? .red : nil)
                 }
                 if action.id.starts(with: VisualLoggerAction.internalNamespace) {
                     Divider()

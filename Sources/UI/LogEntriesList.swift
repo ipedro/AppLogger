@@ -106,6 +106,7 @@ package struct LogEntriesList: View {
             )
 
             ActionsMenu()
+                .tint(nil)
         }
     }
 
