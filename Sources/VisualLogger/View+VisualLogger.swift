@@ -173,11 +173,11 @@ private struct VisualLoggerSheetModifier<SheetContent: View>: ViewModifier {
     }
     .onAppear {
         VisualLogger.addAction(
-            VisualLoggerAction(title: "Add Logs", handler: { _ in
-                for mock in LogEntryMock.allCases {
+            VisualLoggerAction(title: "Add Logs", systemImage: "plus.circle.fill") { _ in
+                for mock in LogEntryMock.allCases.shuffled() {
                     VisualLogger.addLogEntry(mock.entry())
                 }
-            })
+            }
         )
     }
     .visualLoggerSheet(isPresented: $isPresented)
