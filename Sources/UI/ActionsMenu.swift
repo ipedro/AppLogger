@@ -24,6 +24,7 @@ struct ActionsMenu: View {
                     } icon: {
                         action.image
                     }
+                    .foregroundColor(action.role == .destructive ? .red : nil)
                 }
                 if action.id.starts(with: VisualLoggerAction.internalNamespace) {
                     Divider()
@@ -47,14 +48,15 @@ struct ActionsMenu: View {
                     customActions: [
                         VisualLoggerAction(
                             title: "Action",
-                            image: nil,
+                            systemImage: "plus.circle",
                             handler: {
                                 _ in print("Action executed")
                             }
                         ),
                         VisualLoggerAction(
-                            title: "Action 2",
-                            image: nil,
+                            title: "Destructive Action",
+                            role: .destructive,
+                            systemImage: "trash",
                             handler: {
                                 _ in print("Action executed")
                             }
