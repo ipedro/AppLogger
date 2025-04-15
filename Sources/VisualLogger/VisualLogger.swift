@@ -1,17 +1,9 @@
 import Data
 import UIKit
 
-/// A centralized logging actor for handling asynchronous log entry management and UI presentation.
-public actor VisualLogger: LogEntrySourceProtocol {
-    /// Underlying datastore that records log entries.
-    private let dataStore = DataStore()
+// MARK: - Public APIs
 
-    /// The current active coordinator responsible for presenting the log interface.
-    private var coordinator: Coordinator?
-
-    /// Shared instance of `VisualLogger`.
-    static let current = VisualLogger()
-
+public extension VisualLogger {
     /// Enqueues a visual logger action for later use.
     ///
     /// This method asynchronously adds the specified visual logger action to the underlying data store.
@@ -26,7 +18,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// }
     /// VisualLogger.addAction(clearLogsAction)
     /// ```
-    public static func addAction(_ action: VisualLoggerAction) {
+    static func addAction(_ action: VisualLoggerAction) {
         Task {
             await current.dataStore.addAction(action)
         }
@@ -44,7 +36,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// let clearLogsAction = VisualLoggerAction(title: "Clear Logs")
     /// VisualLogger.removeAction(clearLogsAction)
     /// ```
-    public static func removeAction(_ action: VisualLoggerAction) {
+    static func removeAction(_ action: VisualLoggerAction) {
         Task {
             await current.dataStore.removeAction(action)
         }
@@ -57,7 +49,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// writes without blocking the main thread.
     ///
     /// - Parameter log: A `LogEntry` instance representing the event or message to be logged.
-    public static func addLogEntry(_ log: @autoclosure @escaping @Sendable () -> LogEntry) {
+    static func addLogEntry(_ log: @autoclosure @escaping @Sendable () -> LogEntry) {
         Task {
             await current.dataStore.addLogEntry(log())
         }
@@ -78,14 +70,14 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// of the presenting view controller as the `sourceView` of the sheet.
     /// The sheet attempts to visually center itself over this view. The system
     /// only positions the sheet within system-defined margins.
-    public static func present(
+    static func present(
         animated: Bool = true,
         configuration: VisualLoggerConfiguration = .init(),
         from sourceView: UIView? = nil,
         completion: (@Sendable () -> Void)? = nil
     ) {
         Task {
-            await current._present(
+            await current.present(
                 animated: animated,
                 configuration: configuration,
                 sourceView: sourceView,
@@ -93,17 +85,30 @@ public actor VisualLogger: LogEntrySourceProtocol {
             )
         }
     }
+}
+
+// MARK: - Implementation
+
+/// A centralized logging actor for handling asynchronous log entry management and UI presentation.
+public actor VisualLogger: LogEntrySourceProtocol {
+    /// Underlying datastore that records log entries.
+    private let dataStore = DataStore()
+
+    /// The current active coordinator responsible for presenting the log interface.
+    private var coordinator: Coordinator?
+
+    /// Shared instance of `VisualLogger`.
+    static let current = VisualLogger()
 
     func makeDataObserver() async -> DataObserver {
         await dataStore.makeObserver()
     }
 
-    private func _present(
+    private func present(
         animated: Bool,
         configuration: VisualLoggerConfiguration,
         sourceView: UIView?,
-        completion: (@Sendable () -> Void)?,
-        function: String = #function
+        completion: (@Sendable () -> Void)?
     ) async {
         guard coordinator == nil else {
             return await dataStore.addLogEntry(
@@ -111,7 +116,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
                     category: .warning,
                     source: self,
                     content: LogEntryContent(
-                        function: function,
+                        function: #function,
                         message: "VisualLogger already presented."
                     )
                 )
@@ -142,20 +147,12 @@ public actor VisualLogger: LogEntrySourceProtocol {
                     category: .error,
                     source: self,
                     content: LogEntryContent(
-                        function: function,
+                        function: #function,
                         message: error.localizedDescription
                     )
                 )
             )
         }
-    }
-
-    /// Dismisses the current logging interface.
-    ///
-    /// This helper method resets the active coordinator. Once dismissed, the logging interface
-    /// is no longer available until presented again.
-    public func dismissInterface() async {
-        await dismiss()
     }
 
     /// Dismisses the current logging interface without external parameters.
