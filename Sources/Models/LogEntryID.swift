@@ -10,20 +10,11 @@ package struct LogEntryID: Hashable, Comparable, Sendable {
     }
 
     package static func < (lhs: LogEntryID, rhs: LogEntryID) -> Bool {
-        lhs.timestamp < rhs.timestamp
+        lhs.timestamp > rhs.timestamp
     }
 
     /// The date the log was created.
     package var createdAt: Date {
         Date(timeIntervalSince1970: timestamp)
-    }
-}
-
-package extension Collection<LogEntryID> {
-    func sort(by strategy: LogEntrySorting) -> [LogEntryID] {
-        switch strategy {
-        case .ascending: Array(self)
-        case .descending: reversed()
-        }
     }
 }

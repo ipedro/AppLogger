@@ -228,7 +228,7 @@ private extension VisualLoggerViewModel {
                     userInfoValues: userInfoValues
                 )
             }
-            return filtered.sort(by: sorting)
+            return filtered
         }
         .receive(on: RunLoop.main)
         .sink { [unowned self] in

@@ -23,15 +23,22 @@ package struct LogEntriesList: View {
 
     @State
     private var activeFilterScope: [String] = []
+    
+    @State
+    private var sorting: LogEntrySorting = UserDefaults.standard.sorting
+    
+    private var flipped: Bool {
+        sorting == .ascending
+    }
 
     package var body: some View {
         let _ = Self._debugPrintChanges()
         let data = entries
         ScrollView {
-            LazyVStack(spacing: .zero, pinnedViews: .sectionHeaders) {
+            LazyVStack(spacing: .zero, pinnedViews: [.sectionHeaders, .sectionFooters]) {
                 Section {
                     ForEach(data, id: \.self) { /*@Sendable*/ id in
-                        LogEntryView(id: id)
+                        LogEntryView(id: id).flippedUpsideDown(flipped)
 
                         if id != data.last {
                             Divider()
@@ -39,17 +46,18 @@ package struct LogEntriesList: View {
                     }
                     .animation(.default, value: data)
                 } header: {
-                    FiltersDrawer()
-                        .compositingGroup()
-                        .opacity(showFilters ? 1 : 0)
-                        .frame(height: showFilters ? nil : spacing, alignment: .top)
-                        .clipped()
+                    if !flipped {
+                        filtersDrawer()
+                    }
+                } footer: {
+                    if flipped {
+                        filtersDrawer()
+                    }
                 }
             }
-            .padding(.bottom, 50)
         }
         .clipped()
-        .ignoresSafeArea(.container, edges: .bottom)
+        .flippedUpsideDown(flipped)
         .background {
             if data.isEmpty {
                 Text(emptyReason)
@@ -73,6 +81,9 @@ package struct LogEntriesList: View {
                 content: trailingNavigationBarItems
             )
         }
+        .onReceive(viewModel.entriesSortingSubject) {
+            sorting = $0
+        }
         .onReceive(viewModel.currentEntriesSubject) {
             entries = $0
         }
@@ -90,6 +101,15 @@ package struct LogEntriesList: View {
         }
     }
 
+    private func filtersDrawer() -> some View {
+        FiltersDrawer()
+            .compositingGroup()
+            .opacity(showFilters ? 1 : 0)
+            .frame(height: showFilters ? nil : spacing, alignment: .top)
+            .clipped()
+            .flippedUpsideDown(flipped)
+    }
+    
     private var emptyReason: String {
         if activeFilterScope.isEmpty {
             configuration.emptyReasons.empty
