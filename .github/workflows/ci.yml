@@ -10,7 +10,9 @@ jobs:
     - uses: actions/checkout@v4
     - name: Run SwiftFormat with License Header
       run: |
-        swiftformat Sources --header "$(cat LICENSE)"
+        # Read LICENSE file, add `// ` before each line.
+        LICENSE_BLOCK=$(sed 's/^/\/\/ /' LICENSE)
+        swiftformat Sources --header "$(LICENSE_BLOCK)"
     - name: Commit and Push Changes
       run: |
         git config --local user.email "action@github.com"
