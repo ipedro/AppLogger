@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 import SwiftUI
-import XCGLogger
+@preconcurrency import XCGLogger
 
 let log = XCGLogger.default
 

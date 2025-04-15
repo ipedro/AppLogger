@@ -22,7 +22,7 @@
 
 import UIKit
 import VisualLogger
-import XCGLogger
+@preconcurrency import XCGLogger
 
 let log = XCGLogger.default
 

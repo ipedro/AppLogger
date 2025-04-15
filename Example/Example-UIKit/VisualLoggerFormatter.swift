@@ -23,7 +23,7 @@
 import Foundation
 import UIKit
 import VisualLogger
-import XCGLogger
+@preconcurrency import XCGLogger
 
 struct VisualLoggerFormatter: LogFormatterProtocol {
     func format(logDetails: inout LogDetails, message: inout String) -> String {
