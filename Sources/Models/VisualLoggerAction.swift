@@ -55,7 +55,7 @@ public struct VisualLoggerAction: Identifiable, Sendable {
     package static let internalNamespace = "__VisualLogger"
 
     @MainActor
-    package func execute() {
+    package func callAsFunction() {
         handler(self)
     }
 
