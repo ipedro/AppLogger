@@ -65,7 +65,7 @@ struct ContentView: View {
     private func logError() {
         log.error("Error #\(errorCount) occurred", userInfo: [
             "code": 123,
-            "domain": "example.com",
+            "domain": "https://example.com",
             "reason": "Something went wrong",
         ])
         errorCount += 1

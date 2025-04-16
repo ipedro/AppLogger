@@ -78,7 +78,7 @@ class ViewController: UIViewController {
             // Log a small string message along with the action title.
             log.error("Error #\(errorCount) occurred", userInfo: [
                 "code": 123,
-                "domain": "example.com",
+                "domain": "https://example.com",
                 "reason": "Something went wrong",
             ])
             errorCount += 1
