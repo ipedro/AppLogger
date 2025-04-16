@@ -65,7 +65,6 @@ package struct LogEntriesList: View {
                             .safeAreaInset(edge: .bottom, spacing: .zero) {
                                 Divider().frame(height: id == data.last ? 0 : nil)
                             }
-                            .drawingGroup(opaque: true)
                     }
                     .animation(.default, value: data)
                 } header: {
