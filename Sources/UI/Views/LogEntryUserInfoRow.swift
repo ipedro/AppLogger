@@ -56,15 +56,15 @@ struct LogEntryUserInfoRow: View {
             )
         )
     }
-    
+
     private var cornerRadius: CGFloat {
-        if offset == 0 && last {
+        if offset == 0, last {
             spacing
         } else {
             spacing * 1.5
         }
     }
-    
+
     private var roundedCorners: UIRectCorner {
         var roundedCorners = UIRectCorner()
         if offset == 0 {
@@ -108,7 +108,7 @@ struct LogEntryUserInfoRow: View {
 private struct BackgroundShape: Shape {
     let radius: CGFloat
     let corners: UIRectCorner
-    
+
     func path(in rect: CGRect) -> Path {
         Path(
             UIBezierPath(
