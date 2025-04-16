@@ -60,11 +60,12 @@ package struct LogEntriesList: View {
             LazyVStack(spacing: .zero, pinnedViews: [.sectionHeaders, .sectionFooters]) {
                 Section {
                     ForEach(data, id: \.self) { @MainActor @Sendable id in
-                        LogEntryView(id: id).flippedUpsideDown(flipped)
-
-                        if id != data.last {
-                            Divider()
-                        }
+                        LogEntryView(id: id)
+                            .flippedUpsideDown(flipped)
+                            .safeAreaInset(edge: .bottom, spacing: .zero) {
+                                Divider().frame(height: id == data.last ? 0 : nil)
+                            }
+                            .drawingGroup(opaque: true)
                     }
                     .animation(.default, value: data)
                 } header: {

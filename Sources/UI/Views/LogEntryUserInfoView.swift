@@ -29,9 +29,13 @@ struct LogEntryUserInfoView: View {
 
     var body: some View {
         let _ = Self._debugPrintChanges()
-        LazyVStack(spacing: .zero) {
+        VStack(spacing: .zero) {
             ForEach(Array(ids.enumerated()), id: \.element) { @MainActor @Sendable offset, id in
-                LogEntryUserInfoRow(offset: offset, id: id)
+                LogEntryUserInfoRow(
+                    offset: offset,
+                    id: id,
+                    last: ids.last == id
+                )
             }
         }
     }

@@ -27,6 +27,7 @@ import SwiftUI
 struct LogEntryUserInfoRow: View {
     let offset: Int
     let id: LogEntryUserInfoKey
+    let last: Bool
 
     @Environment(\.spacing)
     private var spacing
@@ -47,7 +48,32 @@ struct LogEntryUserInfoRow: View {
             valueText
         }
         .padding(spacing)
-        .background(backgroundColor)
+        .background(
+            backgroundColor,
+            in: BackgroundShape(
+                radius: cornerRadius,
+                corners: roundedCorners
+            )
+        )
+    }
+    
+    private var cornerRadius: CGFloat {
+        if offset == 0 && last {
+            spacing
+        } else {
+            spacing * 1.5
+        }
+    }
+    
+    private var roundedCorners: UIRectCorner {
+        var roundedCorners = UIRectCorner()
+        if offset == 0 {
+            roundedCorners.insert([.topLeft, .topRight])
+        }
+        if last {
+            roundedCorners.insert([.bottomLeft, .bottomRight])
+        }
+        return roundedCorners
     }
 
     private var backgroundColor: Color {
@@ -76,5 +102,23 @@ struct LogEntryUserInfoRow: View {
             .italic()
             .foregroundColor(.secondary)
             .textSelection(.enabled)
+    }
+}
+
+private struct BackgroundShape: Shape {
+    let radius: CGFloat
+    let corners: UIRectCorner
+    
+    func path(in rect: CGRect) -> Path {
+        Path(
+            UIBezierPath(
+                roundedRect: rect,
+                byRoundingCorners: corners,
+                cornerRadii: CGSize(
+                    width: radius,
+                    height: radius
+                )
+            ).cgPath
+        )
     }
 }

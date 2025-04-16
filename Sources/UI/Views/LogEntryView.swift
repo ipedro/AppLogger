@@ -58,12 +58,7 @@ struct LogEntryView: View {
             )
 
             if let userInfo {
-                LogEntryUserInfoView(
-                    ids: userInfo
-                )
-                .clipShape(
-                    RoundedRectangle(cornerRadius: spacing * 1.5)
-                )
+                LogEntryUserInfoView(ids: userInfo)
             }
         }
         .tint(tint)
