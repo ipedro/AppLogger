@@ -19,7 +19,7 @@ jobs:
         git config --local user.name "GitHub Action"
         git add .
         if ! git diff --quiet --staged; then
-          git commit -m "Apply SwiftFormat with License Header"
+          git commit -m "Apply SwiftFormat"
           git push origin main
         else
           echo "No changes to commit"
