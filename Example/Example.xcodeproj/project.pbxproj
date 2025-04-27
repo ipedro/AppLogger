@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EB100B2E2DADB3080012736C /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = EB100B2D2DADB3080012736C /* ObjcExceptionBridging */; };
-		EB100B302DADB3080012736C /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = EB100B2F2DADB3080012736C /* XCGLogger */; };
 		EB100B322DADB3190012736C /* VisualLogger in Frameworks */ = {isa = PBXBuildFile; productRef = EB100B312DADB3190012736C /* VisualLogger */; };
 		EB100B342DADB4700012736C /* VisualLogger in Frameworks */ = {isa = PBXBuildFile; productRef = EB100B332DADB4700012736C /* VisualLogger */; };
 		EB100B362DADB4700012736C /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = EB100B352DADB4700012736C /* ObjcExceptionBridging */; };
@@ -52,8 +50,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB100B322DADB3190012736C /* VisualLogger in Frameworks */,
-				EB100B2E2DADB3080012736C /* ObjcExceptionBridging in Frameworks */,
-				EB100B302DADB3080012736C /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,8 +136,6 @@
 			);
 			name = "Example-UIKit";
 			packageProductDependencies = (
-				EB100B2D2DADB3080012736C /* ObjcExceptionBridging */,
-				EB100B2F2DADB3080012736C /* XCGLogger */,
 				EB100B312DADB3190012736C /* VisualLogger */,
 			);
 			productName = "Example-UIKit";
@@ -537,16 +531,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EB100B2D2DADB3080012736C /* ObjcExceptionBridging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EB8688F027D8EEED00DC44AB /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = ObjcExceptionBridging;
-		};
-		EB100B2F2DADB3080012736C /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EB8688F027D8EEED00DC44AB /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
-		};
 		EB100B312DADB3190012736C /* VisualLogger */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VisualLogger;
