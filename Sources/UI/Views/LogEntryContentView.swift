@@ -33,19 +33,19 @@ struct LogEntryContentView: View {
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack(alignment: .leading, spacing: spacing) {
-            Text(content.function)
+            Text(content.title)
                 .font(.callout.bold())
                 .minimumScaleFactor(0.85)
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
 
-            if let message = content.message, !message.isEmpty {
+            if let subtitle = content.subtitle, !subtitle.isEmpty {
                 HStack(alignment: .top, spacing: spacing) {
                     if let icon = category.emoji {
                         Text(String(icon))
                     }
 
-                    LinkText(data: message)
+                    LinkText(data: subtitle)
                 }
                 .font(.footnote)
                 .foregroundStyle(.tint)
@@ -63,8 +63,8 @@ struct LogEntryContentView: View {
     LogEntryContentView(
         category: .alert,
         content: LogEntryContent(
-            function: "content description",
-            message: "Bla"
+            title: "content description",
+            subtitle: "Bla"
         )
     )
 }

@@ -41,7 +41,7 @@ import Foundation
 ///     source: LogEntrySource("🌐", "APIClient"),
 ///     content: LogEntryContent(
 ///         function: "fetchUser(id:)",
-///         message: "Invalid response"
+///         subtitle: "Invalid response"
 ///     ),
 ///     userInfo: ["statusCode": 404]
 /// )

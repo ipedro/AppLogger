@@ -48,8 +48,8 @@ package enum LogEntryMock: Hashable, CaseIterable {
             category: .debug,
             source: LogEntrySource("MyWebView", .file(line: 20)),
             content: LogEntryContent(
-                function: "func didNavigate()",
-                message: "Navigation cancelled."
+                title: "func didNavigate()",
+                subtitle: "Navigation cancelled."
             ),
             userInfo: [
                 "url": "https://github.com",
@@ -66,8 +66,8 @@ package enum LogEntryMock: Hashable, CaseIterable {
             category: .notice,
             source: LogEntrySource("MyWebView", .file(line: 450)),
             content: LogEntryContent(
-                function: "func didRefresh()",
-                message: "Page refreshed."
+                title: "func didRefresh()",
+                subtitle: "Page refreshed."
             ),
             userInfo: [
                 "line": 450,
@@ -94,8 +94,8 @@ package enum LogEntryMock: Hashable, CaseIterable {
             category: LogEntryCategory("👔", "Social Media"),
             source: LogEntrySource("Facebook", .sdk(version: "12.2.1")),
             content: LogEntryContent(
-                function: "Any Social Login",
-                message: "User logged in"
+                title: "Any Social Login",
+                subtitle: "User logged in"
             ),
             userInfo: [
                 "custom_event": "1",

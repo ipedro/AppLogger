@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Combine
 import Data
 import UIKit
 
@@ -70,7 +71,7 @@ public extension VisualLogger {
     /// user interface remains responsive. It uses Swift concurrency to perform asynchronous
     /// writes without blocking the main thread.
     ///
-    /// - Parameter log: A `LogEntry` instance representing the event or message to be logged.
+    /// - Parameter log: A `LogEntry` instance representing the event or subtitle to be logged.
     static func addLogEntry(_ log: @autoclosure @escaping @Sendable () -> LogEntry) {
         Task {
             await current.dataStore.addLogEntry(log())
@@ -138,8 +139,8 @@ public actor VisualLogger: LogEntrySourceProtocol {
                     category: .warning,
                     source: self,
                     content: LogEntryContent(
-                        function: #function,
-                        message: "VisualLogger already presented."
+                        title: #function,
+                        subtitle: "VisualLogger already presented."
                     )
                 )
             )
@@ -169,8 +170,8 @@ public actor VisualLogger: LogEntrySourceProtocol {
                     category: .error,
                     source: self,
                     content: LogEntryContent(
-                        function: #function,
-                        message: error.localizedDescription
+                        title: #function,
+                        subtitle: error.localizedDescription
                     )
                 )
             )

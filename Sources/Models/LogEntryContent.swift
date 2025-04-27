@@ -22,45 +22,48 @@
 
 import Foundation
 
-/// Structured content for log entries.
+/// A lightweight value type that describes a single log message.
 ///
-/// `LogEntryContent` organizes log messages with their associated function context:
+/// Each entry consists of:
+/// * **title** – the main identifier, typically the function or subsystem that produced the log.
+/// * **subtitle** – optional extra context (for example an error description or IDs).
 ///
+/// ### Examples
 /// ```swift
-/// // Basic content
+/// // Simplest form – created via string literal
 /// let basic: LogEntryContent = "fetchUser()"
 ///
-/// // Content with message
+/// // With additional context
 /// let detailed = LogEntryContent(
-///     function: "validateToken()",
-///     message: "Token expired"
+///     title: "validateToken()",
+///     subtitle:  "Token expired"
 /// )
 /// ```
 public struct LogEntryContent: Sendable {
-    /// The function or method name where the log was created.
-    public let function: String
+    /// The title or method name where the log was created.
+    public let title: String
 
-    /// Optional additional context or message.
-    public let message: String?
+    /// Optional additional context or subtitle.
+    public let subtitle: String?
 
-    /// Creates a new content instance with function name and optional message.
+    /// Creates a new content value.
     ///
     /// - Parameters:
-    ///   - function: The name of the function where the log originated
-    ///   - message: Optional additional context or details
-    public init(function: String, message: String? = .none) {
-        self.function = function
-        self.message = message
+    ///   - title: Primary text, usually a function name or task identifier.
+    ///   - subtitle:  Optional secondary text providing more detail.
+    public init(title: String, subtitle: String? = .none) {
+        self.title = title
+        self.subtitle = subtitle
     }
 }
 
 extension LogEntryContent: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
-        self.init(function: value)
+        self.init(title: value)
     }
 }
 
 extension LogEntryContent: Filterable {
-    package static var filterCriteria: KeyPath<LogEntryContent, String> { \.function }
-    package static var filterCriteriaOptional: KeyPath<LogEntryContent, String?>? { \.message }
+    package static var filterCriteria: KeyPath<LogEntryContent, String> { \.title }
+    package static var filterCriteriaOptional: KeyPath<LogEntryContent, String?>? { \.subtitle }
 }

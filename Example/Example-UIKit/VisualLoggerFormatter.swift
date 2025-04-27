@@ -43,8 +43,8 @@ struct VisualLoggerFormatter: LogFormatterProtocol {
                     }
                 }(),
                 content: LogEntryContent(
-                    function: logDetails.functionName,
-                    message: logDetails.message,
+                    title: logDetails.functionName,
+                    subtitle: logDetails.message,
                 ),
                 userInfo: logDetails.userInfo
             )
