@@ -108,6 +108,12 @@ public extension VisualLogger {
             )
         }
     }
+
+    static func observeConsole() {
+        Task {
+            await current.observeConsoleOutput()
+        }
+    }
 }
 
 // MARK: - Implementation
@@ -122,6 +128,44 @@ public actor VisualLogger: LogEntrySourceProtocol {
 
     /// Shared instance of `VisualLogger`.
     static let current = VisualLogger()
+
+    // MARK: - Console capture
+
+    /// Pipe that mirrors stdout/stderr and delivers each line.
+    private let consolePipe = ConsolePipe()
+
+    func observeConsoleOutput() {
+        guard let consolePipe else {
+            return
+        }
+        do {
+            try consolePipe { str in
+                Task { [unowned self] in
+                    await dataStore.addLogEntry(
+                        LogEntry(
+                            category: .debug,
+                            source: "Console",
+                            content: LogEntryContent(
+                                title: "",
+                                subtitle: str
+                            )
+                        )
+                    )
+                }
+            }
+        }
+        catch {
+            Task {
+                await dataStore.addLogEntry(
+                    LogEntry(
+                        category: .error,
+                        source: "Visual Logger",
+                        content: "Couldn't start observing console output."
+                    )
+                )
+            }
+        }
+    }
 
     func makeDataObserver() async -> DataObserver {
         await dataStore.makeObserver()

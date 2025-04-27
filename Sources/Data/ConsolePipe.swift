@@ -11,78 +11,88 @@ import Combine
 /// Redirects `stdout` and `stderr` into a Combine publisher.
 /// The underlying pipes remain open for as long as the instance
 /// is retained and are restored automatically on de‑initialisation.
-final class ConsolePipe {
+package final class ConsolePipe {
 
     // MARK: - Private storage
 
-    private let inputPipe  = Pipe()
-    private let outputPipe = Pipe()
+    private lazy var inputPipe  = Pipe()
+    private lazy var outputPipe = Pipe()
 
-    /// Original file descriptors so we can restore them later.
+    /// Original file descriptors so we can restore them on teardown.
     private let originalStdout: Int32
     private let originalStderr: Int32
 
     // MARK: - Public API
 
-    /// Notifications emitted whenever data is written to the console pipe.
-    let publisher: AnyPublisher<String, Never>
-
     /// Creates a new console pipe and begins streaming immediately.
-    /// Returns `nil` if any of the low‑level `dup`/`dup2` calls fail.
-    init?() {
-        // Preserve originals so we can restore them in `deinit`.
+    package init?() {
         originalStdout = dup(STDOUT_FILENO)
         originalStderr = dup(STDERR_FILENO)
 
+        guard originalStdout != -1, originalStderr != -1 else {
+            return nil
+        }
+    }
+
+    enum Error: Swift.Error {
+        case failedToCaptureConsoleOutput
+    }
+
+    package func callAsFunction(handler: @escaping @Sendable (String) -> Void) throws {
+#if !targetEnvironment(simulator)
+        setvbuf(stdout, nil, _IONBF, 0)
+#endif
+
+        //from documentation
+        //dup2() makes newfd (new file descriptor) be the copy of oldfd (old file descriptor), closing newfd first if necessary.
+
+        //here we are copying the STDOUT file descriptor into our output pipe's file descriptor
+        //this is so we can write the strings back to STDOUT, so it can show up on the xcode console
         guard
-            originalStdout != -1,
-            originalStderr != -1
+            dup2(STDOUT_FILENO, outputPipe.fileHandleForWriting.fileDescriptor) != -1
         else {
-            return nil
+            throw Error.failedToCaptureConsoleOutput
         }
 
-        // Mirror STDOUT back to the original console so we still see logs in Xcode.
-        guard dup2(STDOUT_FILENO, outputPipe.fileHandleForWriting.fileDescriptor) != -1 else {
-            return nil
-        }
-
-        #if DEBUG && !targetEnvironment(simulator)
-            // Disable buffering in debug so every line appears immediately.
-            setvbuf(stdout, nil, _IONBF, 0)
-        #endif
-
-        // Redirect STDOUT and STDERR to the input pipe.
+        //In this case, the newFileDescriptor is the pipe's file descriptor and the old file descriptor is STDOUT_FILENO and STDERR_FILENO
         guard
             dup2(inputPipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO) != -1,
             dup2(inputPipe.fileHandleForWriting.fileDescriptor, STDERR_FILENO) != -1
         else {
-            return nil
+            throw Error.failedToCaptureConsoleOutput
         }
 
-        // Start listening.
-        inputPipe.fileHandleForReading.readInBackgroundAndNotify(forModes: [.common])
+        inputPipe.fileHandleForReading.readabilityHandler = { [weak outputPipe] pipeReadHandle in
+            do {
+                let data = pipeReadHandle.availableData
 
-        publisher = NotificationCenter.default.publisher(
-            for: FileHandle.readCompletionNotification,
-            object: inputPipe.fileHandleForReading
-        )
-        .compactMap {
-            $0.userInfo?[NSFileHandleNotificationDataItem] as? Data
+                guard let str = String(data: data, encoding: .ascii) else {
+                    return
+                }
+
+                if !str.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    handler(str)
+                }
+
+                //write the data back into the output pipe. the output pipe's write file descriptor points to STDOUT. this allows the logs to show up on the xcode console
+                outputPipe?.fileHandleForWriting.write(data)
+            }
         }
-        .compactMap {
-            String(data: $0, encoding: .utf8)
-        }
-        .eraseToAnyPublisher()
+
+        print("Registered console logging pipe.")
     }
 
     deinit {
-        // Restore the original file descriptors.
+        // 1. Stop asynchronous callbacks.
+        inputPipe.fileHandleForReading.readabilityHandler = nil
+
+        // 2. Restore the original stdio so future sessions start clean.
         dup2(originalStdout, STDOUT_FILENO)
         dup2(originalStderr, STDERR_FILENO)
         close(originalStdout)
         close(originalStderr)
 
-        // Close our pipe ends.
+        // 3. Close our pipe ends.
         inputPipe.fileHandleForReading.closeFile()
         inputPipe.fileHandleForWriting.closeFile()
         outputPipe.fileHandleForWriting.closeFile()
