@@ -28,6 +28,8 @@ import Foundation
 package final class ConsolePipe {
     // MARK: - Private storage
 
+    private var isEnabled = false
+
     private lazy var inputPipe = Pipe()
     private lazy var outputPipe = Pipe()
 
@@ -54,6 +56,12 @@ package final class ConsolePipe {
     package typealias Handler = @Sendable (ConsoleOutput) -> Void
 
     package func callAsFunction(handler: @escaping Handler) throws {
+        guard isEnabled == false else {
+            return
+        }
+
+        isEnabled = true
+
         #if !targetEnvironment(simulator)
             setvbuf(stdout, nil, _IONBF, 0)
         #endif
@@ -98,6 +106,9 @@ package final class ConsolePipe {
     }
 
     deinit {
+        guard isEnabled else {
+            return
+        }
         // 1. Stop asynchronous callbacks.
         inputPipe.fileHandleForReading.readabilityHandler = nil
 
