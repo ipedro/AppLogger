@@ -24,9 +24,9 @@ import Foundation
 
 public extension LogEntryCategory {
     /// Basic informational messages for detailed debugging.
-    static let verbose = Self("🗯", "Verbose")
+    static let verbose = Self("💬", "Verbose")
     /// Debug-level messages for development purposes.
-    static let debug = Self("🔹", "Debug")
+    static let debug = Self("🐞", "Debug")
     /// General information messages.
     static let info = Self("ℹ️", "Info")
     /// Notable events that are worth attention.

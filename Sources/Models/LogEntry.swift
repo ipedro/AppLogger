@@ -82,7 +82,7 @@ public extension LogEntry {
         category: LogEntryCategory,
         source: LogEntrySource,
         content: LogEntryContent,
-        userInfo: [String: Any]? = nil
+        userInfo: Any? = nil
     ) {
         id = LogEntryID(date: date)
         self.source = source
@@ -104,7 +104,7 @@ public extension LogEntry {
         category: LogEntryCategory,
         source: some LogEntrySourceProtocol,
         content: LogEntryContent,
-        userInfo: [String: Any]? = nil
+        userInfo: Any? = nil
     ) {
         id = LogEntryID(date: date)
         self.source = LogEntrySource(source)
@@ -126,7 +126,7 @@ public extension LogEntry {
         category: LogEntryCategory,
         source: (some LogEntrySourceProtocol).Type,
         content: LogEntryContent,
-        userInfo: [String: Any]? = nil
+        userInfo: Any? = nil
     ) {
         id = LogEntryID(date: date)
         self.source = LogEntrySource(source)

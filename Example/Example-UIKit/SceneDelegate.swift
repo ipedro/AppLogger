@@ -68,12 +68,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
         // Ensure the scene is a UIWindowScene
         guard let windowScene = (scene as? UIWindowScene) else {
-            log.error("No window scene")
+            print("No window scene")
             return
         }
 
         // Log enriched scene details with smaller, extracted properties.
-        log.info(userInfo: sceneDetails(for: scene))
+        print(sceneDetails(for: scene))
 
         let window = UIWindow(windowScene: windowScene)
         self.window = window
@@ -82,22 +82,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        log.info(userInfo: sceneDetails(for: scene))
+        print(sceneDetails(for: scene))
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        log.info(userInfo: sceneDetails(for: scene))
+        print(sceneDetails(for: scene))
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        log.info(userInfo: sceneDetails(for: scene))
+        print(sceneDetails(for: scene))
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        log.info(userInfo: sceneDetails(for: scene))
+        print(sceneDetails(for: scene))
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        log.info(userInfo: sceneDetails(for: scene))
+        print(sceneDetails(for: scene))
     }
 }

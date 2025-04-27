@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Logger", handler: { action in
             // Log only the action title instead of the entire action object.
-            log.info(action.title, userInfo: [
+            print(action.title, [
                 "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
@@ -47,7 +47,7 @@ class ViewController: UIViewController {
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Light Logger", handler: { action in
             // Log only the action title instead of the entire action object.
-            log.info(action.title, userInfo: [
+            print(action.title, [
                 "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
     private lazy var presentDarkButton = UIButton(
         configuration: .bordered(),
         primaryAction: UIAction(title: "Present Dark Logger", handler: { action in
-            log.info(action.title, userInfo: [
+            print(action.title, [
                 "discoverabilityTitle": action.discoverabilityTitle ?? "–",
                 "identifier": action.identifier.rawValue,
                 "attributes": action.attributes.rawValue,
@@ -76,7 +76,7 @@ class ViewController: UIViewController {
         configuration: .bordered(),
         primaryAction: UIAction(title: "Log Error", handler: { [unowned self] _ in
             // Log a small string message along with the action title.
-            log.error("Error #\(errorCount) occurred", userInfo: [
+            print("Error #\(errorCount) occurred", [
                 "code": 123,
                 "domain": "https://example.com",
                 "reason": "Something went wrong",
@@ -107,9 +107,8 @@ class ViewController: UIViewController {
             } else {
                 .dark
             }
-            log.info(
-                action.title,
-                userInfo: [
+            print(
+                action, [
                     "newValue": newValue,
                     "oldValue": window.overrideUserInterfaceStyle,
                     "window": window,
@@ -137,13 +136,13 @@ class ViewController: UIViewController {
         view.layoutIfNeeded()
 
         // Log key details from the view controller without logging entire objects.
-        log.info(userInfo: viewControllerDetails())
+        print(viewControllerDetails)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         stackView.frame = view.bounds
-        log.verbose(userInfo: [
+        print([
             "viewFrame": view.frame,
             "stackViewFrame": stackView.frame,
             "subviewsCount": view.allSuviews.count,
@@ -152,7 +151,7 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        log.verbose(userInfo: [
+        print([
             "event": "viewWillAppear",
             "animated": animated,
             "currentViewFrame": view.frame,
@@ -162,7 +161,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         VisualLogger.addAction(changeColorSchemeAction)
-        log.verbose(userInfo: [
+        print([
             "event": "viewDidAppear",
             "animated": animated,
             "currentViewFrame": view.frame,
@@ -171,7 +170,7 @@ class ViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        log.verbose(userInfo: [
+        print([
             "event": "viewWillDisappear",
             "animated": animated,
             "currentViewFrame": view.frame,
@@ -181,7 +180,7 @@ class ViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         VisualLogger.removeAction(changeColorSchemeAction)
-        log.verbose(userInfo: [
+        print([
             "event": "viewDidDisappear",
             "animated": animated,
             "currentViewFrame": view.frame,
