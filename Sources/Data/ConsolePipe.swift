@@ -1,21 +1,35 @@
+// MIT License
 //
-//  ConsolePipe.swift
-//  swiftui-visual-logger
+// Copyright (c) 2025 Pedro Almeida
 //
-//  Created by Pedro Almeida on 26.04.25.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
-import Foundation
 import Combine
+import Foundation
 
 /// Redirects `stdout` and `stderr` into a Combine publisher.
 /// The underlying pipes remain open for as long as the instance
 /// is retained and are restored automatically on de‑initialisation.
 package final class ConsolePipe {
-
     // MARK: - Private storage
 
-    private lazy var inputPipe  = Pipe()
+    private lazy var inputPipe = Pipe()
     private lazy var outputPipe = Pipe()
 
     /// Original file descriptors so we can restore them on teardown.
@@ -41,22 +55,22 @@ package final class ConsolePipe {
     package typealias Handler = @Sendable (ConsoleOutput) -> Void
 
     package func callAsFunction(handler: @escaping Handler) throws {
-#if !targetEnvironment(simulator)
-        setvbuf(stdout, nil, _IONBF, 0)
-#endif
+        #if !targetEnvironment(simulator)
+            setvbuf(stdout, nil, _IONBF, 0)
+        #endif
 
-        //from documentation
-        //dup2() makes newfd (new file descriptor) be the copy of oldfd (old file descriptor), closing newfd first if necessary.
+        // from documentation
+        // dup2() makes newfd (new file descriptor) be the copy of oldfd (old file descriptor), closing newfd first if necessary.
 
-        //here we are copying the STDOUT file descriptor into our output pipe's file descriptor
-        //this is so we can write the strings back to STDOUT, so it can show up on the xcode console
+        // here we are copying the STDOUT file descriptor into our output pipe's file descriptor
+        // this is so we can write the strings back to STDOUT, so it can show up on the xcode console
         guard
             dup2(STDOUT_FILENO, outputPipe.fileHandleForWriting.fileDescriptor) != -1
         else {
             throw Error.failedToCaptureConsoleOutput
         }
 
-        //In this case, the newFileDescriptor is the pipe's file descriptor and the old file descriptor is STDOUT_FILENO and STDERR_FILENO
+        // In this case, the newFileDescriptor is the pipe's file descriptor and the old file descriptor is STDOUT_FILENO and STDERR_FILENO
         guard
             dup2(inputPipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO) != -1,
             dup2(inputPipe.fileHandleForWriting.fileDescriptor, STDERR_FILENO) != -1
@@ -76,7 +90,7 @@ package final class ConsolePipe {
                     handler(output)
                 }
 
-                //write the data back into the output pipe. the output pipe's write file descriptor points to STDOUT. this allows the logs to show up on the xcode console
+                // write the data back into the output pipe. the output pipe's write file descriptor points to STDOUT. this allows the logs to show up on the xcode console
                 outputPipe?.fileHandleForWriting.write(data)
             }
         }
@@ -101,7 +115,7 @@ package final class ConsolePipe {
     }
 }
 
-package struct ConsoleOutput: @unchecked /*but safe*/ Sendable {
+package struct ConsoleOutput: @unchecked /* but safe */ Sendable {
     package let text: String?
     package let userInfo: [String: Any]?
 
@@ -112,7 +126,7 @@ package struct ConsoleOutput: @unchecked /*but safe*/ Sendable {
             return nil
         }
 
-        self.userInfo = {
+        userInfo = {
             // Try the raw message first; if it fails, apply sanitisation.
             if let obj = Self.parse(text) { return obj }
 
@@ -139,17 +153,17 @@ package struct ConsoleOutput: @unchecked /*but safe*/ Sendable {
 
         // 1. Replace the first "[" with "{" and the last "]" with "}".
         if result.hasPrefix("[") {
-            result.replaceSubrange(result.startIndex...result.startIndex, with: "{")
+            result.replaceSubrange(result.startIndex ... result.startIndex, with: "{")
         }
         if result.hasSuffix("]") {
             let last = result.index(before: result.endIndex)
-            result.replaceSubrange(last...last, with: "}")
+            result.replaceSubrange(last ... last, with: "}")
         }
 
         // 2. Quote tuple‑style values:  key: (a, b, c)  → key: "(a, b, c)"
         let pattern = #"(:\s*)\(([^\)]*)\)"#
         if let regex = try? NSRegularExpression(pattern: pattern) {
-            let range = NSRange(result.startIndex..<result.endIndex, in: result)
+            let range = NSRange(result.startIndex ..< result.endIndex, in: result)
             result = regex.stringByReplacingMatches(
                 in: result,
                 options: [],

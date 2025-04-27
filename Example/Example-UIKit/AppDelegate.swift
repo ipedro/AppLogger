@@ -33,9 +33,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         print([
-                "state": application.applicationState.debugDescription,
-                "badge number": String(application.applicationIconBadgeNumber),
-            ]
+            "state": application.applicationState.debugDescription,
+            "badge number": String(application.applicationIconBadgeNumber),
+        ]
         )
         return true
     }

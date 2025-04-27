@@ -154,8 +154,7 @@ public actor VisualLogger: LogEntrySourceProtocol {
                     )
                 }
             }
-        }
-        catch {
+        } catch {
             Task {
                 await dataStore.addLogEntry(
                     LogEntry(
