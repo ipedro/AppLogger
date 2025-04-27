@@ -7,7 +7,7 @@
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+// furnished to do, subject to the following conditions:
 //
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
@@ -22,13 +22,15 @@
 
 import Foundation
 
-/// Redirects `stdout` and `stderr` into a Combine publisher.
-/// The underlying pipes remain open for as long as the instance
-/// is retained and are restored automatically on de‑initialisation.
-package final class ConsolePipe {
+/// A concurrency‑safe stdout/stderr capture.
+/// All mutable state is isolated to the actor.
+package actor ConsolePipe {
     // MARK: - Private storage
 
     private var isEnabled = false
+
+    /// Holds any partial line received from the pipe until we see a newline.
+    private var lineBuffer = ""
 
     private lazy var inputPipe = Pipe()
     private lazy var outputPipe = Pipe()
@@ -55,16 +57,16 @@ package final class ConsolePipe {
 
     package typealias Handler = @Sendable (ConsoleOutput) -> Void
 
-    package func callAsFunction(handler: @escaping Handler) throws {
+    package func callAsFunction(handler: @escaping Handler) async throws {
         guard isEnabled == false else {
             return
         }
 
         isEnabled = true
 
-        #if !targetEnvironment(simulator)
-            setvbuf(stdout, nil, _IONBF, 0)
-        #endif
+#if !targetEnvironment(simulator)
+        setvbuf(stdout, nil, _IONBF, 0)
+#endif
 
         // from documentation
         // dup2() makes newfd (new file descriptor) be the copy of oldfd (old file descriptor), closing newfd first if necessary.
@@ -85,43 +87,59 @@ package final class ConsolePipe {
             throw Error.failedToCaptureConsoleOutput
         }
 
-        inputPipe.fileHandleForReading.readabilityHandler = { [weak outputPipe] pipeReadHandle in
-            do {
-                let data = pipeReadHandle.availableData
+        inputPipe.fileHandleForReading.readabilityHandler = { [weak self, weak outputPipe] pipeReadHandle in
+            let data = pipeReadHandle.availableData
+            guard let chunk = String(data: data, encoding: .utf8) else { return }
 
-                guard let str = String(data: data, encoding: .utf8) else {
-                    return
+            // Marshal the work onto the actor so we stay thread‑safe.
+            Task { [weak self] in
+                if let self {
+                    await self.processChunk(chunk, handler: handler)
                 }
-
-                if let output = ConsoleOutput(str) {
-                    handler(output)
-                }
-
-                // write the data back into the output pipe. the output pipe's write file descriptor points to STDOUT. this allows the logs to show up on the xcode console
-                outputPipe?.fileHandleForWriting.write(data)
             }
+
+            // write the data back into the output pipe. the output pipe's write file descriptor points to STDOUT. this allows the logs to show up on the xcode console
+            outputPipe?.fileHandleForWriting.write(data)
         }
 
         print("Registered console logging pipe.")
     }
 
-    deinit {
-        guard isEnabled else {
-            return
+    /// Accumulates incoming text and emits a message **only** when the buffer
+    /// ends with a newline. Any `\n` characters that occur *inside* the data
+    /// are considered part of the payload.
+    private func processChunk(_ chunk: String, handler: Handler) {
+        // Append the incoming bytes.
+        lineBuffer.append(chunk)
+
+        // We emit a message iff the buffer now ends with a newline.
+        guard lineBuffer.hasSuffix("\n") else { return }
+
+        // Remove the trailing newline so it’s not part of the payload.
+        let candidate = String(lineBuffer.dropLast())
+        lineBuffer.removeAll(keepingCapacity: true)
+
+        let trimmed = candidate.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        // If it *looks* like JSON, ensure it’s truly complete.
+        if trimmed.first == "{" || trimmed.first == "[" {
+            func jsonIsComplete(_ s: String) -> Bool {
+                guard let d = s.data(using: .utf8) else { return false }
+                return (try? JSONSerialization.jsonObject(with: d)) != nil
+            }
+
+            if jsonIsComplete(trimmed) == false &&
+                jsonIsComplete(ConsoleOutput.sanitizeJSONCandidate(trimmed)) == false {
+                // Not finished after all; put it back and wait for more.
+                lineBuffer = trimmed + "\n"
+                return
+            }
         }
-        // 1. Stop asynchronous callbacks.
-        inputPipe.fileHandleForReading.readabilityHandler = nil
 
-        // 2. Restore the original stdio so future sessions start clean.
-        dup2(originalStdout, STDOUT_FILENO)
-        dup2(originalStderr, STDERR_FILENO)
-        close(originalStdout)
-        close(originalStderr)
-
-        // 3. Close our pipe ends.
-        inputPipe.fileHandleForReading.closeFile()
-        inputPipe.fileHandleForWriting.closeFile()
-        outputPipe.fileHandleForWriting.closeFile()
+        if let output = ConsoleOutput(trimmed) {
+            handler(output)
+        }
     }
 }
 
@@ -158,7 +176,7 @@ package struct ConsoleOutput: @unchecked /* but safe */ Sendable {
     /// * Converts the leading `[` and trailing `]` to `{` / `}` (only once each).
     /// * Wraps tuple‑style values like `(0.0, 0.0, 393.0, 852.0)` in quotes
     ///   so they survive JSON parsing.
-    private static func sanitizeJSONCandidate(_ text: String) -> String {
+    static func sanitizeJSONCandidate(_ text: String) -> String {
         var result = text
 
         // 1. Replace the first "[" with "{" and the last "]" with "}".

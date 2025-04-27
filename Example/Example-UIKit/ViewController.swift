@@ -107,13 +107,12 @@ class ViewController: UIViewController {
             } else {
                 .dark
             }
-            print(
-                action, [
-                    "newValue": newValue,
-                    "oldValue": window.overrideUserInterfaceStyle,
-                    "window": window,
-                ]
-            )
+            print([
+                "action": "Change Color Scheme",
+                "newValue": newValue,
+                "oldValue": window.overrideUserInterfaceStyle,
+                "window": window,
+            ])
             window.overrideUserInterfaceStyle = newValue
         }
     )

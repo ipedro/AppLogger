@@ -134,12 +134,12 @@ public actor VisualLogger: LogEntrySourceProtocol {
     /// Pipe that mirrors stdout/stderr and delivers each line.
     private let consolePipe = ConsolePipe()
 
-    func observeConsoleOutput() {
+    func observeConsoleOutput() async {
         guard let consolePipe else {
             return
         }
         do {
-            try consolePipe { output in
+            try await consolePipe { output in
                 Task { [unowned self] in
                     await dataStore.addLogEntry(
                         LogEntry(
