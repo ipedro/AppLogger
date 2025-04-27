@@ -98,7 +98,7 @@ class ViewController: UIViewController {
     private lazy var changeColorSchemeAction = VisualLoggerAction(
         title: "Change Color Scheme",
         systemImage: "circle.lefthalf.striped.horizontal",
-        handler: { [unowned self] action in
+        handler: { [unowned self] _ in
             guard let window = view?.window else {
                 return
             }
