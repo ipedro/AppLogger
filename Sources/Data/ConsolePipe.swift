@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 import Foundation
+import Models
 
 /// A concurrency‑safe stdout/stderr capture.
 /// All mutable state is isolated to the actor.
@@ -127,66 +128,5 @@ package actor ConsolePipe {
         if let output = ConsoleOutput(trimmed) {
             handler(output)
         }
-    }
-}
-
-package struct ConsoleOutput: @unchecked /* but safe */ Sendable {
-    package let text: String?
-    package let userInfo: [String: Any]?
-
-    init?(_ value: String) {
-        let text = value.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !text.isEmpty else {
-            return nil
-        }
-
-        userInfo = {
-            // Try the raw message first; if it fails, apply sanitisation.
-            if let obj = Self.parse(text) { return obj }
-
-            let sanitized = Self.sanitizeJSONCandidate(text)
-            // Attempt to fix common non‑JSON constructs (CGRect tuples, etc.)
-            let json = Self.parse(sanitized)
-            return json
-        }()
-
-        self.text = userInfo == nil ? text : nil
-    }
-
-    private static func parse(_ s: String) -> [String: AnyHashable]? {
-        guard let data = s.data(using: .utf8) else { return nil }
-        return try? JSONSerialization.jsonObject(with: data) as? [String: AnyHashable]
-    }
-
-    /// Attempts to coerce an Apple‑style dictionary debug print into valid JSON.
-    /// * Converts the leading `[` and trailing `]` to `{` / `}` (only once each).
-    /// * Wraps tuple‑style values like `(0.0, 0.0, 393.0, 852.0)` in quotes
-    ///   so they survive JSON parsing.
-    static func sanitizeJSONCandidate(_ text: String) -> String {
-        var result = text
-
-        // 1. Replace the first "[" with "{" and the last "]" with "}".
-        if result.hasPrefix("[") {
-            result.replaceSubrange(result.startIndex ... result.startIndex, with: "{")
-        }
-        if result.hasSuffix("]") {
-            let last = result.index(before: result.endIndex)
-            result.replaceSubrange(last ... last, with: "}")
-        }
-
-        // 2. Quote tuple‑style values:  key: (a, b, c)  → key: "(a, b, c)"
-        let pattern = #"(:\s*)\(([^\)]*)\)"#
-        if let regex = try? NSRegularExpression(pattern: pattern) {
-            let range = NSRange(result.startIndex ..< result.endIndex, in: result)
-            result = regex.stringByReplacingMatches(
-                in: result,
-                options: [],
-                range: range,
-                withTemplate: #"$1\"($2)\""#
-            )
-        }
-
-        return result
     }
 }
