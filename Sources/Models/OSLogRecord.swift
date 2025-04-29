@@ -14,7 +14,7 @@ package struct OSLogRecord: Sendable {
     package let severity: UInt8      // syslog numeric level (0-7)
     package let subsystemCode: UInt8 // rarely useful but present («80» in sample)
     package let facility: Character  // «L»
-    package let typeCode: Character  // «e» for error, «d» for default …
+    package let typeCode: String     // «e», «f», or numeric like «10»
 
     // --- dynamic payload inside {…} ----------------------------------------
     package let timestamp: Date?         // derived from  t:<epoch>
@@ -39,7 +39,7 @@ package struct OSLogRecord: Sendable {
         guard line.hasPrefix("OSLOG-") else { return nil }
 
         // 2. Capture header + brace block + message
-        let pattern = #"OSLOG-([A-F0-9\-]+)\s+(\d+)\s+(\d+)\s+([A-Z])\s+([a-z])\s+(\{.*?\})\t(.*)"#
+        let pattern = #"OSLOG-([A-F0-9\-]+)\s+(\d+)\s+(\d+)\s+([A-Z])\s+([A-Za-z0-9]+)\s+(\{.*?\})\t(.*)"#
 
         guard
             let regex = try? NSRegularExpression(
@@ -62,11 +62,12 @@ package struct OSLogRecord: Sendable {
             let uuid    = UUID(uuidString: g(1)),
             let sev     = UInt8(g(2)),
             let subCode = UInt8(g(3)),
-            let fac     = g(4).first,
-            let typeC   = g(5).first
+            let fac     = g(4).first
         else {
             return nil
         }
+
+        let typeC   = g(5)
 
         // 3. Extract key/value pairs from the { … } block --------------------
         let braceBlock = g(6).dropFirst().dropLast() // remove outer braces
