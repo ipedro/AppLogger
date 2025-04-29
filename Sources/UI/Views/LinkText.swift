@@ -28,7 +28,7 @@ struct LinkText: View {
 
     var body: some View {
         Group {
-            if let link = URL(string: data), link.scheme != .none {
+            if let link = URL(string: data), link.isValid {
                 Text(data)
                     .underline()
                     .onTapGesture {
@@ -40,6 +40,12 @@ struct LinkText: View {
         }
         .textSelection(.enabled)
         .multilineTextAlignment(alignment)
+    }
+}
+
+private extension URL {
+    var isValid: Bool {
+        scheme != nil && host != nil
     }
 }
 
