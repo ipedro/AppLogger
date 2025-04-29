@@ -95,7 +95,7 @@ package actor ConsolePipe {
                 Task { [weak self] in
                     if let self {
                         // swift-format-ignore
-                        await self.processChunk(chunk, handler: handler)
+                        await processChunk(chunk, handler: handler)
                     }
                 }
             }
