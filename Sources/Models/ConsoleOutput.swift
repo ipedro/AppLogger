@@ -43,6 +43,29 @@ package enum ConsoleOutput: @unchecked /* but safe */ Sendable {
         }
     }
 
+    package func logEntry() -> LogEntry {
+        switch self {
+        case let .logEntry(logEntry):
+            logEntry
+        case let .text(subtitle):
+            LogEntry(
+                category: .debug,
+                source: "Console",
+                content: LogEntryContent(
+                    title: "",
+                    subtitle: subtitle
+                )
+            )
+        case let .userInfo(userInfo):
+            LogEntry(
+                category: .debug,
+                source: "Console",
+                content: "",
+                userInfo: userInfo
+            )
+        }
+    }
+
     private static func parse(_ s: String) -> [String: AnyHashable]? {
         guard let data = s.data(using: .utf8) else { return nil }
         return try? JSONSerialization.jsonObject(with: data) as? [String: AnyHashable]
