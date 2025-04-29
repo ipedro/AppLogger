@@ -89,12 +89,13 @@ package actor ConsolePipe {
 
         inputPipe.fileHandleForReading.readabilityHandler = { [weak self, weak outputPipe] pipeReadHandle in
             let data = pipeReadHandle.availableData
-            guard let chunk = String(data: data, encoding: .utf8) else { return }
 
-            // Marshal the work onto the actor so we stay thread‑safe.
-            Task { [weak self] in
-                if let self {
-                    await processChunk(chunk, handler: handler)
+            if let chunk = String(data: data, encoding: .utf8) {
+                // Marshal the work onto the actor so we stay thread‑safe.
+                Task { [weak self] in
+                    if let self {
+                        await self.processChunk(chunk, handler: handler)
+                    }
                 }
             }
 
