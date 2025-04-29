@@ -52,8 +52,15 @@ package actor ConsolePipe {
         }
     }
 
-    enum Error: Swift.Error {
+    enum Error: LocalizedError {
         case failedToCaptureConsoleOutput
+
+        var errorDescription: String? {
+            switch self {
+            case .failedToCaptureConsoleOutput:
+                "Failed to capture console output."
+            }
+        }
     }
 
     package typealias Handler = @Sendable (ConsoleOutput) -> Void
