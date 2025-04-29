@@ -22,25 +22,64 @@
 
 import Foundation
 
-public extension LogEntryCategory {
+extension LogEntryCategory {
+    package enum Default: String, CaseIterable {
+        /// Basic informational messages for detailed debugging.
+        case verbose = "Verbose"
+        /// Debug-level messages for development purposes.
+        case debug = "Debug"
+        /// General information messages.
+        case info = "Info"
+        /// Notable events that are worth attention.
+        case notice = "Notice"
+        /// Warning messages for potential issues.
+        case warning = "Warning"
+        /// Error messages for recoverable failures.
+        case error = "Error"
+        /// Severe error messages for critical issues.
+        case severe = "Severe"
+        /// Alert messages requiring immediate attention.
+        case alert = "Alert"
+        /// Emergency messages for system-wide failures.
+        case emergency = "Emergency"
+
+        var emoji: Character {
+            switch self {
+            case .verbose: "💬"
+            case .debug: "🐞"
+            case .info: "ℹ️"
+            case .notice: "✳️"
+            case .warning: "⚠️"
+            case .error: "💥"
+            case .severe: "💣"
+            case .alert: "‼️"
+            case .emergency: "🚨"
+            }
+        }
+
+        package func category() -> LogEntryCategory {
+            LogEntryCategory(emoji, rawValue)
+        }
+    }
+
     /// Basic informational messages for detailed debugging.
-    static let verbose = Self("💬", "Verbose")
+    public static let verbose = Default.verbose.category()
     /// Debug-level messages for development purposes.
-    static let debug = Self("🐞", "Debug")
+    public static let debug = Default.debug.category()
     /// General information messages.
-    static let info = Self("ℹ️", "Info")
+    public static let info = Default.info.category()
     /// Notable events that are worth attention.
-    static let notice = Self("✳️", "Notice")
+    public static let notice = Default.notice.category()
     /// Warning messages for potential issues.
-    static let warning = Self("⚠️", "Warning")
+    public static let warning = Default.warning.category()
     /// Error messages for recoverable failures.
-    static let error = Self("💥", "Error")
+    public static let error = Default.error.category()
     /// Severe error messages for critical issues.
-    static let severe = Self("💣", "Severe")
+    public static let severe = Default.severe.category()
     /// Alert messages requiring immediate attention.
-    static let alert = Self("‼️", "Alert")
+    public static let alert = Default.alert.category()
     /// Emergency messages for system-wide failures.
-    static let emergency = Self("🚨", "Emergency")
+    public static let emergency = Default.emergency.category()
 }
 
 /// A structure that represents a log entry category with an optional emoji and a debug name.

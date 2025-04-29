@@ -142,15 +142,28 @@ public actor VisualLogger: LogEntrySourceProtocol {
             try await consolePipe { output in
                 Task { [unowned self] in
                     await dataStore.addLogEntry(
-                        LogEntry(
-                            category: .verbose,
-                            source: "Console",
-                            content: LogEntryContent(
-                                title: "print()",
-                                subtitle: output.text
-                            ),
-                            userInfo: output.userInfo
-                        )
+                        {
+                            switch output {
+                            case let .logEntry(logEntry):
+                                logEntry
+                            case let .text(subtitle):
+                                LogEntry(
+                                    category: .debug,
+                                    source: "Console",
+                                    content: LogEntryContent(
+                                        title: "",
+                                        subtitle: subtitle
+                                    )
+                                )
+                            case let .userInfo(userInfo):
+                                LogEntry(
+                                    category: .debug,
+                                    source: "Console",
+                                    content: "",
+                                    userInfo: userInfo
+                                )
+                            }
+                        }()
                     )
                 }
             }

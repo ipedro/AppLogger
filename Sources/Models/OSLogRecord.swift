@@ -105,4 +105,32 @@ package struct OSLogRecord: Sendable {
         )
         return record
     }
+
+    package func asLogEntry() -> LogEntry {
+        LogEntry(
+            date: timestamp ?? Date(),
+            category: {
+                if let logType = type {
+                    if let category = LogEntryCategory.Default(rawValue: logType)?.category() {
+                        category
+                    } else {
+                        LogEntryCategory(logType)
+                    }
+                } else {
+                    .warning
+                }
+            }(),
+            source: {
+                if let logSubsystem = subsystem {
+                    LogEntrySource(logSubsystem)
+                } else {
+                    "System"
+                }
+            }(),
+            content: LogEntryContent(
+                title: category ?? "",
+                subtitle: message
+            )
+        )
+    }
 }

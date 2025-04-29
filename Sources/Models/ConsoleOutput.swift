@@ -22,28 +22,25 @@
 
 import Foundation
 
-package struct ConsoleOutput: @unchecked /* but safe */ Sendable {
-    package let text: String?
-    package let userInfo: [String: Any]?
+package enum ConsoleOutput: @unchecked /* but safe */ Sendable {
+    case logEntry(LogEntry)
+    case text(String)
+    case userInfo([String: Any])
 
     package init?(_ value: String) {
         let text = value.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        guard !text.isEmpty else {
+        if let log = OSLogRecord.parse(from: value) {
+            self = .logEntry(log.asLogEntry())
+        } else if let userInfo = Self.parse(value) {
+            self = .userInfo(userInfo)
+        } else if let userInfo = Self.parse(Self.sanitizeJSONCandidate(value)) {
+            self = .userInfo(userInfo)
+        } else if !text.isEmpty {
+            self = .text(value)
+        } else {
             return nil
         }
-
-        userInfo = {
-            // Try the raw message first; if it fails, apply sanitisation.
-            if let obj = Self.parse(text) { return obj }
-
-            let sanitized = Self.sanitizeJSONCandidate(text)
-            // Attempt to fix common non‑JSON constructs (CGRect tuples, etc.)
-            let json = Self.parse(sanitized)
-            return json
-        }()
-
-        self.text = userInfo == nil ? text : nil
     }
 
     private static func parse(_ s: String) -> [String: AnyHashable]? {
