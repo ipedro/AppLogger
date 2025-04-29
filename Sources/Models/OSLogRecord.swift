@@ -40,12 +40,19 @@ package struct OSLogRecord: Sendable {
 
         // 2. Capture header + brace block + message
         let pattern = #"OSLOG-([A-F0-9\-]+)\s+(\d+)\s+(\d+)\s+([A-Z])\s+([a-z])\s+(\{.*?\})\t(.*)"#
+
         guard
-            let regex = try? NSRegularExpression(pattern: pattern,
-                                                 options: [.dotMatchesLineSeparators]),
-            let m = regex.firstMatch(in: line,
-                                     range: NSRange(line.startIndex..., in: line))
-        else { return nil }
+            let regex = try? NSRegularExpression(
+                pattern: pattern,
+                options: [.dotMatchesLineSeparators]
+            ),
+            let m = regex.firstMatch(
+                in: line,
+                range: NSRange(line.startIndex..., in: line)
+            )
+        else {
+            return nil
+        }
 
         func g(_ index: Int) -> String {
             String(line[Range(m.range(at: index), in: line)!])
@@ -57,7 +64,9 @@ package struct OSLogRecord: Sendable {
             let subCode = UInt8(g(3)),
             let fac     = g(4).first,
             let typeC   = g(5).first
-        else { return nil }
+        else {
+            return nil
+        }
 
         // 3. Extract key/value pairs from the { … } block --------------------
         let braceBlock = g(6).dropFirst().dropLast() // remove outer braces
@@ -66,10 +75,14 @@ package struct OSLogRecord: Sendable {
             let keyPat = #"\#(key):([^,}]+)"#
             let r = try? NSRegularExpression(pattern: keyPat)
             guard
-                let match = r?.firstMatch(in: String(braceBlock),
-                                          range: NSRange(braceBlock.startIndex..., in: braceBlock)),
+                let match = r?.firstMatch(
+                    in: String(braceBlock),
+                    range: NSRange(braceBlock.startIndex..., in: braceBlock)
+                ),
                 match.numberOfRanges == 2
-            else { return nil }
+            else {
+                return nil
+            }
             return String(braceBlock[Range(match.range(at: 1), in: braceBlock)!])
                 .trimmingCharacters(in: .whitespacesAndNewlines)
                 .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
@@ -79,9 +92,12 @@ package struct OSLogRecord: Sendable {
         let timestamp: Date? = tsString.flatMap { Double($0).map(Date.init(timeIntervalSince1970:)) }
 
         let offset: UInt64? = {
-            guard let hex = value(for: "offset")?.replacingOccurrences(of: "0x", with: ""),
-                  let v = UInt64(hex, radix: 16)
-            else { return nil }
+            guard
+                let hex = value(for: "offset")?.replacingOccurrences(of: "0x", with: ""),
+                let v = UInt64(hex, radix: 16)
+            else {
+                return nil
+            }
             return v
         }()
 
