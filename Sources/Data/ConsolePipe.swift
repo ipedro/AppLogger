@@ -95,8 +95,8 @@ package actor ConsolePipe {
                 // Marshal the work onto the actor so we stay thread‑safe.
                 Task { [weak self] in
                     if let self {
-                        // swift-format-ignore
-                        await processChunk(chunk, handler: handler)
+                        // swiftformat:disable:next all
+                        await self.processChunk(chunk, handler: handler)
                     }
                 }
             }
