@@ -94,7 +94,7 @@ package actor ConsolePipe {
                 // Marshal the work onto the actor so we stay thread‑safe.
                 Task { [weak self] in
                     if let self {
-                        await self.processChunk(chunk, handler: handler)
+                        await processChunk(chunk, handler: handler)
                     }
                 }
             }
