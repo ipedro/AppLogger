@@ -1,9 +1,24 @@
+// MIT License
 //
-//  OSLogRecord.swift
-//  swiftui-visual-logger
+// Copyright (c) 2025 Pedro Almeida
 //
-//  Created by Pedro Almeida on 30.04.25.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 import Foundation
 
@@ -11,20 +26,20 @@ import Foundation
 package struct OSLogRecord: Sendable {
     // --- fixed header -------------------------------------------------------
     package let id: UUID
-    package let severity: UInt8      // syslog numeric level (0-7)
+    package let severity: UInt8 // syslog numeric level (0-7)
     package let subsystemCode: UInt8 // rarely useful but present («80» in sample)
-    package let facility: Character  // «L»
-    package let typeCode: String     // «e», «f», or numeric like «10»
+    package let facility: Character // «L»
+    package let typeCode: String // «e», «f», or numeric like «10»
 
     // --- dynamic payload inside {…} ----------------------------------------
-    package let timestamp: Date?         // derived from  t:<epoch>
-    package let type: String?            // «Error» in sample
-    package let subsystem: String?       // «com.apple.UIKit»
-    package let category: String?        // «LayoutConstraints»
-    package let offset: UInt64?          // hex → UInt64
-    package let imageUUID: UUID?         // imgUUID
-    package let imagePath: String?       // imgPath
-    package let lines: Int?              // lines:20
+    package let timestamp: Date? // derived from  t:<epoch>
+    package let type: String? // «Error» in sample
+    package let subsystem: String? // «com.apple.UIKit»
+    package let category: String? // «LayoutConstraints»
+    package let offset: UInt64? // hex → UInt64
+    package let imageUUID: UUID? // imgUUID
+    package let imagePath: String? // imgPath
+    package let lines: Int? // lines:20
 
     // --- free-form text that follows the tab -------------------------------
     package let message: String
@@ -59,15 +74,15 @@ package struct OSLogRecord: Sendable {
         }
 
         guard
-            let uuid    = UUID(uuidString: g(1)),
-            let sev     = UInt8(g(2)),
+            let uuid = UUID(uuidString: g(1)),
+            let sev = UInt8(g(2)),
             let subCode = UInt8(g(3)),
-            let fac     = g(4).first
+            let fac = g(4).first
         else {
             return nil
         }
 
-        let typeC   = g(5)
+        let typeC = g(5)
 
         // 3. Extract key/value pairs from the { … } block --------------------
         let braceBlock = g(6).dropFirst().dropLast() // remove outer braces

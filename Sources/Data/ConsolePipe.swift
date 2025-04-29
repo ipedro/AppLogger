@@ -130,4 +130,3 @@ package actor ConsolePipe {
         }
     }
 }
-

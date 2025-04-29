@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension LogEntryCategory {
+public extension LogEntryCategory {
     package enum Default: String, CaseIterable {
         /// Basic informational messages for detailed debugging.
         case verbose = "Verbose"
@@ -63,23 +63,23 @@ extension LogEntryCategory {
     }
 
     /// Basic informational messages for detailed debugging.
-    public static let verbose = Default.verbose.category()
+    static let verbose = Default.verbose.category()
     /// Debug-level messages for development purposes.
-    public static let debug = Default.debug.category()
+    static let debug = Default.debug.category()
     /// General information messages.
-    public static let info = Default.info.category()
+    static let info = Default.info.category()
     /// Notable events that are worth attention.
-    public static let notice = Default.notice.category()
+    static let notice = Default.notice.category()
     /// Warning messages for potential issues.
-    public static let warning = Default.warning.category()
+    static let warning = Default.warning.category()
     /// Error messages for recoverable failures.
-    public static let error = Default.error.category()
+    static let error = Default.error.category()
     /// Severe error messages for critical issues.
-    public static let severe = Default.severe.category()
+    static let severe = Default.severe.category()
     /// Alert messages requiring immediate attention.
-    public static let alert = Default.alert.category()
+    static let alert = Default.alert.category()
     /// Emergency messages for system-wide failures.
-    public static let emergency = Default.emergency.category()
+    static let emergency = Default.emergency.category()
 }
 
 /// A structure that represents a log entry category with an optional emoji and a debug name.
