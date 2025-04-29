@@ -33,11 +33,13 @@ struct LogEntryContentView: View {
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack(alignment: .leading, spacing: spacing) {
-            Text(content.title)
-                .font(.callout.bold())
-                .minimumScaleFactor(0.85)
-                .lineLimit(3)
-                .multilineTextAlignment(.leading)
+            if !content.title.isEmpty {
+                Text(content.title)
+                    .font(.callout.bold())
+                    .minimumScaleFactor(0.85)
+                    .lineLimit(3)
+                    .multilineTextAlignment(.leading)
+            }
 
             if let subtitle = content.subtitle, !subtitle.isEmpty {
                 HStack(alignment: .top, spacing: spacing) {
