@@ -30,11 +30,11 @@ struct LogEntryUserInfoView: View {
     var body: some View {
         let _ = Self._debugPrintChanges()
         VStack(spacing: .zero) {
-            ForEach(Array(ids.enumerated()), id: \.element) { @MainActor @Sendable offset, id in
+            ForEach(ids.indices, id: \.self) { @MainActor @Sendable offset in
                 LogEntryUserInfoRow(
                     offset: offset,
-                    id: id,
-                    last: ids.last == id
+                    id: ids[offset],
+                    last: offset == ids.count - 1
                 )
             }
         }
