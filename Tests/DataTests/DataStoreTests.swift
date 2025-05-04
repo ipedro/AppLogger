@@ -204,7 +204,7 @@ struct DataStoreTests {
     }
 
     @Test("Source colors are generated for new sources")
-    func testSourceColorGeneration() async throws {
+    func sourceColorGeneration() async throws {
         // Given
         let observer = await sut.makeObserver()
         let logEntry1 = makeLogEntry()

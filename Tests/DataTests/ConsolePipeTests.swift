@@ -28,7 +28,7 @@ struct ConsolePipeTests {
     let sut = ConsolePipe()!
 
     @Test("processChunk emits a single output on complete line")
-    func testProcessChunkEmitsOnCompleteLine() async {
+    func processChunkEmitsOnCompleteLine() async {
         let stream = AsyncStream<ConsoleOutput> { continuation in
             Task {
                 await sut.processChunk("Hello, world!\n") { output in
@@ -45,7 +45,7 @@ struct ConsolePipeTests {
     }
 
     @Test("processChunk ignores incomplete lines without newline")
-    func testProcessChunkIgnoresIncomplete() async {
+    func processChunkIgnoresIncomplete() async {
         let stream = AsyncStream<ConsoleOutput> { continuation in
             Task {
                 await sut.processChunk("No newline") {
@@ -62,7 +62,7 @@ struct ConsolePipeTests {
     }
 
     @Test("processChunk trims whitespace and ignores empty payloads")
-    func testProcessChunkTrimsAndIgnoresEmpty() async {
+    func processChunkTrimsAndIgnoresEmpty() async {
         let stream = AsyncStream<ConsoleOutput> { continuation in
             Task {
                 await sut.processChunk("   \n") {

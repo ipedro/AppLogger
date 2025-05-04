@@ -30,7 +30,7 @@ struct DynamicColorGeneratorTests {
     }
 
     @Test("color(for:) returns the same color for the same element")
-    func testColorConsistency() {
+    func colorConsistency() {
         // Given
         var sut = DynamicColorGenerator<Item>()
         let item = Item(id: 1)
@@ -45,7 +45,7 @@ struct DynamicColorGeneratorTests {
     }
 
     @Test("generateColorIfNeeded assigns unique colors for different elements")
-    func testUniqueColorsForDifferentElements() {
+    func uniqueColorsForDifferentElements() {
         // Given
         var sut = DynamicColorGenerator<Item>()
         let item1 = Item(id: 1)
@@ -63,7 +63,7 @@ struct DynamicColorGeneratorTests {
     }
 
     @Test("repopulates colors when unassigned colors are exhausted")
-    func testRepopulationWhenExhausted() {
+    func repopulationWhenExhausted() {
         // Given
         var sut = DynamicColorGenerator<Item>()
         let maxCount = 8

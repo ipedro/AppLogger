@@ -37,7 +37,7 @@ struct VisualLoggerViewModelTests {
     }
 
     @Test("entry accessors return underlying observer values")
-    func testEntryAccessors() {
+    func entryAccessors() {
         // Given
         let date = Date()
         let id = LogEntryID(date: date)
@@ -68,7 +68,7 @@ struct VisualLoggerViewModelTests {
     }
 
     @Test("`stop()` clears state subjects")
-    func testStopClearsState() {
+    func stopClearsState() {
         // Given
         let observer = DataObserver()
         let action = VisualLoggerAction(title: "Test") { _ in }
@@ -95,7 +95,7 @@ struct VisualLoggerViewModelTests {
     }
 
     @Test("dismissAction is called when invoked")
-    func testDismissAction() {
+    func dismissAction() {
         // Given
         var called = false
         let sut = VisualLoggerViewModel(
@@ -113,7 +113,7 @@ struct VisualLoggerViewModelTests {
     }
 
     @Test("changing entriesSortingSubject persists to UserDefaults")
-    func testSortingPersistence() {
+    func sortingPersistence() {
         // Given
         let sut = VisualLoggerViewModel(
             dataObserver: DataObserver(),
@@ -128,7 +128,7 @@ struct VisualLoggerViewModelTests {
     }
 
     @Test("changing showFilterDrawerSubject persists to UserDefaults")
-    func testShowFiltersPersistence() {
+    func showFiltersPersistence() {
         // Given
         let sut = VisualLoggerViewModel(
             dataObserver: DataObserver(),
@@ -143,7 +143,7 @@ struct VisualLoggerViewModelTests {
     }
 
     @Test("customActionsSubject updates when DataObserver customActions changes")
-    func testCustomActionsPropagation() {
+    func customActionsPropagation() {
         // Given
         let observer = DataObserver()
         let vm = VisualLoggerViewModel(dataObserver: observer, dismissAction: {})
