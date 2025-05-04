@@ -118,7 +118,7 @@ package actor ConsolePipe {
     /// Accumulates incoming text and emits a message **only** when the buffer
     /// ends with a newline. Any `\n` characters that occur *inside* the data
     /// are considered part of the payload.
-    private func processChunk(_ chunk: String, handler: Handler) {
+    func processChunk(_ chunk: String, handler: Handler) {
         // Append the incoming bytes.
         lineBuffer.append(chunk)
 
