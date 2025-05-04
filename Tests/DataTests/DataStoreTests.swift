@@ -25,11 +25,7 @@
 import Testing
 
 struct DataStoreTests {
-    var dataStore: DataStore
-
-    init() async throws {
-        dataStore = DataStore()
-    }
+    let dataStore = DataStore()
 
     func makeLogEntry() -> LogEntry {
         LogEntry(
