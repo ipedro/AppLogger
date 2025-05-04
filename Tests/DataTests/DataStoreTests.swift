@@ -25,7 +25,7 @@
 import Testing
 
 struct DataStoreTests {
-    let dataStore = DataStore()
+    let sut = DataStore()
 
     func makeLogEntry() -> LogEntry {
         LogEntry(
@@ -42,9 +42,9 @@ struct DataStoreTests {
         let logEntry = makeLogEntry()
 
         // When
-        await dataStore.addLogEntry(logEntry)
-        await dataStore.addLogEntry(logEntry)
-        let observer = await dataStore.makeObserver()
+        await sut.addLogEntry(logEntry)
+        await sut.addLogEntry(logEntry)
+        let observer = await sut.makeObserver()
 
         // Then
         #expect(observer.allEntries.value == [logEntry.id])
@@ -58,15 +58,15 @@ struct DataStoreTests {
     @Test("Adding multiple log entries with similar contents should work")
     func addMultipleLogEntry() async {
         // Given
-        let observer = await dataStore.makeObserver()
+        let observer = await sut.makeObserver()
         let logEntry1 = makeLogEntry()
         let logEntry2 = makeLogEntry()
         let logEntry3 = makeLogEntry()
 
         // When
-        await dataStore.addLogEntry(logEntry1)
-        await dataStore.addLogEntry(logEntry2)
-        await dataStore.addLogEntry(logEntry3)
+        await sut.addLogEntry(logEntry1)
+        await sut.addLogEntry(logEntry2)
+        await sut.addLogEntry(logEntry3)
 
         // Then
         #expect(
@@ -108,18 +108,18 @@ struct DataStoreTests {
     @Test("`Clear Logs` action is present when logs exist")
     func clearLogActionIsPresentOnlyWhenLogsExist() async {
         // Given
-        let observer = await dataStore.makeObserver()
-        let clearLogsAction = await dataStore.clearLogsAction
+        let observer = await sut.makeObserver()
+        let clearLogsAction = await sut.clearLogsAction
         #expect(observer.customActions.value.isEmpty)
 
         // When
-        await dataStore.addLogEntry(makeLogEntry())
+        await sut.addLogEntry(makeLogEntry())
 
         // Then
         #expect(observer.customActions.value == [clearLogsAction])
 
         // When
-        await dataStore.clearLogs()
+        await sut.clearLogs()
 
         // Then
         #expect(observer.customActions.value.isEmpty)
@@ -128,17 +128,17 @@ struct DataStoreTests {
     @Test("Custom actions can be added and removed")
     func addAndRemoveCustomAction() async {
         // Given
-        let observer = await dataStore.makeObserver()
+        let observer = await sut.makeObserver()
         let customAction = VisualLoggerAction(title: "Test", handler: { _ in })
 
         // When
-        await dataStore.addAction(customAction)
+        await sut.addAction(customAction)
 
         // Then
         #expect(observer.customActions.value == [customAction])
 
         // When
-        await dataStore.removeAction(customAction)
+        await sut.removeAction(customAction)
 
         // Then
         #expect(observer.customActions.value.isEmpty)
@@ -147,11 +147,11 @@ struct DataStoreTests {
     @Test("Clearing logs should remove all stored data")
     func clearLogs() async {
         // Given
-        let observer = await dataStore.makeObserver()
-        await dataStore.addLogEntry(makeLogEntry())
+        let observer = await sut.makeObserver()
+        await sut.addLogEntry(makeLogEntry())
 
         // When
-        await dataStore.clearLogs()
+        await sut.clearLogs()
 
         // Then
         #expect(observer.allEntries.value.isEmpty)
@@ -165,19 +165,19 @@ struct DataStoreTests {
     @Test("Custom actions are preserved when logs are cleared")
     func clearLogsKeepCustomActions() async {
         // Given
-        let observer = await dataStore.makeObserver()
+        let observer = await sut.makeObserver()
         let customAction = VisualLoggerAction(title: "Test", handler: { _ in })
-        let clearLogsAction = await dataStore.clearLogsAction
+        let clearLogsAction = await sut.clearLogsAction
 
         // When
-        await dataStore.addAction(customAction)
-        await dataStore.addLogEntry(makeLogEntry())
+        await sut.addAction(customAction)
+        await sut.addLogEntry(makeLogEntry())
 
         // Then
         #expect(observer.customActions.value == [clearLogsAction, customAction])
 
         // When
-        await dataStore.clearLogs()
+        await sut.clearLogs()
 
         // Then
         #expect(observer.customActions.value == [customAction])
@@ -186,9 +186,9 @@ struct DataStoreTests {
     @Test("`Clear Logs` action should remove all stored data")
     func clearLogsAction() async {
         // Given
-        let observer = await dataStore.makeObserver()
-        let clearLogsAction = await dataStore.clearLogsAction
-        await dataStore.addLogEntry(makeLogEntry())
+        let observer = await sut.makeObserver()
+        let clearLogsAction = await sut.clearLogsAction
+        await sut.addLogEntry(makeLogEntry())
 
         // When
         #expect(observer.customActions.value == [clearLogsAction])
@@ -206,7 +206,7 @@ struct DataStoreTests {
     @Test("Source colors are generated for new sources")
     func testSourceColorGeneration() async throws {
         // Given
-        let observer = await dataStore.makeObserver()
+        let observer = await sut.makeObserver()
         let logEntry1 = makeLogEntry()
         let logEntry2 = makeLogEntry()
         let logEntry3 = LogEntry(
@@ -217,20 +217,20 @@ struct DataStoreTests {
         )
 
         // When
-        await dataStore.addLogEntry(logEntry1)
+        await sut.addLogEntry(logEntry1)
 
         // Then
         let color1 = try #require(observer.sourceColors[logEntry1.source.id])
         #expect(observer.sourceColors == [logEntry1.source.id: color1])
 
         // When
-        await dataStore.addLogEntry(logEntry2)
+        await sut.addLogEntry(logEntry2)
 
         // Then
         #expect(observer.sourceColors == [logEntry1.source.id: color1])
 
         // When
-        await dataStore.addLogEntry(logEntry3)
+        await sut.addLogEntry(logEntry3)
 
         // Then
         let color2 = try #require(observer.sourceColors[logEntry3.source.id])
