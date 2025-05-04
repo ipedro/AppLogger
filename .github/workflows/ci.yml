@@ -12,7 +12,7 @@ jobs:
       run: |
         # Read LICENSE file, add `// ` before each line.
         LICENSE_BLOCK=$(sed 's/^/\/\/ /' LICENSE)
-        swiftformat . --header "$LICENSE_BLOCK"
+        swiftformat . --header "$LICENSE_BLOCK" --disable trailingCommas
     - name: Commit and Push Changes
       run: |
         git config --local user.email "action@github.com"
