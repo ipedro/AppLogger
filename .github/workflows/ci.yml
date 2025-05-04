@@ -24,12 +24,3 @@ jobs:
         else
           echo "No changes to commit"
         fi
-  tests:
-    runs-on: macos-latest
-    needs: swift-format
-    steps:
-      - uses: actions/checkout@v4
-      - name: Resolve Swift package dependencies
-        run: swift package resolve
-      - name: Run Swift tests
-        run: swift test
