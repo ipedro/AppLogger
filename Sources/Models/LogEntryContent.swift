@@ -39,7 +39,7 @@ import Foundation
 ///     subtitle:  "Token expired"
 /// )
 /// ```
-public struct LogEntryContent: Sendable {
+public struct LogEntryContent: Equatable, Sendable {
     /// The title or method name where the log was created.
     public let title: String
 

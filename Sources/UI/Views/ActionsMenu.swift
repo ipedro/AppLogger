@@ -41,7 +41,9 @@ struct ActionsMenu: View {
 
             ForEach(customActions) { action in
                 Button(role: action.role) {
-                    action()
+                    Task {
+                        await action()
+                    }
                 } label: {
                     Label {
                         Text(action.title)
@@ -81,7 +83,7 @@ struct ActionsMenu: View {
                             role: .destructive,
                             systemImage: "trash",
                             handler: {
-                                _ in print("Action executed")
+                                _ in print("Deleted")
                             }
                         ),
                     ]

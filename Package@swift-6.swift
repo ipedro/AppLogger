@@ -9,45 +9,45 @@ let git = Context.gitInformation
 /// distribution as a package dependency.
 let buildingForDevelopment = (git?.currentTag == nil)
 
+func makeList<T>(_ default: T..., development: @autoclosure () -> [T]) -> [T] {
+    if buildingForDevelopment {
+        `default` + development()
+    } else {
+        `default`
+    }
+}
+
 let package = Package(
     name: "swiftui-visual-logger",
     platforms: [
         .iOS(.v15),
     ],
-    products: {
-        var products = [Product]()
-        products.append(
+    products: makeList(
+        .library(
+            name: "VisualLogger",
+            targets: [
+                "VisualLogger",
+            ]
+        ),
+        development: [
             .library(
-                name: "VisualLogger",
-                targets: [
-                    "VisualLogger",
-                ]
-            )
-        )
-
-        if buildingForDevelopment {
-            products.append(
-                .library(
-                    name: "VisualLoggerModels",
-                    targets: ["Models"]
-                )
-            )
-            products.append(
-                .library(
-                    name: "VisualLoggerData",
-                    targets: ["Data"]
-                )
-            )
-            products.append(
-                .library(
-                    name: "VisualLoggerUI",
-                    targets: ["UI"]
-                )
-            )
-        }
-        return products
-    }(),
-    targets: [
+                name: "VisualLoggerModels",
+                targets: ["Models"]
+            ),
+            .library(
+                name: "VisualLoggerData",
+                targets: ["Data"]
+            ),
+            .library(
+                name: "VisualLoggerUI",
+                targets: ["UI"]
+            ),
+        ]
+    ),
+    dependencies: makeList(development: [
+        .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "6.1.0")
+    ]),
+    targets: makeList(
         .target(
             name: "Models"
         ),
@@ -68,6 +68,16 @@ let package = Package(
                 "Models",
             ]
         ),
-    ],
+        development: [
+            .testTarget(
+                name: "DataTests",
+                dependencies: [
+                    "Data",
+                    "Models",
+                    .product(name: "Testing", package: "swift-testing")
+                ]
+            )
+        ]
+    ),
     swiftLanguageModes: [.v6],
 )

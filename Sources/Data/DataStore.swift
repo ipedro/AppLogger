@@ -77,18 +77,16 @@ package actor DataStore {
         updateObserver()
     }
 
-    private lazy var clearLogsAction = VisualLoggerAction(
+    private(set) lazy var clearLogsAction = VisualLoggerAction(
         id: "\(VisualLoggerAction.internalNamespace).clear_logs",
         title: "Clear logs",
         role: .destructive,
         systemImage: "trash"
     ) { [unowned self] _ in
-        Task {
-            await clearLogs()
-        }
+        await clearLogs()
     }
 
-    private func clearLogs() {
+    func clearLogs() {
         defer {
             updateObserver()
         }

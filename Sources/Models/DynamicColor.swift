@@ -29,7 +29,7 @@ import UIKit
 /// `DynamicColor` manages color variations for different UI appearances by storing
 /// specialized color components for each `ColorScheme`. This ensures your app's colors
 /// remain visually pleasing regardless of the user's preferred appearance.
-package struct DynamicColor: Sendable {
+package struct DynamicColor: Equatable, Sendable {
     private let data: [ColorScheme: Components]
 
     private init(_ value: [ColorScheme: Components]) {
@@ -58,7 +58,7 @@ package struct DynamicColor: Sendable {
     /// - Hue: The base color (0-1, where 0 and 1 are red, 0.33 is green, 0.66 is blue)
     /// - Saturation: The intensity of the color (0 = grayscale, 1 = full color)
     /// - Brightness: The lightness of the color (0 = black, 1 = full brightness)
-    package struct Components: Sendable, CustomStringConvertible {
+    package struct Components: Equatable, Sendable, CustomStringConvertible {
         let hue: CGFloat
         let saturation: CGFloat
         let brightness: CGFloat
