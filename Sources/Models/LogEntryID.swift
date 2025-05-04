@@ -28,7 +28,7 @@ package struct LogEntryID: Hashable, Comparable, Sendable {
     package let timestamp: TimeInterval
 
     package init(date: Date) {
-        timestamp = date.timeIntervalSince1970
+        timestamp = date.timeIntervalSinceReferenceDate
     }
 
     package static func < (lhs: LogEntryID, rhs: LogEntryID) -> Bool {
@@ -37,6 +37,6 @@ package struct LogEntryID: Hashable, Comparable, Sendable {
 
     /// The date the log was created.
     package var createdAt: Date {
-        Date(timeIntervalSince1970: timestamp)
+        Date(timeIntervalSinceReferenceDate: timestamp)
     }
 }

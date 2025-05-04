@@ -105,7 +105,7 @@ package struct OSLogRecord: Sendable {
         }
 
         let tsString = value(for: "t")
-        let timestamp: Date? = tsString.flatMap { Double($0).map(Date.init(timeIntervalSince1970:)) }
+        let timestamp: Date? = tsString.flatMap { Double($0).map(Date.init(timeIntervalSinceReferenceDate:)) }
 
         let offset: UInt64? = {
             guard
