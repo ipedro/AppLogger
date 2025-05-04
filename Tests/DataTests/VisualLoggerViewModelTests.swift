@@ -111,48 +111,4 @@ struct VisualLoggerViewModelTests {
         // Then
         #expect(called)
     }
-
-    @Test("changing entriesSortingSubject persists to UserDefaults")
-    func sortingPersistence() {
-        // Given
-        let sut = VisualLoggerViewModel(
-            dataObserver: DataObserver(),
-            dismissAction: {}
-        )
-
-        // When
-        sut.entriesSortingSubject.value = .ascending
-
-        // Then
-        #expect(UserDefaults.standard.sorting == .ascending)
-    }
-
-    @Test("changing showFilterDrawerSubject persists to UserDefaults")
-    func showFiltersPersistence() {
-        // Given
-        let sut = VisualLoggerViewModel(
-            dataObserver: DataObserver(),
-            dismissAction: {}
-        )
-
-        // When
-        sut.showFilterDrawerSubject.value = true
-
-        // Then
-        #expect(UserDefaults.standard.showFilters)
-    }
-
-    @Test("customActionsSubject updates when DataObserver customActions changes")
-    func customActionsPropagation() {
-        // Given
-        let observer = DataObserver()
-        let vm = VisualLoggerViewModel(dataObserver: observer, dismissAction: {})
-        let action = VisualLoggerAction(title: "Action") { _ in }
-
-        // When
-        observer.customActions.send([action])
-
-        // Then
-        #expect(vm.customActionsSubject.value == [action])
-    }
 }

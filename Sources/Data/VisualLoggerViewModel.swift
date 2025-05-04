@@ -26,6 +26,10 @@ import Models
 import SwiftUI
 
 package final class VisualLoggerViewModel: ObservableObject {
+    private static var defaults: UserDefaults {
+        UserDefaults.standard
+    }
+
     package typealias DismissAction = @MainActor () -> Void
 
     package let dismissAction: DismissAction
@@ -46,11 +50,11 @@ package final class VisualLoggerViewModel: ObservableObject {
 
     package let customActionsSubject = CurrentValueSubject<[VisualLoggerAction], Never>([])
 
-    package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(UserDefaults.standard.sorting)
+    package let entriesSortingSubject = CurrentValueSubject<LogEntrySorting, Never>(defaults.sorting)
 
     package let searchQuerySubject = CurrentValueSubject<String, Never>("")
 
-    package let showFilterDrawerSubject = CurrentValueSubject<Bool, Never>(UserDefaults.standard.showFilters)
+    package let showFilterDrawerSubject = CurrentValueSubject<Bool, Never>(defaults.showFilters)
 
     package let sourceFiltersSubject = CurrentValueSubject<[LogFilter], Never>([])
 
@@ -270,7 +274,7 @@ private extension VisualLoggerViewModel {
         entriesSortingSubject
             .receive(on: RunLoop.main)
             .sink {
-                UserDefaults.standard.sorting = $0
+                Self.defaults.sorting = $0
             }
             .store(in: &cancellables)
     }
@@ -279,7 +283,7 @@ private extension VisualLoggerViewModel {
         showFilterDrawerSubject
             .receive(on: RunLoop.main)
             .sink {
-                UserDefaults.standard.showFilters = $0
+                Self.defaults.showFilters = $0
             }
             .store(in: &cancellables)
     }
