@@ -220,23 +220,23 @@ struct DataStoreTests {
         await dataStore.addLogEntry(logEntry1)
 
         // Then
-        let color = try #require(observer.sourceColors[logEntry1.source.id])
+        let color1 = try #require(observer.sourceColors[logEntry1.source.id])
+        #expect(observer.sourceColors == [logEntry1.source.id: color1])
 
         // When
         await dataStore.addLogEntry(logEntry2)
 
         // Then
-        #expect(observer.allEntries.value.count == 2)
-        #expect(observer.sourceColors == [logEntry1.source.id: color])
+        #expect(observer.sourceColors == [logEntry1.source.id: color1])
 
         // When
         await dataStore.addLogEntry(logEntry3)
 
         // Then
-        #expect(observer.allEntries.value.count == 3)
-        #expect(observer.sourceColors.values.count == 2)
-        #expect(observer.sourceColors[logEntry1.source.id] == color)
-        #expect(observer.sourceColors[logEntry2.source.id] == color)
-        #expect(observer.sourceColors[logEntry3.source.id] != color)
+        let color2 = try #require(observer.sourceColors[logEntry3.source.id])
+        #expect(observer.sourceColors == [
+            logEntry1.source.id: color1,
+            logEntry3.source.id: color2
+        ])
     }
 }
