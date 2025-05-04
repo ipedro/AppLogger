@@ -236,7 +236,7 @@ struct DataStoreTests {
         let color2 = try #require(observer.sourceColors[logEntry3.source.id])
         #expect(observer.sourceColors == [
             logEntry1.source.id: color1,
-            logEntry3.source.id: color2
+            logEntry3.source.id: color2,
         ])
     }
 }
