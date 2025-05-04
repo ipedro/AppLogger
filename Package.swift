@@ -25,7 +25,7 @@ let package = Package(
         ),
         .target(
             name: "UI",
-            dependencies: ["Data"],
+            dependencies: ["Data"]
         ),
         .target(
             name: "VisualLogger",
