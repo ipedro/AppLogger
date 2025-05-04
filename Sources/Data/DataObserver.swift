@@ -64,7 +64,7 @@ package final class DataObserver: @unchecked Sendable {
         entryContents: [LogEntryID: LogEntryContent] = [:],
         entrySources: [LogEntryID: LogEntrySource] = [:],
         entryUserInfos: [LogEntryID: LogEntryUserInfo?] = [:],
-        sourceColors: [LogEntrySource.ID: DynamicColor] = [:],
+        sourceColors: [LogEntrySource.ID: DynamicColor] = [:]
     ) {
         self.allCategories = CurrentValueSubject(allCategories)
         self.allEntries = CurrentValueSubject(allEntries)
