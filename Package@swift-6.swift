@@ -45,7 +45,7 @@ let package = Package(
         ]
     ),
     dependencies: makeList(development: [
-        .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "6.1.0")
+        .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "6.1.0"),
     ]),
     targets: makeList(
         .target(
@@ -74,9 +74,9 @@ let package = Package(
                 dependencies: [
                     "Data",
                     "Models",
-                    .product(name: "Testing", package: "swift-testing")
+                    .product(name: "Testing", package: "swift-testing"),
                 ]
-            )
+            ),
         ]
     ),
     swiftLanguageModes: [.v6],

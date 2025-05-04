@@ -71,7 +71,7 @@ public extension VisualLoggerAction {
         case .regular:
             nil
         case .destructive:
-                .destructive
+            .destructive
         }
     }
 
@@ -187,7 +187,7 @@ public extension VisualLoggerAction {
         case .regular:
             nil
         case .destructive:
-                .destructive
+            .destructive
         }
     }
 
