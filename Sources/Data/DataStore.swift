@@ -82,8 +82,8 @@ package actor DataStore {
         title: "Clear logs",
         role: .destructive,
         systemImage: "trash"
-    ) { [unowned self] _ in
-        await clearLogs()
+    ) { [unowned self] (_) async -> Void in
+        clearLogs()
     }
 
     func clearLogs() {
