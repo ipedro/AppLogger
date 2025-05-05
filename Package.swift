@@ -65,9 +65,7 @@ let package = Package(
         .target(
             name: "VisualLogger",
             dependencies: [
-                "UI",
-                "Data",
-                "Models",
+                "UI"
             ]
         ),
         development: [
@@ -75,7 +73,6 @@ let package = Package(
                 name: "DataTests",
                 dependencies: [
                     "Data",
-                    "Models",
                     .product(name: "Testing", package: "swift-testing"),
                 ]
             ),
