@@ -82,7 +82,7 @@ package actor DataStore {
         title: "Clear logs",
         role: .destructive,
         systemImage: "trash"
-    ) { [unowned self] (_) async -> Void in
+    ) { [unowned self] _ async in
         clearLogs()
     }
 
