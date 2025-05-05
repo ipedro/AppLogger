@@ -9,7 +9,7 @@ let git = Context.gitInformation
 /// distribution as a package dependency.
 let buildingForDevelopment = (git?.currentTag == nil)
 
-func makeList<T>(_ default: T..., development: @autoclosure () -> [T]) -> [T] {
+func make<T>(_ default: T..., development: @autoclosure () -> [T]) -> [T] {
     if buildingForDevelopment {
         `default` + development()
     } else {
@@ -22,7 +22,7 @@ let package = Package(
     platforms: [
         .iOS(.v15),
     ],
-    products: makeList(
+    products: make(
         .library(
             name: "VisualLogger",
             targets: [
@@ -44,10 +44,10 @@ let package = Package(
             ),
         ]
     ),
-    dependencies: makeList(development: [
+    dependencies: make(development: [
         .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "6.1.0"),
     ]),
-    targets: makeList(
+    targets: make(
         .target(
             name: "Models"
         ),
@@ -58,7 +58,9 @@ let package = Package(
         .target(
             name: "UI",
             dependencies: ["Data"],
-            swiftSettings: buildingForDevelopment ? [.define("DEBUG_VIEWS")] : []
+            swiftSettings: make(development: [
+                .define("DEBUG_VIEWS")
+            ])
         ),
         .target(
             name: "VisualLogger",
