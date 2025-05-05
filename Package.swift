@@ -45,7 +45,7 @@ let package = Package(
         ]
     ),
     dependencies: make(development: [
-        .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "6.1.0"),
+        .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "6.0.0"),
     ]),
     targets: make(
         .target(
