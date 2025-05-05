@@ -23,7 +23,7 @@
 import SwiftUI
 
 /// A type that defines the closure for an action handler.
-public typealias VisualLoggerActionHandler = @Sendable (_ action: VisualLoggerAction) -> Void
+public typealias VisualLoggerActionHandler = @MainActor (_ action: VisualLoggerAction) -> Void
 
 /// A type that defines the closure for a asynchronous action handler.
 public typealias VisualLoggerActionAsyncHandler = @Sendable (_ action: VisualLoggerAction) async -> Void
