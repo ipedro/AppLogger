@@ -9,11 +9,11 @@ let git = Context.gitInformation
 /// distribution as a package dependency.
 let buildingForDevelopment = (git?.currentTag == nil)
 
-func make<T>(_ default: T..., development: @autoclosure () -> [T]) -> [T] {
+func make<T>(_ base: T..., development: @autoclosure () -> [T]) -> [T] {
     if buildingForDevelopment {
-        `default` + development()
+        base + development()
     } else {
-        `default`
+        base
     }
 }
 
